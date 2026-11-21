@@ -350,6 +350,8 @@ a{color:var(--accD)}
       <button class="sbtn" id="pvCodeBtn">الكود</button>
       <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
       <button class="sbtn" id="pvGhBtn">ارفع جيت هب</button>
+      <button class="sbtn" id="pvDlBtn">تحميل</button>
+      <button class="sbtn" id="pvDevBtn">📱 موبايل</button>
       <button class="sbtn" id="pvCopyBtn">نسخ</button>
       <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
     </div>
@@ -820,7 +822,7 @@ async function send(){
   const tp=addTyping(thinkMode?'بيفكر ويخطط':'بيكتب');
   $('#send').disabled=true;
   try{
-    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
     const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
     const t=parseFloat($('#temp').value);
     const mt=parseInt($('#maxtok').value);
@@ -1096,7 +1098,7 @@ async function send(){
   const hist=c.msgs.filter(m=>!m.gen&&!m.art).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
   hist.push({role:'user',content:userContent});
 
-  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
   const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
   const t=parseFloat($('#temp').value);
   const mt=parseInt($('#maxtok').value);
@@ -1278,7 +1280,11 @@ async function runTeam(text){
     scrollDown();
     const results=await Promise.allSettled(plan.map(async(st,idx)=>{
       const a=TEAM.find(x=>x.name===st.name)||TEAM[0];
-      const sys=(a.sys||'')+'\nأنت عضو في فريق بيشتغل على طلب واحد. الطلب الأصلي: '+fullText+'\nمهمتك أنت بالتحديد: '+st.task+'\nنفّذ مهمتك بس بإتقان. لو حد سألك عن اسمك: أنت "'+a.name+'" وشغال بالنموذج '+a.model+'.';
+      let searchCtx='';
+      if(/بحث|باحث|معلومات|أخبار|اسعار|أسعار/.test(a.name+(a.sys||'')+st.task)){
+        try{const sr=await doSearch(st.task);if(sr)searchCtx='\nنتائج بحث حية من الإنترنت:\n'+sr.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+String(r.content||'').slice(0,400)).join('\n');}catch(e){}
+      }
+      const sys=(a.sys||'')+searchCtx+'\nأنت عضو في فريق بيشتغل على طلب واحد. الطلب الأصلي: '+fullText+'\nمهمتك أنت بالتحديد: '+st.task+'\nنفّذ مهمتك بس بإتقان. لو حد سألك عن اسمك: أنت "'+a.name+'" وشغال بالنموذج '+a.model+'.';
       const r=await chatOnce(a.model,[{role:'system',content:sys},{role:'user',content:st.task}],isNaN(t)?0.7:t,isNaN(mt)?1500:mt,sig);
       return {agent:a,task:st.task,res:r,idx};
     }));
@@ -1291,7 +1297,7 @@ async function runTeam(text){
         contribs.push('## شغل '+st.name+':\n'+rr.value.res.content);
         const card=document.createElement('div');card.className='msg bot';
         card.innerHTML='<div class="agentcard c'+(i%4)+'"><div class="ah"><span>'+esc(st.name)+'</span><span class="am">'+esc(rr.value.res.model)+'</span></div><div class="ab">'+mdRender(rr.value.res.content)+'</div></div>';
-        sc.appendChild(card);
+        sc.appendChild(card);addPvBtn(card.querySelector('.agentcard'),rr.value.res.content);
         box.children[1+i].className='tstep done';box.children[1+i].textContent='✅ '+st.name+' خلص';
       }else{
         const e=rr.reason;
@@ -1482,6 +1488,22 @@ function addSysNote(html){
   const n=document.createElement('div');n.className='sysnote';n.innerHTML=html;
   $('#chat').appendChild(n);scrollDown();
 }
+
+/* preview: download + device frame */
+$('#pvDlBtn').onclick=()=>{
+  try{
+    const b=new Blob([pvCode],{type:'text/html'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='index.html';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast('اتحملت الصفحة ✅');
+  }catch(e){toast('التحميل مش متاح هنا');}
+};
+$('#pvDevBtn').onclick=()=>{
+  const f=$('#pvFrame');const mobile=f.style.maxWidth!=='390px';
+  f.style.maxWidth=mobile?'390px':'';f.style.margin=mobile?'0 auto':'';
+  f.style.borderLeft=mobile?'1px solid var(--line)':'';f.style.borderRight=mobile?'1px solid var(--line)':'';
+  $('#pvDevBtn').textContent=mobile?'💻 تابلت':'📱 موبايل';
+};
 
 </script>
 </body>
