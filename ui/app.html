@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>مساعدي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF9F5; --side:#F0EEE6; --card:#FFFFFF; --line:#E6E3D9; --line2:#D9D5C8;
+  --txt:#1F1E1B; --dim:#73706A; --acc:#D97757; --accD:#C05B3B; --chip:#EFEDE6;
+  --dark:#1F1E1B; --darktxt:#EDECE6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);overflow:hidden}
+svg{flex-shrink:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--accD)}
+#app{display:flex;height:100vh}
+#side{width:264px;background:var(--side);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;transition:margin .25s ease}
+#side .stop{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:17px}
+.mark{width:30px;height:30px;border-radius:9px;background:var(--acc);display:grid;place-items:center;color:#fff}
+#newChat{margin-inline-start:auto;width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:var(--card);display:grid;place-items:center;color:var(--txt)}
+#newChat:hover{background:var(--chip)}
+#chats{flex:1;overflow-y:auto;padding:4px 8px}
+.citem{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;font-size:13.5px;cursor:pointer;color:var(--txt);margin-bottom:2px}
+.citem:hover{background:rgba(0,0,0,.045)}
+.citem.sel{background:var(--card);border:1px solid var(--line)}
+.citem .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem .d{opacity:0;color:var(--dim);width:22px;height:22px;display:grid;place-items:center;border-radius:6px}
+.citem:hover .d{opacity:1}
+.citem .d:hover{color:#b3261e;background:rgba(179,38,30,.1)}
+#side .sbot{border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.slink{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;font-size:13.5px;color:var(--txt);text-decoration:none;cursor:pointer}
+.slink:hover{background:rgba(0,0,0,.045)}
+.slink .gr{color:var(--dim);display:grid;place-items:center}
+#main{flex:1;display:flex;flex-direction:column;min-width:0}
+#topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+#menuBtn{display:none}
+#topbar .tt{font-weight:800;font-size:16px}
+#utok{margin-inline-start:auto;background:var(--chip);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--dim)}
+#utok b{color:var(--accD)}
+.ticon{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--txt)}
+.ticon:hover{background:var(--chip)}
+#netbar{display:none;background:#FDF3E7;border-bottom:1px solid #EAD9BE;color:#8A5A1E;font-size:13px;padding:8px 16px;text-align:center}
+#netbar.show{display:block}
+#netbar button{text-decoration:underline;font-weight:700;color:#8A5A1E;margin-inline-start:8px}
+#scroll{flex:1;overflow-y:auto}
+#chatwrap{max-width:768px;margin:auto;padding:24px 16px 20px;display:flex;flex-direction:column;gap:22px}
+#empty{text-align:center;margin-top:8vh}
+#empty .emark{width:56px;height:56px;border-radius:16px;background:var(--acc);display:inline-grid;place-items:center;color:#fff;margin-bottom:14px}
+#empty h2{font-size:24px;font-weight:900;margin-bottom:6px}
+#empty p{color:var(--dim);font-size:14px;margin-bottom:22px}
+.sugs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:560px;margin:auto}
+.sug{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--txt)}
+.sug:hover{border-color:var(--acc);color:var(--accD)}
+.mrow{display:flex;flex-direction:column;animation:pop .22s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.mrow.u{align-items:flex-start}
+.ub{max-width:75%;background:var(--chip);border-radius:18px;border-end-start-radius:6px;padding:10px 16px;font-size:15px;line-height:1.9;white-space:pre-wrap;word-break:break-word}
+.ub img{max-width:230px;border-radius:12px;display:block;margin-bottom:8px}
+.ab{font-size:15px;line-height:2;padding:2px 4px;word-break:break-word}
+.ab .h2{font-size:18px;font-weight:800;margin:14px 0 6px}
+.ab .h3{font-size:16px;font-weight:800;margin:12px 0 4px}
+.ab ul,.ab ol{margin:6px 0;padding-inline-start:22px}
+.ab li{margin:3px 0}
+.ab code.ic{background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;direction:ltr;unicode-bidi:embed;font-family:ui-monospace,Menlo,monospace}
+.ab pre.cb{background:var(--dark);color:var(--darktxt);border-radius:12px;padding:14px 16px;margin:10px 0;overflow-x:auto;direction:ltr;text-align:left;position:relative;font-size:13px;line-height:1.7;font-family:ui-monospace,Menlo,monospace}
+.ab pre.cb .cbtn{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:3px 10px;font-size:11px}
+.ab pre.cb .cbtn:hover{background:rgba(255,255,255,.25)}
+.ameta{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--dim);font-size:11.5px}
+.ameta .tk{color:var(--accD);font-weight:700}
+.mact{width:26px;height:26px;border-radius:7px;display:inline-grid;place-items:center;color:var(--dim)}
+.mact:hover{background:var(--chip);color:var(--txt)}
+.thinkbox{margin:0 0 10px;border:1px solid var(--line2);border-radius:12px;background:var(--side)}
+.thinkbox summary{cursor:pointer;padding:8px 14px;font-size:12.5px;color:var(--dim);font-weight:700;list-style:none;display:flex;align-items:center;gap:7px}
+.thinkbox summary::before{content:'▸'}
+.thinkbox[open] summary::before{content:'▾'}
+.thinkbox .tb{padding:0 14px 12px;font-size:12.5px;color:var(--dim);white-space:pre-wrap;line-height:1.8}
+.genbox img{max-width:100%;border-radius:14px;display:block;margin-top:8px}
+.genbox .gprompt{font-size:12.5px;color:var(--dim)}
+.genload{color:var(--dim);font-size:13px;padding:34px 0;text-align:center}
+.typing{display:flex;align-items:center;gap:8px;color:var(--dim);font-size:13.5px;padding:4px}
+.typing .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);animation:bl 1s infinite}
+.typing .dot:nth-child(2){animation-delay:.15s}.typing .dot:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
+#comp{padding:10px 16px 16px;max-width:800px;width:100%;margin:auto}
+#modelbar{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700;color:var(--txt)}
+.pill:hover{border-color:var(--line2)}
+.pill .pv{color:var(--dim);font-weight:500}
+.modechip{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--dim);transition:.15s}
+.modechip.on{background:#FBEDE6;border-color:var(--acc);color:var(--accD)}
+#attachChip{display:none;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;margin-bottom:8px;width:fit-content}
+#attachChip.show{display:flex}
+#attachChip img{width:44px;height:44px;border-radius:9px;object-fit:cover}
+#attachChip .an{font-size:12.5px;color:var(--dim);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#attachChip .x{color:var(--dim);width:26px;height:26px;display:grid;place-items:center;border-radius:7px}
+#attachChip .x:hover{background:var(--chip);color:#b3261e}
+#box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:10px 14px 8px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+#box:focus-within{border-color:var(--line2);box-shadow:0 4px 20px rgba(0,0,0,.07)}
+#inp{width:100%;resize:none;border:none;outline:none;background:none;font-family:inherit;font-size:15px;color:var(--txt);max-height:150px;line-height:1.8}
+#inp::placeholder{color:#A9A59B}
+#tools{display:flex;align-items:center;gap:4px;margin-top:4px}
+.tbtn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--dim)}
+.tbtn:hover{background:var(--chip);color:var(--txt)}
+.tbtn.rec{background:#FDECEA;color:#b3261e;animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.35)}50%{box-shadow:0 0 0 7px rgba(179,38,30,0)}}
+#send{margin-inline-start:auto;width:38px;height:38px;border-radius:12px;background:var(--acc);color:#fff;display:grid;place-items:center;transition:.15s}
+#send:hover{background:var(--accD)}
+#send:disabled{opacity:.45;cursor:default}
+.overlay{position:fixed;inset:0;background:rgba(30,25,20,.35);z-index:60;display:none;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.sheet{background:var(--bg);border-radius:22px 22px 0 0;width:100%;max-width:760px;max-height:85vh;display:flex;flex-direction:column;animation:up .25s ease;border:1px solid var(--line)}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{padding:18px 20px 10px;font-size:17px;font-weight:900;display:flex;align-items:center;gap:9px}
+.sheet .closex{margin-inline-start:auto;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--dim)}
+.sheet .closex:hover{background:var(--chip)}
+#msearch{margin:0 20px 10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--txt);font-family:inherit;font-size:14px;outline:none}
+#mlist{overflow-y:auto;padding:0 12px 20px}
+.mitem{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent}
+.mitem:hover{background:var(--chip)}
+.mitem.sel{border-color:var(--acc);background:#FBEDE6}
+.mitem .nm{font-weight:700;font-size:14px}
+.mitem .pv{font-size:11px;color:var(--dim)}
+.mitem .tags{margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:10px;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--dim);white-space:nowrap;background:var(--card)}
+.tag.code{color:#1D6FB8;border-color:#BFDCEC}
+.tag.img{color:#B04FB8;border-color:#E8CCEC}
+.tag.txt{color:#3E7C4F;border-color:#C4DFCB}
+.tag.tool{color:#B8860B;border-color:#E8D9A8}
+.tag.think{color:#7C5CB8;border-color:#D6CBEE}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 20px;border-bottom:1px solid var(--line)}
+.srow label{font-size:14px;font-weight:700}
+.srow .hint{font-size:11.5px;color:var(--dim);font-weight:400;margin-top:2px}
+.srow input[type=number]{width:100px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:7px 10px;font-family:inherit;outline:none}
+.srow textarea{width:100%;min-height:76px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13.5px;resize:vertical;outline:none}
+.sbtn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--txt)}
+.sbtn:hover{background:var(--chip)}
+.sw{position:relative;width:44px;height:24px;background:#D8D4C7;border-radius:999px;cursor:pointer;transition:.2s;flex-shrink:0}
+.sw::after{content:'';position:absolute;top:2px;inset-inline-start:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:var(--acc)}
+.sw.on::after{transform:translateX(-20px)}
+.stgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px}
+.stbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stbox .v{font-size:20px;font-weight:900;color:var(--accD)}
+.stbox .k{font-size:11.5px;color:var(--dim)}
+#mtable{width:calc(100% - 40px);margin:0 20px 16px;font-size:12.5px;border-collapse:collapse}
+#mtable td{padding:6px 8px;border-bottom:1px solid var(--line)}
+#mtable td:last-child{text-align:end;color:var(--accD);font-weight:700}
+#cvWrap{padding:0 20px 20px;display:flex;flex-direction:column;gap:10px}
+#drawCv{background:#fff;border:1px solid var(--line2);border-radius:14px;width:100%;height:46vh;touch-action:none;cursor:crosshair}
+.cvrow{display:flex;gap:8px;align-items:center}
+.cvrow input[type=color]{width:38px;height:38px;border:none;background:none;cursor:pointer}
+#setup{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;place-items:center;padding:20px}
+#setup.open{display:grid}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:34px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.06)}
+.scard .mark{margin:0 auto 14px;width:52px;height:52px;font-size:26px;border-radius:15px}
+.scard input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:12px 14px;font-family:inherit;font-size:13px;outline:none;margin:14px 0;direction:ltr;text-align:left}
+.scard .go{width:100%;padding:13px;border-radius:12px;background:var(--acc);color:#fff;font-size:15px;font-weight:800}
+.scard .go:hover{background:var(--accD)}
+.scard .hint{font-size:12px;color:var(--dim);margin-top:12px;line-height:1.8}
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--dark);color:var(--darktxt);padding:10px 20px;border-radius:12px;font-size:13px;z-index:90;display:none;max-width:90%;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+@media (max-width:900px){
+  #side{position:fixed;top:0;bottom:0;right:0;z-index:70;margin-right:-280px;box-shadow:-8px 0 30px rgba(0,0,0,.12)}
+  #side.open{margin-right:0}
+  #menuBtn{display:grid}
+  .ub{max-width:88%}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side">
+    <div class="stop">
+      <div class="brand"><span class="mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg></span>مساعدي</div>
+      <button id="newChat" title="محادثة جديدة"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div id="chats"></div>
+    <div class="sbot">
+      <a class="slink" onclick="openSheet('setSheet')"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>الإعدادات ووضع المطور</a>
+      <a class="slink" href="https://freellm-router.onrender.com" target="_blank"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>لوحة الإحصائيات الكاملة ↗</a>
+    </div>
+  </aside>
+  <div id="main">
+    <div id="topbar">
+      <button class="ticon" id="menuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <span class="tt">مساعدي</span>
+      <span id="utok">النهارده: <b>0</b></span>
+      <button class="ticon" onclick="openSheet('setSheet')" title="الإعدادات"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
+    </div>
+    <div id="netbar"></div>
+    <div id="scroll"><div id="chatwrap">
+      <div id="empty">
+        <span class="emark"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg></span>
+        <h2>أهلاً بيك في مساعدي</h2>
+        <p>أكتر من ١٠٠ نموذج مجاني تحت إيدك: كلام، صور، رسم، بحث، وتفكير بخطوات.</p>
+        <div class="sugs">
+          <button class="sug" onclick="sug(this)">اشرحلي أي موضوع ببساطة</button>
+          <button class="sug" onclick="sugArt(this)">قطة بتطير في الفضاء</button>
+          <button class="sug" onclick="sug(this)">اكتبلي كود لعبة بسيطة</button>
+          <button class="sug" onclick="sugSearch(this)">ابحث عن أخبار التقنية النهارده</button>
+        </div>
+      </div>
+      <div id="chat"></div>
+    </div></div>
+    <div id="comp">
+      <div id="modelbar">
+        <button class="pill" id="modelpick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span id="curModel">تلقائي</span><span class="pv" id="curProv"></span></button>
+        <button class="modechip" id="thinkBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>تفكير</button>
+        <button class="modechip" id="searchBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>بحث</button>
+        <button class="modechip" id="artBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r=".9" fill="currentColor"/><circle cx="12" cy="7.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="10" r=".9" fill="currentColor"/><path d="M12 21c-1.2 0-1.7-1.1-1-2 .9-1.1 0-2.5-1.5-2.5H6.5"/></svg>رسم</button>
+      </div>
+      <div id="attachChip"><img id="attachThumb"><span class="an" id="attachName"></span><button class="x" onclick="clearAttach()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div id="box">
+        <textarea id="inp" rows="1" placeholder="اكتب رسالتك هنا..."></textarea>
+        <div id="tools">
+          <button class="tbtn" id="camBtn" title="إرفاق: صورة / كاميرا / ملف / رسم"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 12.5l-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.85 1.85 0 0 1-2.6-2.6l7.8-7.8"/></svg></button>
+          <button class="tbtn" id="micBtn" title="تكلم بدل الكتابة"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+          <button id="send" title="ابعت"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="file" id="fileImg" accept="image/*" style="display:none">
+<input type="file" id="fileCam" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh" style="display:none">
+<div class="overlay" id="attSheet">
+  <div class="sheet">
+    <h3>إرفاق <button class="closex" onclick="closeSheet('attSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
+    <a class="slink" onclick="closeSheet('attSheet');fileImg.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-4.5-4.5L6 21"/></svg></span>صورة من الجهاز</a>
+    <a class="slink" onclick="closeSheet('attSheet');fileCam.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>الكاميرا</a>
+    <a class="slink" onclick="closeSheet('attSheet');fileTxt.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg></span>ملف نصي أو كود</a>
+    <a class="slink" style="margin-bottom:14px" onclick="closeSheet('attSheet');openCanvas()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 19l7-7-4-4-7 7-1 5z"/><path d="M14 6l4 4"/></svg></span>لوحة رسم (ارسم بإيدك)</a>
+  </div>
+</div>
+<div class="overlay" id="modelSheet">
+  <div class="sheet">
+    <h3>اختار النموذج <button class="closex" onclick="closeSheet('modelSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
+    <input id="msearch" placeholder="دوّر على نموذج...">
+    <div id="mlist">
+  </div></div>
+</div>
+<div class="overlay" id="setSheet">
+  <div class="sheet">
+    <h3>الإعدادات <button class="closex" onclick="closeSheet('setSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
+    <div style="overflow-y:auto">
+      <div class="srow"><label>وضع المطور: شخصية المساعد <div class="hint">اكتب هنا هو يعمل إيه بالظبط: شخصيته، طريقة رده، دوره. بتتبعت مع كل رسالة.</div></label></div>
+      <div class="srow" style="border:none;padding-top:0"><textarea id="sysPrompt" placeholder="مثال: رد باللهجة المصرية، كن صديقي وخبير برمجة، واشرح بأمثلة"></textarea></div>
+      <div class="srow"><label>اقرأ الردود بصوت <div class="hint">كل رد جديد يتقال بصوت عربي</div></label><div class="sw" id="voiceSw"></div></div>
+      <div class="srow"><label>الإبداع (0 - 2) <div class="hint">أقل = أدق، أعلى = أكثر تنوع</div></label><input type="number" id="temp" min="0" max="2" step="0.1" placeholder="افتراضي"></div>
+      <div class="srow"><label>أقصى طول للرد <div class="hint">بالتوكنز، سيبه فاضي للافتراضي</div></label><input type="number" id="maxtok" min="1" max="32000" placeholder="افتراضي"></div>
+      <div class="srow"><label>إحصائياتك <div class="hint">من جهازك - التفاصيل الكاملة في لوحة التحكم</div></label></div>
+      <div class="stgrid">
+        <div class="stbox"><div class="v" id="stTok">0</div><div class="k">توكنز النهارده</div></div>
+        <div class="stbox"><div class="v" id="stMsg">0</div><div class="k">رسالة اتبعتت</div></div>
+      </div>
+      <table id="mtable"></table>
+      <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="cvSheet">
+  <div class="sheet">
+    <h3>لوحة الرسم <button class="closex" onclick="closeSheet('cvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
+    <div id="cvWrap">
+      <canvas id="drawCv"></canvas>
+      <div class="cvrow">
+        <input type="color" id="cvColor" value="#1F1E1B" title="اللون">
+        <button class="sbtn" onclick="cvClear()">مسح</button>
+        <button class="sbtn" style="background:var(--acc);color:#fff;border-color:var(--acc)" onclick="cvAttach()">إرفاق الرسمة</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="setup">
+  <div class="scard">
+    <span class="mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+    <h2 style="font-weight:900">مفتاح التشغيل</h2>
+    <input type="password" id="keyInp" placeholder="الصق المفتاح هنا (sk-...)">
+    <button class="go" onclick="saveKey()">ابدأ</button>
+    <div class="hint">المفتاح بيتخزن في متصفحك بس.<br>هتلاقيه في لوحة التحكم ← صفحة Keys.</div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const API='https://freellm-router.onrender.com';
+const CAP={"gemini-2.5-flash": {"p": "electronhub", "t": true, "v": true, "n": "Gemini 2.5 Flash (ElectronHub)"}, "glm-4.5-flash": {"p": "zhipu", "t": true, "v": false, "n": "GLM-4.5 Flash"}, "codestral-latest": {"p": "airforce", "t": false, "v": false, "n": "codestral-latest (Api.Airforce)"}, "gemini-2.5-flash-lite": {"p": "electronhub", "t": true, "v": true, "n": "Gemini 2.5 Flash-Lite (ElectronHub)"}, "command-r-plus-08-2024": {"p": "cohere", "t": true, "v": false, "n": "Command R+ (08-2024)"}, "@cf/meta/llama-3.3-70b-instruct-fp8-fast": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 3.3 70B fp8-fast (CF)"}, "openai/gpt-oss-120b": {"p": "groq", "t": true, "v": false, "n": "GPT-OSS 120B (Groq)"}, "@cf/openai/gpt-oss-120b": {"p": "cloudflare", "t": true, "v": false, "n": "GPT-OSS 120B (CF)"}, "@cf/zai-org/glm-4.7-flash": {"p": "cloudflare", "t": true, "v": false, "n": "GLM-4.7 Flash (CF)"}, "@cf/meta/llama-4-scout-17b-16e-instruct": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 4 Scout (CF)"}, "openai/gpt-oss-20b": {"p": "speka", "t": false, "v": false, "n": "GPT-OSS 20B (Speka)"}, "command-a-03-2025": {"p": "cohere", "t": true, "v": false, "n": "Command-A (03-2025)"}, "@cf/qwen/qwen3-30b-a3b-fp8": {"p": "cloudflare", "t": true, "v": false, "n": "Qwen3 30B-A3B fp8 (CF)"}, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b": {"p": "cloudflare", "t": true, "v": false, "n": "DeepSeek R1 Distill Qwen 32B (CF)"}, "gemini-3-flash-preview": {"p": "google", "t": true, "v": true, "n": "Gemini 3 Flash Preview"}, "gemini-3.1-flash-lite-preview": {"p": "google", "t": true, "v": true, "n": "Gemini 3.1 Flash Lite Preview (Google AI Studio)"}, "google/gemma-4-31b-it:free": {"p": "openrouter", "t": false, "v": false, "n": "Gemma 4 31B (free)"}, "glm-4.7-flash": {"p": "electronhub", "t": true, "v": false, "n": "GLM 4.7 Flash (ElectronHub)"}, "google/gemma-4-26b-a4b-it:free": {"p": "openrouter", "t": false, "v": false, "n": "Gemma 4 26B-A4B (free)"}, "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {"p": "kilo", "t": false, "v": true, "n": "Nemotron 3 Nano Omni Reasoning (Kilo)"}, "@cf/ibm-granite/granite-4.0-h-micro": {"p": "cloudflare", "t": false, "v": false, "n": "Granite 4.0 H Micro (CF)"}, "google/gemma-4-31b-it": {"p": "speka", "t": false, "v": false, "n": "Gemma 4 31B IT (Speka)"}, "nvidia/nemotron-3-super-120b-a12b": {"p": "nvidia", "t": true, "v": false, "n": "Nemotron 3 Super 120B (NV)"}, "gemini-3.5-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.5 Flash"}, "@cf/nvidia/nemotron-3-120b-a12b": {"p": "cloudflare", "t": false, "v": false, "n": "Nemotron 3 120B (CF)"}, "command-a-reasoning-08-2025": {"p": "cohere", "t": true, "v": false, "n": "Command A Reasoning (08-2025)"}, "openai/gpt-oss-safeguard-20b": {"p": "llmtr", "t": false, "v": false, "n": "GPT OSS Safeguard 20B (LLMTR)"}, "@cf/google/gemma-4-26b-a4b-it": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 4 26B-A4B it (CF)"}, "command-r-08-2024": {"p": "electronhub", "t": true, "v": false, "n": "Command R (08-2024) (ElectronHub)"}, "ministral-8b-latest": {"p": "airforce", "t": false, "v": false, "n": "ministral-8b-latest (Api.Airforce)"}, "gemma-4-31b-it": {"p": "electronhub", "t": true, "v": true, "n": "Gemma 4 31B (ElectronHub)"}, "gemma-4-26b-a4b-it": {"p": "electronhub", "t": true, "v": true, "n": "Gemma 4 26B A4B (ElectronHub)"}, "nvidia/nemotron-3-ultra-550b-a55b:free": {"p": "kilo", "t": true, "v": false, "n": "Nemotron 3 Ultra 550B (Kilo)"}, "glm-4.6v-flash": {"p": "zhipu", "t": true, "v": true, "n": "GLM-4.6V Flash"}, "anthropic/claude-haiku-4.5": {"p": "aclide", "t": false, "v": false, "n": "Claude Haiku 4.5 (ACLIDE)"}, "mistralai/codestral-2508": {"p": "xkiro", "t": true, "v": false, "n": "Codestral (xKiro)"}, "mistralai/devstral-medium": {"p": "xkiro", "t": true, "v": false, "n": "Devstral 2 (xKiro)"}, "mistralai/ministral-14b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 14B (xKiro)"}, "mistralai/ministral-3b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 3B (xKiro)"}, "mistralai/ministral-8b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 8B (xKiro)"}, "mistralai/mistral-medium-3.5": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Medium 3.5 (xKiro)"}, "qwen/qwen-plus-2025-07-28:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen Plus 2025-07-28 (ACLIDE)"}, "qwen/qwen3-coder-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Coder Plus (ACLIDE)"}, "qwen/qwen3-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Max (ACLIDE)"}, "qwen/qwen3-omni-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Omni Flash (ACLIDE)"}, "qwen/qwen3-vl-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 VL Plus (ACLIDE)"}, "qwen/qwen3.5-397b-a17b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 397B (ACLIDE)"}, "qwen/qwen3.5-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Flash (ACLIDE)"}, "qwen/qwen3.5-omni-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Omni Flash (ACLIDE)"}, "qwen/qwen3.5-omni-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Omni Plus (ACLIDE)"}, "qwen/qwen3.5-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Plus (ACLIDE)"}, "qwen/qwen3.6-27b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 27B (ACLIDE)"}, "qwen/qwen3.6-35b-a3b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 35B A3B (ACLIDE)"}, "qwen/qwen3.6-max-preview:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 Max Preview (ACLIDE)"}, "qwen/qwen3.6-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 Plus (ACLIDE)"}, "qwen/qwen3.7-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.7 Max (ACLIDE)"}, "qwen/qwen3.7-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.7 Plus (ACLIDE)"}, "qwen/qwen3.8-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.8 Max (ACLIDE)"}, "z-ai/glm-4.5-airx": {"p": "aclide", "t": true, "v": false, "n": "GLM-4.5 AirX (ACLIDE)"}, "z-ai/glm-4.7-flashx": {"p": "aclide", "t": true, "v": false, "n": "GLM-4.7 FlashX (ACLIDE)"}, "z-ai/glm-5": {"p": "aclide", "t": false, "v": false, "n": "GLM 5 (ACLIDE)"}, "z-ai/glm-5-turbo": {"p": "aclide", "t": true, "v": false, "n": "GLM-5 Turbo (ACLIDE)"}, "z-ai/glm-5v-turbo": {"p": "aclide", "t": true, "v": false, "n": "GLM-5V Turbo (ACLIDE)"}, "agnes-2.5-flash": {"p": "agnes", "t": true, "v": true, "n": "Agnes 2.5 Flash"}, "agnes-3.0-flash": {"p": "agnes", "t": false, "v": false, "n": "Agnes 3.0 Flash (Agnes AI)"}, "aphrodite/SicariusSicariiStuff/Impish_Bloodmoon_12B": {"p": "aihorde", "t": false, "v": false, "n": "Impish Bloodmoon 12B (AI Horde)"}, "aphrodite/SicariusSicariiStuff/Impish_LLAMA_4B": {"p": "aihorde", "t": false, "v": false, "n": "Impish LLAMA 4B (AI Horde)"}, "aphrodite/TheDrummer/Behemoth-X-123B-v2.1": {"p": "aihorde", "t": false, "v": false, "n": "Behemoth-X-123B-v2 1 (AI Horde)"}, "aphrodite/TheDrummer/Cydonia-24B-v4.3": {"p": "aihorde", "t": false, "v": false, "n": "Cydonia 24B v4.3 (AI Horde)"}, "aphrodite/TheDrummer/Skyfall-31B-v4.2": {"p": "aihorde", "t": false, "v": false, "n": "Skyfall 31B v4.2 (AI Horde)"}, "koboldcpp/Angelic_Eclipse-12B": {"p": "aihorde", "t": false, "v": false, "n": "Angelic Eclipse 12B (AI Horde)"}, "koboldcpp/Cydonia-24B-v4.3": {"p": "aihorde", "t": false, "v": false, "n": "Cydonia 24B v4.3 (AI Horde koboldcpp)"}, "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive": {"p": "aihorde", "t": false, "v": false, "n": "Gemma 4 E4B Uncensored Aggressive (AI Horde)"}, "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "Gemma-4-E4B-Uncensored-HauhauCS-Aggressive-Q4 K M (AI Horde)"}, "koboldcpp/L3-8B-Stheno-v3.2": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3 Stheno 8B v3.2 (AI Horde)"}, "koboldcpp/L3-8B-Stheno-v3.2-Q5_K_M": {"p": "aihorde", "t": false, "v": false, "n": "L3-8B-Stheno-v3 2-Q5 K M (AI Horde)"}, "koboldcpp/L3-Super-Nova-RP-8B": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3 Super Nova RP 8B (AI Horde)"}, "koboldcpp/Llama-3.2-1B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-1B-Instruct (AI Horde)"}, "koboldcpp/Llama-3.2-3B": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3.2 3B (AI Horde)"}, "koboldcpp/Llama-3.2-3B-Instruct-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-3B-Instruct-Q4 K M (AI Horde)"}, "koboldcpp/MN-Violet-Lotus-12B.Q8_0": {"p": "aihorde", "t": false, "v": false, "n": "MN-Violet-Lotus-12B Q8 0 (AI Horde)"}, "koboldcpp/Qwen/Qwen3.5-0.8B": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3.5 0.8B (AI Horde)"}, "koboldcpp/Qwen2.5-Coder-3B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Qwen2.5 Coder 3B Instruct (AI Horde)"}, "koboldcpp/Qwen3-4B-Nymphaea-RP.i1-Q4_K_S": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3-4B-Nymphaea-RP i1-Q4 K S (AI Horde)"}, "koboldcpp/Qwen_Qwen3-0.6B-IQ4_XS": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3 0.6B IQ4 (AI Horde)"}, "koboldcpp/ReadyArt/Forgotten-Safeword-22B": {"p": "aihorde", "t": false, "v": false, "n": "Forgotten-Safeword-22B (AI Horde)"}, "koboldcpp/TheDrummer_Behemoth-128B-v3-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "TheDrummer Behemoth-128B-v3-Q4 K M (AI Horde)"}, "koboldcpp/[ctx:65536] Magidonia-24B-heretic-": {"p": "aihorde", "t": false, "v": false, "n": "[ctx:65536] Magidonia-24B-heretic- (AI Horde)"}, "koboldcpp/digo-prayudha/unsloth-llama-3.2-1b-gguf": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3.2 1B Unsloth (AI Horde)"}, "koboldcpp/gemma-4-31B-it-heretic": {"p": "aihorde", "t": false, "v": false, "n": "Gemma 4 31B Heretic (AI Horde)"}, "koboldcpp/llama-3.2-3b-instruct-q4_k_m": {"p": "aihorde", "t": false, "v": false, "n": "llama-3 2-3b-instruct-q4 k m (AI Horde)"}, "koboldcpp/lunahr/thea-rp-3b-25r": {"p": "aihorde", "t": false, "v": false, "n": "thea-rp-3b-25r (AI Horde)"}, "koboldcpp/mini-magnum-12b-v1.1": {"p": "aihorde", "t": false, "v": false, "n": "Mini Magnum 12B v1.1 (AI Horde)"}, "koboldcpp/mradermacher/Cerebras-GPT-111M-instruction-GGUF": {"p": "aihorde", "t": false, "v": false, "n": "Cerebras GPT 111M Instruct (AI Horde)"}, "koboldcpp/mradermacher/pythia-70m-deduped.f16.gguf": {"p": "aihorde", "t": false, "v": false, "n": "Pythia 70M Deduped (AI Horde)"}, "meta-llama/Llama-3.2-3B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-3B-Instruct (AI Horde)"}, "aion-labs/aion-2.0": {"p": "aion", "t": false, "v": false, "n": "Aion 2.0"}, "aion-labs/aion-3.0": {"p": "aion", "t": false, "v": false, "n": "Aion 3.0"}, "aion-labs/aion-3.0-mini": {"p": "aion", "t": false, "v": false, "n": "Aion 3.0 Mini"}, "aion-labs/aion-rp-llama-3.1-8b": {"p": "aion", "t": false, "v": false, "n": "Aion-RP Llama 3.1 8B"}, "codestral-2508": {"p": "mistral", "t": true, "v": false, "n": "Codestral 2508"}, "gpt-oss-20b": {"p": "ovh", "t": true, "v": false, "n": "GPT-OSS 20B (OVH)"}, "llama-instant": {"p": "airforce", "t": false, "v": false, "n": "llama-instant (Api.Airforce)"}, "ministral-14b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 14B (2512)"}, "ministral-14b-latest": {"p": "mistral", "t": true, "v": false, "n": "Ministral 14B"}, "ministral-3b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 3B (2512)"}, "ministral-3b-latest": {"p": "mistral", "t": true, "v": true, "n": "Ministral 3B"}, "ministral-8b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 8B (2512)"}, "mistral-code-fim-latest": {"p": "mistral", "t": false, "v": false, "n": "Mistral Code FIM"}, "mistral-code-latest": {"p": "mistral", "t": true, "v": false, "n": "Mistral Code"}, "mistral-tiny-2407": {"p": "airforce", "t": false, "v": false, "n": "mistral-tiny-2407 (Api.Airforce)"}, "mistral-tiny-latest": {"p": "airforce", "t": false, "v": false, "n": "mistral-tiny-latest (Api.Airforce)"}, "open-mistral-nemo": {"p": "airforce", "t": false, "v": false, "n": "open-mistral-nemo (Api.Airforce)"}, "open-mistral-nemo-2407": {"p": "electronhub", "t": true, "v": false, "n": "Open Mistral Nemo 2407 (ElectronHub)"}, "rnj-1": {"p": "airforce", "t": false, "v": false, "n": "rnj-1 (Api.Airforce)"}, "unmoderated-gpt": {"p": "airforce", "t": false, "v": false, "n": "unmoderated-gpt (Api.Airforce)"}, "voxtral-small-2507": {"p": "mistral", "t": true, "v": false, "n": "Voxtral Small 2507"}, "voxtral-small-latest": {"p": "mistral", "t": true, "v": false, "n": "Voxtral Small"}, "free/deepseek-v4-pro-0813": {"p": "apinex", "t": false, "v": false, "n": "Deepseek V4 Pro (APINex Free)"}, "free/deepseek-v4.1-flash": {"p": "apinex", "t": false, "v": false, "n": "Deepseek V4.1 Flash (APINex Free)"}, "free/gemini-3.8-flash": {"p": "apinex", "t": false, "v": false, "n": "Gemini 3.8 Flash (APINex Free)"}, "free/glm-5.3": {"p": "apinex", "t": false, "v": false, "n": "GLM 5.3 (APINex Free)"}, "free/glm-5.3-flash": {"p": "blaze", "t": false, "v": false, "n": "GLM 5.3 Flash (BlazeAPI)"}, "free/gpt-6-luna": {"p": "apinex", "t": false, "v": false, "n": "Gpt 6 Luna (APINex Free)"}, "auto:free": {"p": "bazaarlink", "t": true, "v": false, "n": "BazaarLink Auto (free router)"}, "deepseek/deepseek-v4-flash-0731free:free": {"p": "bazaarlink", "t": true, "v": false, "n": "DeepSeek V4 Flash (BazaarLink free)"}, "qwen/qwen3.7-flash:free": {"p": "bazaarlink", "t": true, "v": false, "n": "Qwen3.7 Flash (BazaarLink free)"}, "free/qwen3.8-27b": {"p": "blaze", "t": false, "v": false, "n": "Qwen3.8 27B (BlazeAPI)"}, "free/qwen3.8-flash-next": {"p": "blaze", "t": false, "v": false, "n": "Qwen3.8 Flash Next (BlazeAPI)"}, "nvidia/llama-3.2-11b-vision": {"p": "blockrun", "t": false, "v": false, "n": "Llama 3.2 11B Vision (BlockRun)"}, "nvidia/muse-glimmer-30b": {"p": "requesty", "t": false, "v": false, "n": "Muse Glimmer 30B (Requesty)"}, "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning": {"p": "requesty", "t": false, "v": true, "n": "Nemotron 3 Nano Omni Reasoning (Requesty)"}, "poolside/laguna-xs-2.1": {"p": "speka", "t": false, "v": false, "n": "Poolside Laguna XS 2.1 (Speka)"}, "GPT OSS 120B": {"p": "clod", "t": false, "v": false, "n": "GPT OSS 120B (CLōD)"}, "GPT OSS 20B": {"p": "clod", "t": false, "v": false, "n": "GPT OSS 20B (CLōD)"}, "Gemma 4 31B IT": {"p": "clod", "t": false, "v": false, "n": "Gemma 4 31B IT (CLōD)"}, "Qwen 3.5 9B": {"p": "clod", "t": false, "v": false, "n": "Qwen 3.5 9B (CLōD)"}, "@cf/aisingapore/gemma-sea-lion-v4-27b-it": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma SEA-LION v4 27B (CF)"}, "@cf/google/gemma-2b-it-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 2B IT LoRA (CF)"}, "@cf/google/gemma-7b-it-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 7B IT LoRA (CF)"}, "@cf/llava-hf/llava-1.5-7b-hf": {"p": "cloudflare", "t": false, "v": true, "n": "LLaVA 1.5 7B (Cloudflare Workers AI)"}, "@cf/meta-llama/llama-2-7b-chat-hf-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 2 7B Chat LoRA (CF)"}, "@cf/meta/llama-3.1-8b-instruct-fp8": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 3.1 8B (CF)"}, "@cf/meta/llama-3.2-11b-vision-instruct": {"p": "cloudflare", "t": false, "v": true, "n": "Llama 3.2 11B Vision (CF)"}, "@cf/meta/llama-3.2-1b-instruct": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 3.2 1B Instruct (CF)"}, "@cf/meta/llama-3.2-3b-instruct": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 3.2 3B (CF)"}, "@cf/meta/llama-guard-3-8b": {"p": "cloudflare", "t": false, "v": false, "n": "Llama Guard 3 8B (CF)"}, "@cf/mistral/mistral-7b-instruct-v0.2-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Mistral 7B Instruct v0.2 LoRA (CF)"}, "@cf/mistralai/mistral-small-3.1-24b-instruct": {"p": "cloudflare", "t": true, "v": true, "n": "Mistral Small 3.1 24B (CF)"}, "@cf/moondream/moondream3.1-9B-A2B": {"p": "cloudflare", "t": false, "v": true, "n": "Moondream 3.1 9B A2B (CF)"}, "@cf/openai/gpt-oss-20b": {"p": "cloudflare", "t": true, "v": false, "n": "GPT-OSS 20B (CF)"}, "@cf/qwen/qwen2.5-coder-32b-instruct": {"p": "cloudflare", "t": true, "v": false, "n": "Qwen2.5 Coder 32B (CF)"}, "@cf/qwen/qwen3.8-27b": {"p": "cloudflare", "t": true, "v": true, "n": "Qwen 3.8 27B (Cloudflare Workers AI)"}, "@cf/qwen/qwq-32b": {"p": "cloudflare", "t": true, "v": false, "n": "QwQ 32B (CF)"}, "c4ai-aya-expanse-32b": {"p": "cohere", "t": false, "v": false, "n": "Aya Expanse 32B"}, "c4ai-aya-vision-32b": {"p": "cohere", "t": false, "v": true, "n": "Aya Vision 32B"}, "command-a-plus-05-2026": {"p": "cohere", "t": true, "v": true, "n": "Command A+ (05-2026)"}, "command-a-translate-08-2025": {"p": "cohere", "t": true, "v": false, "n": "Command A Translate (08-2025)"}, "command-a-vision-07-2025": {"p": "cohere", "t": false, "v": true, "n": "Command A Vision (07-2025)"}, "command-r7b-12-2024": {"p": "cohere", "t": true, "v": false, "n": "Command R7B (12-2024)"}, "command-r7b-arabic-02-2025": {"p": "cohere", "t": true, "v": false, "n": "Command R7B Arabic (02-2025)"}, "north-mini-code-1-0": {"p": "electronhub", "t": false, "v": false, "n": "North Mini Code (ElectronHub)"}, "north-small-translate-09-2026": {"p": "cohere", "t": false, "v": false, "n": "North Small Translate (Cohere)"}, "tiny-aya-earth": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Earth"}, "tiny-aya-fire": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Fire"}, "tiny-aya-global": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Global"}, "tiny-aya-water": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Water"}, "auto": {"p": "dreamprompting", "t": false, "v": false, "n": "Auto route (DreamPrompting)"}, "chat/ch.at": {"p": "dreamprompting", "t": false, "v": false, "n": "ch.at (DreamPrompting)"}, "cloudflare-vision/@cf/meta/llama-4-scout-17b-16e-instruct": {"p": "dreamprompting", "t": true, "v": false, "n": "Llama 4 Scout (CF)"}, "cloudflare/@cf/ibm-granite/granite-4.0-h-micro": {"p": "dreamprompting", "t": true, "v": false, "n": "Granite 4.0 H Micro (CF)"}, "cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast": {"p": "dreamprompting", "t": true, "v": false, "n": "Llama 3.3 70B fp8-fast (CF)"}, "codestral/codestral-latest": {"p": "dreamprompting", "t": false, "v": false, "n": "Codestral (DreamPrompting)"}, "google/gemini-2.5-flash": {"p": "dreamprompting", "t": true, "v": false, "n": "Gemini 2.5 Flash"}, "google/gemini-3.1-flash-lite": {"p": "dreamprompting", "t": true, "v": false, "n": "Gemini 3.1 Flash-Lite"}, "groq/groq/compound-mini": {"p": "dreamprompting", "t": false, "v": false, "n": "Groq Compound Mini (DreamPrompting)"}, "groq/openai/gpt-oss-120b": {"p": "dreamprompting", "t": false, "v": false, "n": "GPT-OSS 120B (via Groq) (DreamPrompting)"}, "groq/openai/gpt-oss-20b": {"p": "dreamprompting", "t": false, "v": false, "n": "GPT-OSS 20B (via Groq) (DreamPrompting)"}, "nvidia-vision/meta/llama-3.2-11b-vision-instruct": {"p": "dreamprompting", "t": false, "v": true, "n": "Llama 3.2 11B Vision (DreamPrompting)"}, "nvidia/nvidia/nemotron-3-super-120b-a12b": {"p": "dreamprompting", "t": false, "v": false, "n": "Nemotron 3 Super 120B (via NVIDIA) (DreamPrompting)"}, "openrouter/nvidia/nemotron-3-super-120b-a12b:free": {"p": "dreamprompting", "t": false, "v": false, "n": "Nemotron 3 Super 120B (via OpenRouter) (DreamPrompting)"}, "deepseek-r1-distill-qwen-32b": {"p": "electronhub", "t": true, "v": false, "n": "R1 Distill Qwen 32B (ElectronHub)"}, "deepseek-v4-flash": {"p": "electronhub", "t": true, "v": false, "n": "DeepSeek V4 Flash (ElectronHub)"}, "deepseek-v4-flash-0731": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V4 Flash 0731 (Inferbase)"}, "deepseek-v4-flash-thinking": {"p": "electronhub", "t": false, "v": false, "n": "DeepSeek V4 Flash Thinking (ElectronHub)"}, "devstral-2512": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Devstral 2512 (ElectronHub)"}, "gemini-3.5-flash-lite": {"p": "google", "t": true, "v": true, "n": "Gemini 3.5 Flash Lite"}, "gemma-2-27b-it": {"p": "electronhub", "t": false, "v": false, "n": "Google: Gemma 2 27B (ElectronHub)"}, "gemma-2-9b-it": {"p": "electronhub", "t": true, "v": false, "n": "Gemma 2 9B (ElectronHub)"}, "gemma-3-12b-it": {"p": "electronhub", "t": true, "v": false, "n": "gemma 3 12b it (ElectronHub)"}, "gemma-3-1b-it": {"p": "electronhub", "t": true, "v": false, "n": "Gemma 3 1B (ElectronHub)"}, "gemma-3-27b-it": {"p": "electronhub", "t": false, "v": false, "n": "Google: Gemma 3 27B (ElectronHub)"}, "gemma-3-4b-it": {"p": "electronhub", "t": true, "v": false, "n": "gemma 3 4b it (ElectronHub)"}, "gemma-4-31b-aura-large-v1.1": {"p": "electronhub", "t": false, "v": false, "n": "Gemma-4-31B-Aura-Large-v1.1 (ElectronHub)"}, "glm-4.5-air": {"p": "electronhub", "t": false, "v": false, "n": "ZhipuAI: GLM 4.5 Air (ElectronHub)"}, "gpt-4.1": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4.1 (ElectronHub)"}, "gpt-4.1-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4.1 Mini (ElectronHub)"}, "gpt-4o": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4o (ElectronHub)"}, "gpt-4o-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4o Mini (ElectronHub)"}, "gpt-5-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5 Mini (ElectronHub)"}, "gpt-5-nano": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5 Nano (ElectronHub)"}, "gpt-5.4-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5.4 Mini (ElectronHub)"}, "gpt-5.4-nano": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5.4 Nano (ElectronHub)"}, "gpt-5.6-luna": {"p": "electronhub", "t": true, "v": true, "n": "GPT-5.6 Luna (ElectronHub)"}, "gpt-6-luna": {"p": "electronhub", "t": false, "v": false, "n": "OpenAI: GPT-6 Luna (ElectronHub)"}, "gpt-oss-120b": {"p": "ovh", "t": true, "v": false, "n": "GPT-OSS 120B (OVH)"}, "hermes-4-14b": {"p": "electronhub", "t": true, "v": false, "n": "Hermes 4 14B (ElectronHub)"}, "hunyuan-a13b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Hunyuan A13B Instruct (ElectronHub)"}, "hy4-preview": {"p": "electronhub", "t": false, "v": false, "n": "Tencent: Hy4 Preview (ElectronHub)"}, "l3-lunaris-8b": {"p": "electronhub", "t": false, "v": false, "n": "L3 8B Lunaris v1 (ElectronHub)"}, "labs-devstral-small-2512": {"p": "electronhub", "t": false, "v": false, "n": "Devstral Small 2 (ElectronHub)"}, "laguna-s-2.1": {"p": "electronhub", "t": true, "v": false, "n": "Laguna S 2.1 (ElectronHub)"}, "laguna-xs-2.1": {"p": "electronhub", "t": true, "v": false, "n": "Laguna XS 2.1 (ElectronHub)"}, "llama-3.2-1b": {"p": "electronhub", "t": true, "v": false, "n": "Llama 3.2 1B (ElectronHub)"}, "llama-3.2-3b": {"p": "electronhub", "t": true, "v": false, "n": "Llama 3.2 3B (ElectronHub)"}, "llama-4-scout-17b-16e-instruct": {"p": "electronhub", "t": true, "v": true, "n": "Llama 4 Scout (ElectronHub)"}, "longcat-flash-chat": {"p": "electronhub", "t": true, "v": false, "n": "LongCat Flash Chat (ElectronHub)"}, "mimo-v2.6-flash": {"p": "electronhub", "t": false, "v": false, "n": "Xiaomi: MiMo V2.6 Flash (ElectronHub)"}, "mimo-v2.6-flash-mopd": {"p": "electronhub", "t": false, "v": false, "n": "MiMo-V2.6-Flash-MOPD (ElectronHub)"}, "minimax-m2.1": {"p": "electronhub", "t": false, "v": false, "n": "MiniMax: MiniMax M2.1 (ElectronHub)"}, "minimax-m2.5": {"p": "electronhub", "t": true, "v": false, "n": "MiniMax M2.5 (ElectronHub)"}, "minimax-m2.7": {"p": "electronhub", "t": true, "v": false, "n": "MiniMax M2.7 (ElectronHub)"}, "minimax-m3": {"p": "inferbase", "t": false, "v": false, "n": "MiniMax M3 (Inferbase)"}, "mistral-large-2512": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Large 3 (ElectronHub)"}, "mistral-medium-3-5": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Medium 3.5 (ElectronHub)"}, "mistral-small-2603": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Small 4 (ElectronHub)"}, "mistral-small-3.1-24b-instruct": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Small 3.1 24B (ElectronHub)"}, "mistral-small-3.2-24b-instruct": {"p": "electronhub", "t": false, "v": false, "n": "Mistral Small 3.2 24B (ElectronHub)"}, "mytho-max-l2-13b": {"p": "electronhub", "t": false, "v": false, "n": "MythoMax L2 13B (ElectronHub)"}, "nemotron-3-nano-omni-30b-a3b-reasoning": {"p": "electronhub", "t": true, "v": true, "n": "Nemotron 3 Nano Omni  (ElectronHub)"}, "nemotron-3-ultra-550b-a55b": {"p": "electronhub", "t": true, "v": false, "n": "Nemotron 3 Ultra (ElectronHub)"}, "nemotron-3.5-content-safety": {"p": "electronhub", "t": false, "v": false, "n": "Nemotron 3.5 Content Safety (ElectronHub)"}, "nemotron-3.5-lightning": {"p": "electronhub", "t": true, "v": false, "n": "Nemotron 3.5 Lightning (ElectronHub)"}, "phi-4": {"p": "electronhub", "t": true, "v": false, "n": "phi 4 (ElectronHub)"}, "qwen-2.5-32b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 32B Instruct (ElectronHub)"}, "qwen-2.5-72b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 72B Instruct (ElectronHub)"}, "qwen-2.5-7b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 7B Instruct (ElectronHub)"}, "qwen-2.5-coder-32b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 Coder 32B Instruct (ElectronHub)"}, "qwen-2.5-coder-7b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 Coder 7B Instruct (ElectronHub)"}, "qwen3-30b-a3b-instruct-2507": {"p": "electronhub", "t": true, "v": false, "n": "Qwen3 30B A3B Instruct 2507 (ElectronHub)"}, "qwen3-coder-30-a3b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen3 Coder 30B A3B Instruct (ElectronHub)"}, "qwen3.7-flash": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.7 Flash (ElectronHub)"}, "qwen3.8-27b": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.8 27B (ElectronHub)"}, "qwen3.8-27b-omnimerge-v6": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-27B-Omnimerge-v6 (ElectronHub)"}, "qwen3.8-27b-swift": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-27B-Swift (ElectronHub)"}, "qwen3.8-flash": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.8 Flash (ElectronHub)"}, "qwen3.8-flash-next": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-Flash-Next (ElectronHub)"}, "step-3.5-flash": {"p": "electronhub", "t": true, "v": false, "n": "Step 3.5 Flash (ElectronHub)"}, "step-3.7-flash": {"p": "electronhub", "t": true, "v": true, "n": "Step 3.7 Flash (ElectronHub)"}, "nvidia/nemotron-3-super-120b-a12b:free": {"p": "gizmo", "t": false, "v": false, "n": "Nemotron 3 Super 120B (Gizmo)"}, "nvidia/nemotron-3.5-lightning:free": {"p": "openrouter", "t": true, "v": false, "n": "Nemotron 3.5 Lightning (free)"}, "poolside/laguna-s-2.1:free": {"p": "gizmo", "t": false, "v": false, "n": "Poolside Laguna S 2.1 (Gizmo)"}, "poolside/laguna-xs-2.1:free": {"p": "gizmo", "t": false, "v": false, "n": "Poolside Laguna XS 2.1 (Gizmo)"}, "qwen/qwen3.8-27b:free": {"p": "gizmo", "t": false, "v": false, "n": "Qwen3.8 27B (Gizmo)"}, "gemini-3.1-flash-lite": {"p": "google", "t": true, "v": true, "n": "Gemini 3.1 Flash-Lite"}, "gemini-3.6-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.6 Flash"}, "gemini-3.7-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.7 Flash"}, "gemini-3.8-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.8 Flash"}, "gemini-flash-latest": {"p": "google", "t": true, "v": true, "n": "Gemini Flash (latest alias) (Google AI Studio)"}, "gemini-flash-lite-latest": {"p": "google", "t": true, "v": true, "n": "Gemini Flash Lite (latest alias) (Google AI Studio)"}, "gemini-robotics-er-2-preview": {"p": "google", "t": false, "v": true, "n": "Gemini Robotics-ER 2 Preview"}, "allam-2-7b": {"p": "groq", "t": false, "v": false, "n": "ALLaM 2 7B (Groq)"}, "meta-llama/llama-prompt-guard-2-22m": {"p": "groq", "t": false, "v": false, "n": "Llama Prompt Guard 2 22M (Groq)"}, "meta-llama/llama-prompt-guard-2-86m": {"p": "groq", "t": false, "v": false, "n": "Llama Prompt Guard 2 86M (Groq)"}, "qwen/qwen3.8-27b": {"p": "groq", "t": true, "v": true, "n": "Qwen3.8 27B (Groq)"}, "deepseek-v3": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3 (Inferbase)"}, "deepseek-v3-1:fp4": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3.1 FP4 (Inferbase)"}, "deepseek-v3-2:fp4": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3.2 FP4 (Inferbase)"}, "deepseek-v4-flash:fp8": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V4 Flash (fp8) (Inferbase)"}, "google-gemma-3-12b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 12B (Inferbase)"}, "google-gemma-3-27b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 27B (Inferbase)"}, "google-gemma-3-4b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 4B (Inferbase)"}, "google-gemma-4-26b-a4b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 4 26B A4B IT (Inferbase)"}, "google-gemma-4-31b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 4 31B IT (Inferbase)"}, "meta-llama-3-1-8b-instruct": {"p": "inferbase", "t": false, "v": false, "n": "Llama 3.1 8B (Inferbase)"}, "meta-llama-3-3-70b-instruct": {"p": "inferbase", "t": false, "v": false, "n": "Llama 3.3 70B Instruct (Inferbase)"}, "meta-llama-4-scout-17b-16e-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Llama 4 Scout 17B 16E Instruct (fp8) (Inferbase)"}, "mistral-nemo-instruct-2407:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Nemo FP8 (Inferbase)"}, "mistral-small-24b-instruct-2501:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Small 24B FP8 (Inferbase)"}, "mistral-small-3-2-24b-instruct-2506:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Small 3.2 24B Instruct 2506 (fp8) (Inferbase)"}, "nvidia-nemotron-3-nano-30b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "NVIDIA Nemotron 3 Nano 30B A3B (Inferbase)"}, "openai-gpt-oss-120b": {"p": "inferbase", "t": false, "v": false, "n": "GPT Oss 120B (Inferbase)"}, "openai-gpt-oss-20b": {"p": "inferbase", "t": false, "v": false, "n": "GPT Oss 20B (Inferbase)"}, "qwen2-5-72b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen2.5 72B FP8 (Inferbase)"}, "qwen3-14b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 14B (fp8) (Inferbase)"}, "qwen3-30b-a3b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 30B A3B FP8 (Inferbase)"}, "qwen3-32b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 32B FP8 (Inferbase)"}, "qwen3-5-35b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3.5 35B A3B"}, "qwen3-5-9b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3.5 9B (Inferbase)"}, "qwen3-6-35b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3.6 35B A3B (Inferbase)"}, "qwen3-8-flash": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3.8 Flash (Inferbase)"}, "qwen3-coder-480b-a35b-instruct:turbo": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 Coder 480B A35B Instruct (turbo) (Inferbase)"}, "qwen3-next-80b-a3b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Instruct (fp8) (Inferbase)"}, "qwen3-vl-235b-a22b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 VL 235B A22B Instruct (fp8) (Inferbase)"}, "qwen3-vl-30b-a3b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 VL 30B A3B Instruct (fp8) (Inferbase)"}, "zai-glm-4-5-air": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.5 Air (Inferbase)"}, "zai-glm-4-5v": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.5V (Inferbase)"}, "zai-glm-4-6:fp4": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.6 FP4 (Inferbase)"}, "zai-glm-4-6v": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.6V (Inferbase)"}, "zai-glm-4-7-flash": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.7 Flash (Inferbase)"}, "zai-glm-4-7:fp4": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.7 (FP4)"}, "cohere/north-mini-code:free": {"p": "openrouter", "t": true, "v": false, "n": "North Mini Code (free)"}, "dots-studio/dots-3-note-preview:free": {"p": "openrouter", "t": true, "v": true, "n": "Dots3 Note Preview (free)"}, "kilo-auto/free": {"p": "kilo", "t": true, "v": false, "n": "Kilo Auto Free"}, "nvidia/nemotron-3.5-super-vl:free": {"p": "openrouter", "t": false, "v": false, "n": "Nemotron 3.5 Super VL (Free)"}, "openrouter/free": {"p": "kilo", "t": true, "v": true, "n": "Free Router (Kilo)"}, "default": {"p": "llm7", "t": false, "v": false, "n": "Default (LLM7)"}, "gpt-oss:20b": {"p": "llm7", "t": false, "v": false, "n": "gpt-oss:20b (LLM7)"}, "mistral-Nemo-Instruct-2407": {"p": "llm7", "t": true, "v": false, "n": "Mistral Nemo Instruct 2407 (LLM7)"}, "nvidia/nemotron-3-ultra-550b-a55b": {"p": "speka", "t": false, "v": false, "n": "Nemotron 3 Ultra 550B (Speka)"}, "nvidia/nemotron-3.5-super-vl-free": {"p": "llmtr", "t": false, "v": false, "n": "Nemotron 3.5 Super VL (Free)"}, "qwen/qwen3.8-27b-free": {"p": "llmtr", "t": false, "v": false, "n": "Qwen3.8 27B (LLMTR)"}, "gemma-4-26b": {"p": "logfare", "t": false, "v": false, "n": "Gemma 4 26B (Logfare)"}, "logfare/auto": {"p": "logfare", "t": false, "v": false, "n": "Logfare Auto (Logfare)"}, "MiniMax/MiniMax-M3": {"p": "modelscope", "t": false, "v": false, "n": "MiniMax M3 (ModelScope)"}, "Qwen/Qwen3-235B-A22B-Instruct-2507": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 235B A22B Instruct 2507 (ModelScope)"}, "Qwen/Qwen3-235B-A22B-Thinking-2507": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 235B A22B Thinking 2507 (ModelScope)"}, "Qwen/Qwen3-Coder-30B-A3B-Instruct": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Coder 30B A3B Instruct (ModelScope)"}, "Qwen/Qwen3-Next-80B-A3B-Instruct": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Instruct (ModelScope)"}, "Qwen/Qwen3-Next-80B-A3B-Thinking": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Thinking (ModelScope)"}, "Qwen/Qwen3-VL-235B-A22B-Instruct": {"p": "modelscope", "t": false, "v": true, "n": "Qwen3 VL 235B A22B Instruct (ModelScope)"}, "Qwen/Qwen3.5-397B-A17B": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3.5 397B A17B (ModelScope)"}, "ZhipuAI/GLM-4.7-Flash": {"p": "modelscope", "t": false, "v": false, "n": "GLM-4.7 Flash (ModelScope)"}, "ZhipuAI/GLM-5.2": {"p": "modelscope", "t": false, "v": false, "n": "GLM-5.2 (ModelScope)"}, "deepseek-ai/DeepSeek-V4-Pro": {"p": "modelscope", "t": false, "v": false, "n": "DeepSeek V4 Pro (ModelScope)"}, "moondream3-preview": {"p": "moondream", "t": false, "v": true, "n": "Moondream 3 Preview"}, "moondream3.1-9B-A2B": {"p": "moondream", "t": false, "v": true, "n": "Moondream 3.1 9B A2B"}, "google/diffusiongemma-26b-a4b-it": {"p": "nvidia", "t": false, "v": true, "n": "DiffusionGemma 26B A4B IT (NV)"}, "meta/llama-3.2-90b-vision-instruct": {"p": "nvidia", "t": true, "v": true, "n": "Llama 3.2 90B Vision (NV)"}, "meta/muse-glimmer-30b": {"p": "speka", "t": false, "v": false, "n": "Muse Glimmer 30B (Speka)"}, "nvidia/ising-calibration-1.5-31b": {"p": "nvidia", "t": false, "v": true, "n": "Ising Calibration 1.5 31B (NV)"}, "nvidia/llama-3.1-nemoguard-8b-content-safety": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 NemoGuard 8B Content Safety (NVIDIA NIM)"}, "nvidia/llama-3.1-nemoguard-8b-topic-control": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 NemoGuard 8B Topic Control (NVIDIA NIM)"}, "nvidia/llama-3.1-nemotron-safety-guard-8b-v3": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 Nemotron Safety Guard 8B v3 (NVIDIA NIM)"}, "nvidia/nemotron-3.5-content-safety": {"p": "nvidia", "t": false, "v": false, "n": "Nemotron 3.5 Content Safety (NV)"}, "nvidia/nemotron-3.5-lightning-30b-a3b": {"p": "speka", "t": false, "v": false, "n": "Nemotron 3.5 Lightning 30B (Speka)"}, "nvidia/nemotron-parse-2.0": {"p": "nvidia", "t": false, "v": true, "n": "Nemotron Parse 2.0 (NVIDIA NIM)"}, "nvidia/riva-translate-4b-instruct-v2": {"p": "nvidia", "t": false, "v": false, "n": "Riva Translate 4B Instruct v2 (NVIDIA NIM)"}, "stepfun-ai/step-5-preview": {"p": "speka", "t": false, "v": false, "n": "Step 5 Preview (Speka)"}, "z-ai/glm-5.3-flash": {"p": "nvidia", "t": true, "v": false, "n": "GLM 5.3 Flash (NV)"}, "Meta-Llama-3_3-70B-Instruct": {"p": "ovh", "t": true, "v": false, "n": "Llama 3.3 70B (OVH)"}, "Mistral-Small-3.2-24B-Instruct-2506": {"p": "ovh", "t": true, "v": false, "n": "Mistral Small 3.2 24B (OVH)"}, "Qwen2.5-VL-72B-Instruct": {"p": "ovh", "t": false, "v": true, "n": "Qwen2.5 VL 72B (OVH)"}, "Qwen3.5-397B-A17B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.5 397B (OVH)"}, "Qwen3.5-9B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.5 9B (OVH)"}, "Qwen3.6-27B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.6 27B (OVH)"}, "Qwen3.8-27B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.8 27B (OVH)"}, "Qwen3Guard-Gen-0.6B": {"p": "ovh", "t": false, "v": false, "n": "Qwen3Guard Gen 0.6B (OVH safety)"}, "Qwen3Guard-Gen-8B": {"p": "ovh", "t": false, "v": false, "n": "Qwen3Guard Gen 8B (OVH safety)"}, "plugsky-lite": {"p": "plugsky", "t": false, "v": false, "n": "Plugsky Lite"}, "plugsky-micro": {"p": "plugsky", "t": false, "v": false, "n": "Plugsky Micro"}, "DeepSeek-V4-Flash": {"p": "radeon", "t": true, "v": false, "n": "DeepSeek V4 Flash (AMD Radeon Cloud)"}, "Qwen3.8-Flash-Next": {"p": "radeon", "t": true, "v": false, "n": "Qwen3.8 Flash Next (AMD Radeon Cloud)"}, "mistral/leanstral-1-5": {"p": "requesty", "t": true, "v": false, "n": "Leanstral 1.5 (Requesty)"}, "novita/ling-3.1-flash": {"p": "requesty", "t": false, "v": false, "n": "Ling 3.1 Flash (Requesty)"}, "deepseek/deepseek-v4-flash": {"p": "router9", "t": false, "v": false, "n": "DeepSeek V4 Flash 0731 (Router9)"}, "deepseek/deepseek-v4-pro": {"p": "router9", "t": false, "v": false, "n": "DeepSeek V4 Pro (Router9)"}, "qwen/qwen3-235b-a22b-2507": {"p": "router9", "t": false, "v": false, "n": "Qwen3 235B A22B Instruct 2507 (Router9)"}, "z-ai/glm-5.2": {"p": "router9", "t": false, "v": false, "n": "GLM 5.2 (Router9)"}, "gemma-4-26b-a4b-it-chimerax:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT chimerax (Routeway free)"}, "gemma-4-26b-a4b-it-darksoul:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT darksoul (Routeway free)"}, "gemma-4-26b-a4b-it-luminous:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT luminous (Routeway free)"}, "gemma-4-26b-a4b-it-meromero:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT meromero (Routeway free)"}, "gemma-4-26b-a4b-it-moonlight:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT moonlight (Routeway free)"}, "gemma-4-26b-a4b-it-musica:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT musica (Routeway free)"}, "muse-glimmer-30b:free": {"p": "routeway", "t": true, "v": true, "n": "Muse Glimmer 30B (Routeway free)"}, "aisingapore/Gemma-SEA-LION-v4-27B-IT": {"p": "sealion", "t": false, "v": false, "n": "Gemma SEA-LION v4 27B (SEA-LION)"}, "aisingapore/Llama-SEA-LION-v3-70B-IT": {"p": "sealion", "t": false, "v": false, "n": "Llama SEA-LION v3 70B (SEA-LION)"}, "aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B": {"p": "sealion", "t": true, "v": false, "n": "Nemotron 3 Super 120B (NV)"}, "aisingapore/Qwen-SEA-LION-v4-32B-IT": {"p": "sealion", "t": false, "v": false, "n": "Qwen SEA-LION v4 32B (SEA-LION)"}, "aisingapore/Qwen-SEA-LION-v4.5-27B-IT": {"p": "sealion", "t": false, "v": false, "n": "Qwen SEA-LION v4.5 27B (SEA-LION)"}, "aisingapore/SEA-Guard": {"p": "sealion", "t": false, "v": false, "n": "SEA-Guard (SEA-LION)"}, "gemma-4-31b-it-free": {"p": "septor", "t": false, "v": false, "n": "Gemma 4 31B IT (Septor Labs)"}, "hermes-3-llama-3.1-405b-free": {"p": "septor", "t": true, "v": false, "n": "Hermes 3 Llama 3.1 405B (Septor Labs)"}, "minimax-m2.5-free": {"p": "septor", "t": true, "v": false, "n": "MiniMax M2.5 (Septor Labs)"}, "qwen3-coder-free": {"p": "septor", "t": true, "v": false, "n": "Qwen3 Coder (Septor Labs)"}, "qwen3-next-80b-a3b-instruct-free": {"p": "septor", "t": true, "v": false, "n": "Qwen3 Next 80B A3B Instruct (Septor Labs)"}, "free-Llama-3.1-8B-Instruct": {"p": "simplellm", "t": false, "v": false, "n": "Llama 3.1 8B Free (SimpleLLM)"}, "free-gemma-4-E4B": {"p": "simplellm", "t": false, "v": false, "n": "Gemma E4B Free (SimpleLLM)"}, "typhoon-v2.5-30b-a3b-instruct": {"p": "typhoon", "t": true, "v": false, "n": "Typhoon 2.5 30B A3B Instruct"}, "glm-5.3-flash:free": {"p": "unorouter", "t": true, "v": true, "n": "GLM 5.3 Flash (UnoRouter free)"}, "glm-5.3:free": {"p": "unorouter", "t": true, "v": false, "n": "GLM 5.3 (UnoRouter free)"}, "kimi-k3-nvidia-direct": {"p": "waterfall", "t": false, "v": false, "n": "Kimi K3 NVIDIA Direct (Waterfall)"}, "laguna-s-2.1-free": {"p": "waterfall", "t": false, "v": false, "n": "laguna-s-2.1 (Waterfall)"}, "lfm-2.5-2.6b-free": {"p": "waterfall", "t": false, "v": false, "n": "lfm-2.5-2.6b (Waterfall)"}, "ling-3.0-flash-sante-free": {"p": "waterfall", "t": false, "v": false, "n": "ling-3.0-flash-sante (Waterfall)"}, "ling-3.0-flash-vl-free": {"p": "waterfall", "t": false, "v": false, "n": "ling-3.0-flash-vl (Waterfall)"}, "nemotron-3-nano-omni-30b-a3b-reasoning-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-nano-omni-30b-a3b-reasoning (Waterfall)"}, "nemotron-3-super-120b-a12b-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-super-120b-a12b (Waterfall)"}, "nemotron-3-super-120b-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-super-120b (Waterfall)"}, "nemotron-3.5-lightning-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3.5-lightning (Waterfall)"}, "nex-n2.5-mini-free": {"p": "waterfall", "t": false, "v": false, "n": "nex-n2.5-mini (Waterfall)"}, "nex-n2.5-pro-free": {"p": "waterfall", "t": false, "v": false, "n": "nex-n2.5-pro (Waterfall)"}, "mistralai/mistral-large-2512": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Large 3 (xKiro)"}, "mistralai/mistral-small-2603": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Small 4 (xKiro)"}, "sensenova/sensenova-6.8-flash-lite": {"p": "xkiro", "t": true, "v": true, "n": "SenseNova 6.8 Flash-Lite (xKiro)"}};;
+const IC={
+  spk:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>',
+  copy:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  dl:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>',
+  brain:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>'
+};
+let KEY=localStorage.getItem('flk_key')||'';
+let MODELS=[], curModel='auto';
+let attach=null;
+let thinkMode=localStorage.getItem('flk_think')==='1';
+let artMode=false, searchMode=false;
+let autoVoice=localStorage.getItem('flk_voice')==='1';
+let chats=JSON.parse(localStorage.getItem('flk_chats')||'[]');
+let curId=localStorage.getItem('flk_cur')||'';
+let stats=JSON.parse(localStorage.getItem('flk_stats')||'{"msgs":0,"per":{}}');
+let dayTok=JSON.parse(localStorage.getItem('flk_tok')||'{"d":"","n":0}');
+const REASON_RX=/reason|qwq|r1-distill|thinking/i;
+const VISION_FB='gemini-3-flash-preview';
+const THINK_MODEL='nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const today=()=>new Date().toDateString();
+if(dayTok.d!==today())dayTok={d:today(),n:0};
+function saveTok(){try{localStorage.setItem('flk_tok',JSON.stringify(dayTok));}catch(e){}renderTok();}
+function arNum(n){
+  if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+' مليون';
+  if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+' ألف';
+  return ''+n;
+}
+function renderTok(){$('#utok').innerHTML='النهارده: <b>'+arNum(dayTok.n)+'</b>';}
+renderTok();
+function bumpStats(model){
+  stats.msgs++;if(model)stats.per[model]=(stats.per[model]||0)+1;
+  try{localStorage.setItem('flk_stats',JSON.stringify(stats));}catch(e){}
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',4200);}
+function openSheet(id){$('#'+id).classList.add('open');if(id==='setSheet')renderStats();}
+function closeSheet(id){$('#'+id).classList.remove('open');}
+function resetKey(){localStorage.removeItem('flk_key');location.reload();}
+function saveKey(){const v=$('#keyInp').value.trim();if(!v)return;KEY=v;localStorage.setItem('flk_key',v);$('#setup').classList.remove('open');boot();}
+function netbar(m,retry){
+  const b=$('#netbar');
+  if(!m){b.classList.remove('show');return;}
+  b.innerHTML=esc(m)+(retry?'<button onclick="boot()">إعادة المحاولة</button>':'');
+  b.classList.add('show');
+}
+function sug(b){$('#inp').value=b.textContent;autoGrow();$('#inp').focus();}
+function sugArt(b){setMode('art',true);sug(b);}
+function sugSearch(b){setMode('search',true);sug(b);}
+function inlineMd(s){
+  s=s.replace(/`([^`\n]+)`/g,'<code class="ic">$1</code>');
+  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>');
+  s=s.replace(/^#{1,3} (.*)$/gm,'<div class="h3">$1</div>');
+  s=s.replace(/((?:^[ \t]*[-*•] .*(?:\n|$))+)/gm,g=>'<ul>'+g.trim().split('\n').map(l=>'<li>'+l.replace(/^[ \t]*[-*•] /,'')+'</li>').join('')+'</ul>');
+  s=s.replace(/((?:^[ \t]*\d+[.)] .*(?:\n|$))+)/gm,g=>'<ol>'+g.trim().split('\n').map(l=>'<li>'+l.replace(/^[ \t]*\d+[.)] /,'')+'</li>').join('')+'</ol>');
+  s=s.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  s=s.replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
+  return s;
+}
+function mdRender(t){
+  const parts=esc(t).split('```');
+  let out='';
+  for(let i=0;i<parts.length;i++){
+    if(i%2===1){
+      const code=parts[i].replace(/^[a-zA-Z0-9+#. -]*\n/,'');
+      out+='<pre class="cb"><button class="cbtn" onclick="copyCode(this)">نسخ</button><code>'+code+'</code></pre>';
+    } else out+=inlineMd(parts[i]);
+  }
+  return out;
+}
+function copyCode(b){
+  const c=b.parentElement.querySelector('code').textContent;
+  navigator.clipboard&&navigator.clipboard.writeText(c).then(()=>{b.textContent='اتنسخ';setTimeout(()=>b.textContent='نسخ',1500);});
+}
+function copyMsg(btn,i){
+  navigator.clipboard&&navigator.clipboard.writeText(MSG_T[i]||'').then(()=>toast('اتنسخ الرد'));
+}
+async function loadModels(){
+  const slow=setTimeout(()=>netbar('السيرفر بيصحى من النوم (بينام بعد ربع ساعة سكون)... ثانية واحدة'),2500);
+  try{
+    const r=await fetch(API+'/v1/models',{headers:{Authorization:'Bearer '+KEY}});
+    clearTimeout(slow);
+    if(r.status===401){localStorage.removeItem('flk_key');$('#setup').classList.add('open');toast('المفتاح غلط، دخّل مفتاح صح');return;}
+    const d=await r.json();
+    MODELS=(d.data||[]).filter(m=>m.available&&m.id!=='auto'&&!/whisper|transcribe|embed|tts|nova-3/i.test(m.id));
+    netbar(null);renderList('');
+  }catch(e){
+    clearTimeout(slow);
+    netbar('مش قادر أوصل للسيرفر. ممكن يكون بيصحى - جرب تاني خلال أقل من دقيقة.',true);
+  }
+}
+function capOf(m){
+  const c=CAP[m.id]||{};
+  const id=m.id.toLowerCase();
+  const code=/code|coder|codestral|devstral|starcoder|deepseek-coder|qwen.*coder/i.test(id);
+  const reason=REASON_RX.test(id)||REASON_RX.test(m.name||'');
+  return {p:c.p||'',t:!!c.t,v:!!c.v,code,reason};
+}
+function tagsFor(m){
+  const c=capOf(m);let h='';
+  if(c.reason)h+='<span class="tag think">🧠 بيفكر</span>';
+  if(c.code)h+='<span class="tag code">💻 كود</span>';
+  if(c.v)h+='<span class="tag img">🖼️ بيفهم صور</span>';
+  if(c.t)h+='<span class="tag tool">⚡ ينفذ مهام</span>';
+  if(!c.code&&!c.v&&!c.reason)h+='<span class="tag txt">📝 نصوص وردود</span>';
+  return h;
+}
+function renderList(q){
+  const el=$('#mlist');
+  const items=[{id:'auto',name:'تلقائي (الأداة تختار الأنسب)',auto:true}].concat(MODELS);
+  const f=items.filter(m=>!q||m.id.toLowerCase().includes(q)||(m.name||'').toLowerCase().includes(q));
+  el.innerHTML=f.slice(0,120).map(m=>{
+    const c=m.auto?{}:capOf(m);
+    return '<div class="mitem '+(m.id===curModel?'sel':'')+'" onclick="pickModel(\''+m.id.replace(/'/g,"\\'")+'\')">'
+      +'<div><div class="nm">'+esc(m.name||m.id)+'</div><div class="pv">'+(m.auto?'توزيع ذكي على كل المزودين':'المزود: '+esc(c.p||'-'))+'</div></div>'
+      +'<div class="tags">'+(m.auto?'<span class="tag txt">موصى به</span>':tagsFor(m))+'</div></div>';
+  }).join('')||'<div style="color:var(--dim);text-align:center;padding:20px">لا نتائج</div>';
+}
+function pickModel(id){
+  curModel=id;
+  const m=id==='auto'?null:MODELS.find(x=>x.id===id);
+  $('#curModel').textContent=m?(m.name||m.id):'تلقائي';
+  $('#curProv').textContent=m&&capOf(m).p?capOf(m).p:'';
+  closeSheet('modelSheet');
+}
+$('#modelpick').onclick=()=>{openSheet('modelSheet');$('#msearch').focus();};
+$('#msearch').oninput=e=>renderList(e.target.value.toLowerCase());
+function saveChats(){
+  chats=chats.slice(0,25);
+  try{localStorage.setItem('flk_chats',JSON.stringify(chats));}catch(e){}
+}
+function curChat(){return chats.find(c=>c.id===curId);}
+function newChat(){
+  const c={id:'c'+Date.now(),title:'محادثة جديدة',msgs:[],t:Date.now()};
+  chats.unshift(c);curId=c.id;try{localStorage.setItem('flk_cur',curId);}catch(e){}
+  saveChats();renderSide();renderChat();
+  if(window.innerWidth<=900)$('#side').classList.remove('open');
+}
+function pickChat(id){curId=id;try{localStorage.setItem('flk_cur',curId);}catch(e){}renderSide();renderChat();if(window.innerWidth<=900)$('#side').classList.remove('open');}
+function delChat(ev,id){
+  ev.stopPropagation();
+  chats=chats.filter(c=>c.id!==id);
+  if(curId===id){curId=chats[0]?chats[0].id:'';try{localStorage.setItem('flk_cur',curId);}catch(e){}}
+  saveChats();renderSide();renderChat();
+}
+function renderSide(){
+  $('#chats').innerHTML=chats.map(c=>
+    '<div class="citem '+(c.id===curId?'sel':'')+'" onclick="pickChat(\''+c.id+'\')">'
+    +'<span class="t">'+esc(c.title)+'</span>'
+    +'<button class="d" onclick="delChat(event,\''+c.id+'\')" title="امسح"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>'
+  ).join('');
+}
+function renderChat(){
+  const c=curChat();
+  $('#chat').innerHTML='';
+  $('#empty').style.display=c&&c.msgs.length?'none':'';
+  if(!c)return;
+  c.msgs.forEach(m=>{
+    if(m.r==='u')addUserDom(m.c);
+    else if(m.gen)addGenDom(m.gen.prompt,m.gen.url,true);
+    else addBotDom(m.c,m.reason,m.model,m.tok,true);
+  });
+  scrollDown();
+}
+$('#newChat').onclick=newChat;
+$('#menuBtn').onclick=()=>$('#side').classList.toggle('open');
+const MSG_T=[];
+function scrollDown(){const sc=$('#scroll');sc.scrollTop=sc.scrollHeight;}
+function addUserDom(text,imgUrl){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow u';
+  const b=document.createElement('div');b.className='ub';
+  if(imgUrl){const im=document.createElement('img');im.src=imgUrl;b.appendChild(im);}
+  if(text){const s=document.createElement('span');s.textContent=text;b.appendChild(s);}
+  d.appendChild(b);$('#chat').appendChild(d);scrollDown();
+}
+function addBotDom(content,reasoning,model,tok,silent){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow a';
+  if(reasoning){
+    const det=document.createElement('details');det.className='thinkbox';
+    const sum=document.createElement('summary');sum.innerHTML=IC.brain+' خطوات التفكير والتخطيط';
+    const tb=document.createElement('div');tb.className='tb';tb.textContent=reasoning;
+    det.appendChild(sum);det.appendChild(tb);d.appendChild(det);
+  }
+  const body=document.createElement('div');body.className='ab';body.innerHTML=mdRender(content||'(رد فاضي)');
+  d.appendChild(body);
+  const meta=document.createElement('div');meta.className='ameta';
+  const mi=MSG_T.push(content||'')-1;
+  let h='<span>'+esc(model||'')+'</span>';
+  if(tok)h+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
+  h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
+  meta.innerHTML=h;d.appendChild(meta);
+  $('#chat').appendChild(d);
+  if(!silent){scrollDown();if(autoVoice)speakText(mi);}
+}
+function addGenDom(prompt,url,silent){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow a genbox';
+  const p=document.createElement('div');p.className='gprompt';p.textContent='🎨 '+prompt;
+  const st=document.createElement('div');st.className='genload';st.textContent='برسم الصورة...';
+  const im=document.createElement('img');im.style.display='none';
+  const acts=document.createElement('div');acts.className='ameta';
+  acts.innerHTML='<span>Pollinations مجاني</span><a class="mact" href="'+url+'" target="_blank" title="افتح بحجم كامل" style="text-decoration:none">'+IC.dl+'</a>';
+  acts.style.display='none';
+  im.onload=()=>{st.remove();im.style.display='block';acts.style.display='flex';scrollDown();};
+  im.onerror=()=>{st.textContent='⚠️ خدمة الرسم مشغولة دلوقتي، جرب تاني بعد شوية.';};
+  d.appendChild(p);d.appendChild(st);d.appendChild(im);d.appendChild(acts);
+  $('#chat').appendChild(d);
+  im.src=url;
+  if(!silent)scrollDown();
+}
+function addTyping(txt){
+  const tp=document.createElement('div');tp.className='typing';
+  tp.innerHTML='<span>'+txt+'</span><span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  $('#chat').appendChild(tp);scrollDown();return tp;
+}
+const fileImg=$('#fileImg'),fileCam=$('#fileCam'),fileTxt=$('#fileTxt');
+$('#camBtn').onclick=()=>openSheet('attSheet');
+function readImageFile(f){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const mx=1024,sc=Math.min(1,mx/Math.max(img.width,img.height));
+      const cv=document.createElement('canvas');cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      attach={kind:'image',dataUrl:cv.toDataURL('image/jpeg',0.85),name:f.name||'صورة'};
+      showAttach();
+    };
+    img.src=rd.result;
+  };
+  rd.readAsDataURL(f);
+}
+fileImg.onchange=()=>{if(fileImg.files[0])readImageFile(fileImg.files[0]);fileImg.value='';};
+fileCam.onchange=()=>{if(fileCam.files[0])readImageFile(fileCam.files[0]);fileCam.value='';};
+fileTxt.onchange=()=>{
+  const f=fileTxt.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    let t=String(rd.result||'');
+    if(t.length>20000){t=t.slice(0,20000);toast('الملف كبير، خدت أول ٢٠ ألف حرف بس');}
+    attach={kind:'text',name:f.name,text:t};
+    showAttach();
+  };
+  rd.readAsText(f);fileTxt.value='';
+};
+function showAttach(){
+  if(!attach)return;
+  $('#attachThumb').style.display=attach.kind==='image'?'':'none';
+  if(attach.kind==='image')$('#attachThumb').src=attach.dataUrl;
+  $('#attachName').textContent=attach.kind==='image'?'صورة جاهزة للإرسال':'ملف: '+attach.name;
+  $('#attachChip').classList.add('show');
+}
+function clearAttach(){attach=null;$('#attachChip').classList.remove('show');}
+let rec=null,recOn=false;
+$('#micBtn').onclick=()=>{
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('المتصفح ده مش بيدعم الكلام. جرب كروم على موبايلك.');return;}
+  if(recOn){rec.stop();return;}
+  rec=new SR();rec.lang='ar-EG';rec.interimResults=true;rec.continuous=true;
+  const base=$('#inp').value;
+  rec.onresult=e=>{let s='';for(const r of e.results)s+=r[0].transcript;$('#inp').value=base+(base?' ':'')+s;autoGrow();};
+  rec.onend=()=>{recOn=false;$('#micBtn').classList.remove('rec');};
+  rec.onerror=e=>{recOn=false;$('#micBtn').classList.remove('rec');if(e.error==='not-allowed')toast('لازم تسمح بالمايك للموقع من إعدادات المتصفح');};
+  try{rec.start();recOn=true;$('#micBtn').classList.add('rec');toast('🎤 اتكلم... دوس تاني لما تخلص');}catch(e){}
+};
+function speakText(i){
+  const t=MSG_T[i];if(!t||!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t.replace(/```[\s\S]*?```/g,' كود ').replace(/[*#`_>]/g,'').slice(0,800));
+  u.lang='ar-EG';u.rate=1;
+  const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.indexOf('ar')===0);
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+const thinkBtn=$('#thinkBtn'),searchBtn=$('#searchBtn'),artBtn=$('#artBtn');
+function setMode(which,on){
+  if(which==='think')thinkMode=on;
+  if(which==='search')searchMode=on;
+  if(which==='art')artMode=on;
+  if(which==='think')try{localStorage.setItem('flk_think',thinkMode?'1':'0');}catch(e){}
+  if(artMode&&on)searchMode=false;
+  if(searchMode&&on)artMode=false;
+  syncToggles();
+}
+function syncToggles(){
+  thinkBtn.classList.toggle('on',thinkMode);
+  searchBtn.classList.toggle('on',searchMode);
+  artBtn.classList.toggle('on',artMode);
+  $('#inp').placeholder=artMode?'اوصف الصورة اللي عايزها...':(searchMode?'اكتب اللي عايز تبحث عنه...':'اكتب رسالتك هنا...');
+}
+thinkBtn.onclick=()=>{setMode('think',!thinkMode);toast(thinkMode?'🧠 وضع التفكير شغال: هتشوف خطوات تفكير النموذج':'وضع التفكير اتقفل');};
+searchBtn.onclick=()=>{setMode('search',!searchMode);toast(searchMode?'🔍 بحث الويب شغال: السؤال الجاي هيدور على النت الأول':'بحث الويب اتقفل');};
+artBtn.onclick=()=>{setMode('art',!artMode);toast(artMode?'🎨 وضع الرسم شغال: اكتب وصف الصورة ودوس ابعت':'وضع الرسم اتقفل');};
+syncToggles();
+const voiceSw=$('#voiceSw');
+voiceSw.classList.toggle('on',autoVoice);
+voiceSw.onclick=()=>{autoVoice=!autoVoice;voiceSw.classList.toggle('on',autoVoice);try{localStorage.setItem('flk_voice',autoVoice?'1':'0');}catch(e){}};
+try{$('#sysPrompt').value=localStorage.getItem('flk_sys')||'';}catch(e){}
+$('#sysPrompt').addEventListener('change',e=>{try{localStorage.setItem('flk_sys',e.target.value);}catch(e2){}toast('اتحفظت شخصية المساعد');});
+function renderStats(){
+  $('#stTok').textContent=arNum(dayTok.n);
+  $('#stMsg').textContent=arNum(stats.msgs||0);
+  const rows=Object.entries(stats.per||{}).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  $('#mtable').innerHTML=rows.map(r=>'<tr><td>'+esc(r[0])+'</td><td>'+r[1]+'</td></tr>').join('')||'<tr><td style="color:var(--dim)">لسه مفيش رسائل</td><td></td></tr>';
+}
+const cv=$('#drawCv'),cvx=cv.getContext('2d');
+let drawing=false;
+function cvSize(){const r=cv.getBoundingClientRect();cv.width=r.width*2;cv.height=r.height*2;cvx.lineWidth=5;cvx.lineCap='round';cvx.lineJoin='round';}
+function openCanvas(){openSheet('cvSheet');setTimeout(cvSize,60);}
+function cvPos(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*(cv.width/r.width),y:(e.clientY-r.top)*(cv.height/r.height)};}
+cv.addEventListener('pointerdown',e=>{drawing=true;const p=cvPos(e);cvx.beginPath();cvx.moveTo(p.x,p.y);cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=cvPos(e);cvx.strokeStyle=$('#cvColor').value;cvx.lineTo(p.x,p.y);cvx.stroke();});
+cv.addEventListener('pointerup',()=>drawing=false);
+function cvClear(){cvx.clearRect(0,0,cv.width,cv.height);}
+function cvAttach(){
+  attach={kind:'image',dataUrl:cv.toDataURL('image/png'),name:'رسمة يدوية'};
+  closeSheet('cvSheet');showAttach();toast('اترفقت الرسمة، اكتب سؤالك عنها');
+}
+const inp=$('#inp');
+function autoGrow(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';}
+inp.addEventListener('input',autoGrow);
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+$('#send').onclick=send;
+function genImage(prompt){
+  const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=1024&height=1024&nologo=true&seed='+Math.floor(Math.random()*999999);
+  addGenDom(prompt,url);
+  return url;
+}
+async function doSearch(q){
+  const tp=addTyping('بدور على النت');
+  try{
+    const r=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'system',content:'You are a web search assistant. Search the web and answer in Egyptian Arabic with the key facts and mention sources briefly.'},{role:'user',content:q}]})});
+    const d=await r.json();
+    tp.remove();
+    return (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'(مفيش نتيجة)';
+  }catch(e){tp.remove();return null;}
+}
+async function send(){
+  const text=inp.value.trim();
+  if(!text&&!attach)return;
+  if($('#send').disabled)return;
+  inp.value='';autoGrow();
+  let c=curChat();
+  if(!c){newChat();c=curChat();}
+
+  if(artMode){
+    if(!text){toast('اكتب وصف الصورة الأول');return;}
+    addUserDom('🎨 ارسم: '+text);
+    c.msgs.push({r:'u',c:'🎨 ارسم: '+text});
+    const url=genImage(text);
+    c.msgs.push({r:'a',gen:{prompt:text,url:url}});
+    if(c.title==='محادثة جديدة')c.title='🎨 '+text.slice(0,40);
+    saveChats();renderSide();
+    return;
+  }
+
+  if(searchMode){
+    addUserDom('🔍 '+text);
+    c.msgs.push({r:'u',c:'🔍 '+text});
+    const ans=await doSearch(text);
+    if(ans===null){addBotDom('⚠️ البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','بحث الويب',0);return;}
+    addBotDom(ans,'','بحث الويب (مجاني)',0);
+    c.msgs.push({r:'a',c:ans,model:'بحث الويب',tok:0});
+    if(c.title==='محادثة جديدة')c.title=text.slice(0,40);
+    saveChats();renderSide();bumpStats('web-search');
+    return;
+  }
+
+  const hadImg=attach&&attach.kind==='image';
+  const hadFile=attach&&attach.kind==='text';
+  addUserDom(text,hadImg?attach.dataUrl:null);
+  c.msgs.push({r:'u',c:text+(hadImg?' [صورة]':'')+(hadFile?' [ملف: '+attach.name+']':'')});
+  if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
+
+  let model=curModel, note='';
+  if(hadImg){
+    const m=MODELS.find(x=>x.id===curModel);
+    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note=' • حوّلت على نموذج بيفهم الصور';}
+  }
+  let sysAdd='';
+  if(thinkMode){
+    if(model==='auto'){model=THINK_MODEL;note+=' • وضع التفكير';}
+    sysAdd='فكّر خطوة بخطوة: اكتب خطة قصيرة أولاً، ثم نفّذها وأعطِ الإجابة النهائية بوضوح.';
+  }
+
+  let fullText=text;
+  if(hadFile)fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  const userContent=hadImg
+    ?[{type:'text',text:fullText||'اوصف الصورة دي'},{type:'image_url',image_url:{url:attach.dataUrl}}]
+    :fullText;
+  clearAttach();
+
+  const hist=c.msgs.filter(m=>!m.gen).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
+  hist.push({role:'user',content:userContent});
+
+  const tp=addTyping(thinkMode?'بيفكر ويخطط':'بيكتب');
+  $('#send').disabled=true;
+  try{
+    const sp=[$('#sysPrompt').value.trim(),sysAdd].filter(Boolean).join('\n');
+    const body={model,messages:sp?[{role:'system',content:sp}].concat(hist):hist};
+    const t=parseFloat($('#temp').value);if(!isNaN(t))body.temperature=t;
+    const mt=parseInt($('#maxtok').value);if(!isNaN(mt))body.max_tokens=mt;
+    const slow=setTimeout(()=>netbar('السيرفر بيصحى من النوم... ثانية واحدة'),6000);
+    const r=await fetch(API+'/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify(body)});
+    clearTimeout(slow);netbar(null);
+    const d=await r.json();
+    tp.remove();
+    if(d.error){
+      let msg='حصل خطأ: '+(d.error.message||'مش معروف');
+      if(/rate.?limit|cooldown|429/i.test(msg))msg='المزود ده مشغول دلوقتي (حد الاستخدام المجاني). جرب نموذج تاني، أو استنى شوية.';
+      addBotDom('⚠️ '+msg,'','',0);
+      $('#send').disabled=false;return;
+    }
+    const msg0=(d.choices&&d.choices[0]&&d.choices[0].message)||{};
+    let reply=msg0.content||'(رد فاضي)';
+    let reasoning=msg0.reasoning||'';
+    const th=reply.match(/<think>([\s\S]*?)<\/think>/i);
+    if(th){reasoning=reasoning||th[1].trim();reply=reply.replace(/<think>[\s\S]*?<\/think>/i,'').trim();}
+    const u=d.usage,tok=u?u.total_tokens:0;
+    if(tok){dayTok.n+=tok;saveTok();}
+    const mdl=(d.model||model)+note;
+    addBotDom(reply,reasoning,mdl,tok);
+    c.msgs.push({r:'a',c:reply,reason:reasoning,model:mdl,tok:tok});
+    saveChats();renderSide();bumpStats(d.model||model);
+  }catch(e){
+    tp.remove();
+    addBotDom('⚠️ مشكلة اتصال. السيرفر ممكن يكون بيصحى (بينام بعد ربع ساعة سكون) - جرب تاني بعد أقل من دقيقة.','','',0);
+  }
+  $('#send').disabled=false;
+}
+function boot(){
+  if(!KEY){$('#setup').classList.add('open');return;}
+  loadModels();
+}
+renderSide();
+if(!curChat()){$('#empty').style.display='';}
+else renderChat();
+boot();
+</script>
+</body>
+</html>
