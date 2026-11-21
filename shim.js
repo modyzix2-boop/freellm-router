@@ -12,6 +12,27 @@ const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'})
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
   if(u.pathname==='/'&&req.method==='GET'&&(req.headers.accept||'').includes('text/html')){res.writeHead(302,{Location:'/ar.html'});res.end();return;}
+  if(u.pathname==='/v1/client/log'){
+    const LF='/app/server/data/beaconlog.json';
+    if(req.method==='GET'){
+      if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+      let d;try{d=JSON.parse(fs.readFileSync(LF,'utf8'));}catch(e){d={logs:[]};}
+      return J(res,200,d);
+    }
+    if(req.method==='POST'){
+      let b='';req.on('data',x=>{b+=x;if(b.length>4096)req.destroy();});
+      req.on('end',()=>{try{
+        const d=JSON.parse(b||'{}');
+        const clean={t:d.t||Date.now(),kind:String(d.kind||'').slice(0,20),build:String(d.build||'').slice(0,20),ua:String(d.ua||'').slice(0,180),href:String(d.href||'').slice(0,40),keyPresent:!!d.keyPresent,setupShown:!!d.setupShown,w:+d.w||0,h:+d.h||0,err:String(d.err||'').slice(0,300)};
+        let cur;try{cur=JSON.parse(fs.readFileSync(LF,'utf8'));}catch(e){cur={logs:[]};}
+        cur.logs.push(clean);if(cur.logs.length>50)cur.logs=cur.logs.slice(-50);
+        writeStore(LF,cur);
+        J(res,200,{ok:true});
+      }catch(e){J(res,400,{error:'bad'});}});
+      return;
+    }
+    return J(res,405,{error:'method'});
+  }
   if(u.pathname==='/v1/client/fetch'&&req.method==='POST'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     let b='';req.on('data',x=>{b+=x;if(b.length>64*1024)req.destroy();});

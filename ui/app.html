@@ -249,6 +249,15 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 <body>
 <script>
 window.__BOOT_OK=false;
+window.__BEACON=function(kind,err){try{
+var b={t:Date.now(),kind:kind,build:window.__BUILD||'?',ua:navigator.userAgent.slice(0,180),href:location.pathname,
+keyPresent:!!(LS.getItem('flk_key')||''),setupShown:!!(document.getElementById('setup')&&document.getElementById('setup').classList.contains('open')),
+w:window.innerWidth,h:window.innerHeight,err:String(err||'').slice(0,300)};
+fetch('/v1/client/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b),keepalive:true}).catch(function(){});
+}catch(e){}};
+window.addEventListener('error',function(e){window.__BEACON('jserror',(e.message||'')+' @'+(e.filename||'')+':'+(e.lineno||''));});
+window.addEventListener('unhandledrejection',function(e){window.__BEACON('promise',e.reason);});
+setTimeout(function(){window.__BEACON(window.__BOOT_OK?'boot-ok':'boot-fail');},8000);
 (function wd(){setTimeout(function(){
 if(window.__BOOT_OK)return;
 if(document.readyState==='loading'||!document.body)return wd();
@@ -444,16 +453,16 @@ const IC={
   dl:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>',
   brain:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>'
 };
-let KEY=localStorage.getItem('flk_key')||'';
+const LS=(()=>{try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return localStorage;}catch(e){const m={};return{getItem:k=>(k in m)?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]}};}})();let KEY=LS.getItem('flk_key')||'';
 let MODELS=[], curModel='auto';
 let attach=null;
-let thinkMode=localStorage.getItem('flk_think')==='1';
+let thinkMode=LS.getItem('flk_think')==='1';
 let artMode=false, searchMode=false;
-let autoVoice=localStorage.getItem('flk_voice')==='1';
-let chats=JSON.parse(localStorage.getItem('flk_chats')||'[]');
-let curId=localStorage.getItem('flk_cur')||'';
-let stats=JSON.parse(localStorage.getItem('flk_stats')||'{"msgs":0,"per":{}}');
-let dayTok=JSON.parse(localStorage.getItem('flk_tok')||'{"d":"","n":0}');
+let autoVoice=LS.getItem('flk_voice')==='1';
+let chats=JSON.parse(LS.getItem('flk_chats')||'[]');
+let curId=LS.getItem('flk_cur')||'';
+let stats=JSON.parse(LS.getItem('flk_stats')||'{"msgs":0,"per":{}}');
+let dayTok=JSON.parse(LS.getItem('flk_tok')||'{"d":"","n":0}');
 const REASON_RX=/reason|qwq|r1-distill|thinking/i;
 const VISION_FB='gemini-3-flash-preview';
 const THINK_MODEL='nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
@@ -461,7 +470,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const today=()=>new Date().toDateString();
 if(dayTok.d!==today())dayTok={d:today(),n:0};
-function saveTok(){try{localStorage.setItem('flk_tok',JSON.stringify(dayTok));}catch(e){}renderTok();}
+function saveTok(){try{LS.setItem('flk_tok',JSON.stringify(dayTok));}catch(e){}renderTok();}
 function arNum(n){
   if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+' مليون';
   if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+' ألف';
@@ -471,13 +480,13 @@ function renderTok(){$('#utok').innerHTML='النهارده: <b>'+arNum(dayTok.n
 renderTok();
 function bumpStats(model){
   stats.msgs++;if(model)stats.per[model]=(stats.per[model]||0)+1;
-  try{localStorage.setItem('flk_stats',JSON.stringify(stats));}catch(e){}
+  try{LS.setItem('flk_stats',JSON.stringify(stats));}catch(e){}
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',4200);}
 function openSheet(id){$('#'+id).classList.add('open');if(id==='setSheet')renderStats();}
 function closeSheet(id){$('#'+id).classList.remove('open');}
-function resetKey(){localStorage.removeItem('flk_key');location.reload();}
-function saveKey(){const v=$('#keyInp').value.trim();if(!v)return;KEY=v;localStorage.setItem('flk_key',v);$('#setup').classList.remove('open');boot();}
+function resetKey(){LS.removeItem('flk_key');location.reload();}
+function saveKey(){const v=$('#keyInp').value.trim();if(!v)return;KEY=v;LS.setItem('flk_key',v);$('#setup').classList.remove('open');boot();}
 function netbar(m,retry){
   const b=$('#netbar');
   if(!m){b.classList.remove('show');return;}
@@ -540,7 +549,7 @@ async function loadModels(){
   try{
     const r=await fetch(API+'/v1/models',{headers:{Authorization:'Bearer '+KEY}});
     clearTimeout(slow);
-    if(r.status===401){localStorage.removeItem('flk_key');$('#setup').classList.add('open');toast('المفتاح غلط، دخّل مفتاح صح');return;}
+    if(r.status===401){LS.removeItem('flk_key');$('#setup').classList.add('open');toast('المفتاح غلط، دخّل مفتاح صح');return;}
     const d=await r.json();
     MODELS=(d.data||[]).filter(m=>m.available&&m.id!=='auto'&&!/whisper|transcribe|embed|tts|nova-3/i.test(m.id));
     netbar(null);renderList('');
@@ -587,20 +596,20 @@ $('#modelpick').onclick=()=>{openSheet('modelSheet');$('#msearch').focus();};
 $('#msearch').oninput=e=>renderList(e.target.value.toLowerCase());
 function saveChats(){
   chats=chats.slice(0,25);
-  try{localStorage.setItem('flk_chats',JSON.stringify(chats));}catch(e){}
+  try{LS.setItem('flk_chats',JSON.stringify(chats));}catch(e){}
 }
 function curChat(){return chats.find(c=>c.id===curId);}
 function newChat(){
   const c={id:'c'+Date.now(),title:'محادثة جديدة',msgs:[],t:Date.now()};
-  chats.unshift(c);curId=c.id;try{localStorage.setItem('flk_cur',curId);}catch(e){}
+  chats.unshift(c);curId=c.id;try{LS.setItem('flk_cur',curId);}catch(e){}
   saveChats();renderSide();renderChat();
   if(window.innerWidth<=900)$('#side').classList.remove('open');
 }
-function pickChat(id){curId=id;try{localStorage.setItem('flk_cur',curId);}catch(e){}renderSide();renderChat();if(window.innerWidth<=900)$('#side').classList.remove('open');}
+function pickChat(id){curId=id;try{LS.setItem('flk_cur',curId);}catch(e){}renderSide();renderChat();if(window.innerWidth<=900)$('#side').classList.remove('open');}
 function delChat(ev,id){
   ev.stopPropagation();
   chats=chats.filter(c=>c.id!==id);
-  if(curId===id){curId=chats[0]?chats[0].id:'';try{localStorage.setItem('flk_cur',curId);}catch(e){}}
+  if(curId===id){curId=chats[0]?chats[0].id:'';try{LS.setItem('flk_cur',curId);}catch(e){}}
   saveChats();renderSide();renderChat();
 }
 function renderSide(){
@@ -742,7 +751,7 @@ function setMode(which,on){
   if(which==='think')thinkMode=on;
   if(which==='search')searchMode=on;
   if(which==='art')artMode=on;
-  if(which==='think')try{localStorage.setItem('flk_think',thinkMode?'1':'0');}catch(e){}
+  if(which==='think')try{LS.setItem('flk_think',thinkMode?'1':'0');}catch(e){}
   if(artMode&&on)searchMode=false;
   if(searchMode&&on)artMode=false;
   syncToggles();
@@ -759,9 +768,9 @@ artBtn.onclick=()=>{setMode('art',!artMode);toast(artMode?'🎨 وضع الرس�
 syncToggles();
 const voiceSw=$('#voiceSw');
 voiceSw.classList.toggle('on',autoVoice);
-voiceSw.onclick=()=>{autoVoice=!autoVoice;voiceSw.classList.toggle('on',autoVoice);try{localStorage.setItem('flk_voice',autoVoice?'1':'0');}catch(e){}};
-try{$('#sysPrompt').value=localStorage.getItem('flk_sys')||'';}catch(e){}
-$('#sysPrompt').addEventListener('change',e=>{try{localStorage.setItem('flk_sys',e.target.value);}catch(e2){}toast('اتحفظت شخصية المساعد');});
+voiceSw.onclick=()=>{autoVoice=!autoVoice;voiceSw.classList.toggle('on',autoVoice);try{LS.setItem('flk_voice',autoVoice?'1':'0');}catch(e){}};
+try{$('#sysPrompt').value=LS.getItem('flk_sys')||'';}catch(e){}
+$('#sysPrompt').addEventListener('change',e=>{try{LS.setItem('flk_sys',e.target.value);}catch(e2){}toast('اتحفظت شخصية المساعد');});
 function renderStats(){
   $('#stTok').textContent=arNum(dayTok.n);
   $('#stMsg').textContent=arNum(stats.msgs||0);
@@ -1000,7 +1009,7 @@ $('#impFile').addEventListener('change',e=>{
       const d=JSON.parse(rd.result);
       if(!d||!Array.isArray(d.chats))throw 0;
       chats=d.chats;stats=d.stats||stats;curId=chats[0]?chats[0].id:'';
-      try{localStorage.setItem('flk_cur',curId);}catch(e2){}
+      try{LS.setItem('flk_cur',curId);}catch(e2){}
       saveChats();bumpStats(null);stats.msgs--;renderSide();renderChat();
       toast('اتحملت المحادثات ✅');
     }catch(e2){toast('الملف ده مش نسخة محادثات صح');}
@@ -1304,7 +1313,7 @@ async function syncPull(){
       }catch(e){}
     }
     chats.forEach(c=>{if(!serverIds.has(c.id))c._dirty=true;});
-    if(added){try{localStorage.setItem('flk_chats',JSON.stringify(chats));}catch(e){}renderSide();renderChat();}
+    if(added){try{LS.setItem('flk_chats',JSON.stringify(chats));}catch(e){}renderSide();renderChat();}
     syncPush();
   }catch(e){}
 }
@@ -1315,13 +1324,13 @@ const PROG={txt:''};
 let teamMode=false;
 const TEAM_LEAD_MODEL='gemini-3-flash-preview';
 let TEAM=[];
-try{TEAM=JSON.parse(localStorage.getItem('flk_team')||'[]');}catch(e){TEAM=[];}
+try{TEAM=JSON.parse(LS.getItem('flk_team')||'[]');}catch(e){TEAM=[];}
 if(!Array.isArray(TEAM)||!TEAM.length)TEAM=[
  {name:'الباحث',model:'gemini-3.1-flash-lite-preview',sys:'أنت باحث محترف: تجمع معلومات دقيقة وحديثة ومنظمة عن المهمة اللي المدير طلبها. رد بالعربي بنقاط واضحة.'},
  {name:'المحلل',model:'gemini-3.1-flash-lite-preview',sys:'أنت محلل خبير: حلل المعطيات، استخرج النقاط المهمة والمخاطر والتوصيات العملية. رد بالعربي منظم.'},
  {name:'المبرمج',model:'gemini-3-flash-preview',sys:'أنت مبرمج محترف: اكتب كود نظيف ومعلّق، واشرح قراراتك باختصار. الأكواد في مربعات markdown. رد بالعربي.'}
 ];
-function saveTeam(){try{localStorage.setItem('flk_team',JSON.stringify(TEAM));}catch(e){}}
+function saveTeam(){try{LS.setItem('flk_team',JSON.stringify(TEAM));}catch(e){}}
 function renderTeamEdit(){
   const box=$('#teamEdit');if(!box)return;
   box.innerHTML=TEAM.map((a,i)=>{
@@ -1586,8 +1595,8 @@ $('#pvGhBtn').onclick=()=>{
 
 /* ===== approvals / permissions layer ===== */
 let GRANTS={};
-try{GRANTS=JSON.parse(localStorage.getItem('flk_grants')||'{}');}catch(e){GRANTS={};}
-function saveGrants(){try{localStorage.setItem('flk_grants',JSON.stringify(GRANTS));}catch(e){}}
+try{GRANTS=JSON.parse(LS.getItem('flk_grants')||'{}');}catch(e){GRANTS={};}
+function saveGrants(){try{LS.setItem('flk_grants',JSON.stringify(GRANTS));}catch(e){}}
 const GRANT_NAMES={'github-push':'رفع على جيت هب'};
 function renderPermEdit(){
   const box=$('#permEdit');if(!box)return;
@@ -1631,8 +1640,8 @@ $('#pvDevBtn').onclick=()=>{
 
 /* ===== artifact gallery ===== */
 let GAL=[];
-try{GAL=JSON.parse(localStorage.getItem('flk_gal')||'[]');}catch(e){GAL=[];}
-function galSave(){try{localStorage.setItem('flk_gal',JSON.stringify(GAL.slice(0,60)));}catch(e){}}
+try{GAL=JSON.parse(LS.getItem('flk_gal')||'[]');}catch(e){GAL=[];}
+function galSave(){try{LS.setItem('flk_gal',JSON.stringify(GAL.slice(0,60)));}catch(e){}}
 function galAdd(it){it.ts=Date.now();GAL.unshift(it);if(GAL.length>60)GAL.length=60;galSave();}
 function galTitle(code){const m=code.match(/<title[^>]*>([^<]{1,60})<\/title>/i);return m?m[1].trim():'صفحة بدون عنوان';}
 function openGal(){
@@ -1898,12 +1907,12 @@ function applyTheme(id){
     if(t.vars[v])document.documentElement.style.setProperty(v,t.vars[v]);
     else document.documentElement.style.removeProperty(v);
   }
-  try{localStorage.setItem('flk_theme',id);}catch(e){}
+  try{LS.setItem('flk_theme',id);}catch(e){}
   renderThemeGrid();
 }
 function renderThemeGrid(){
   const g=$('#thGrid');if(!g)return;
-  let cur='default';try{cur=localStorage.getItem('flk_theme')||'default';}catch(e){}
+  let cur='default';try{cur=LS.getItem('flk_theme')||'default';}catch(e){}
   g.innerHTML=Object.keys(THEMES).map(id=>{
     const t=THEMES[id];
     const bg=t.vars['--bg']||'#FAF9F5',acc=t.vars['--acc']||'#0D9488';
@@ -1911,7 +1920,7 @@ function renderThemeGrid(){
   }).join('');
 }
 renderThemeGrid();
-try{const sv=localStorage.getItem('flk_theme');if(sv&&THEMES[sv]&&sv!=='default')applyTheme(sv);}catch(e){}
+try{const sv=LS.getItem('flk_theme');if(sv&&THEMES[sv]&&sv!=='default')applyTheme(sv);}catch(e){}
 
 
 window.__BOOT_OK=true;window.__BUILD='21-11-c';
