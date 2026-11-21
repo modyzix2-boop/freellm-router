@@ -692,20 +692,36 @@ async function send(){
   $('#send').disabled=true;
   try{
     const sp=[$('#sysPrompt').value.trim(),sysAdd].filter(Boolean).join('\n');
-    const body={model,messages:sp?[{role:'system',content:sp}].concat(hist):hist};
-    const t=parseFloat($('#temp').value);if(!isNaN(t))body.temperature=t;
-    const mt=parseInt($('#maxtok').value);if(!isNaN(mt))body.max_tokens=mt;
+    const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
+    const t=parseFloat($('#temp').value);
+    const mt=parseInt($('#maxtok').value);
+    const tries=[model];
+    if(model==='auto')tries.push(VISION_FB);
+    else if(hadImg&&model!==VISION_FB)tries.push(VISION_FB);
+    let d=null,used=model,switched=false;
     const slow=setTimeout(()=>netbar('السيرفر بيصحى من النوم... ثانية واحدة'),6000);
-    const r=await fetch(API+'/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify(body)});
+    for(const cand of tries){
+      const body={model:cand,messages:msgs};
+      if(!isNaN(t))body.temperature=t;
+      if(!isNaN(mt))body.max_tokens=mt;
+      try{
+        if(switched)tp.firstChild.textContent='بجرب نموذج تاني';
+        const r=await fetch(API+'/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify(body)});
+        d=await r.json();
+        used=cand;
+        if(!d.error)break;
+        switched=true;
+      }catch(e){d={error:{message:'network'}};switched=true;}
+    }
     clearTimeout(slow);netbar(null);
-    const d=await r.json();
     tp.remove();
-    if(d.error){
-      let msg='حصل خطأ: '+(d.error.message||'مش معروف');
-      if(/rate.?limit|cooldown|429/i.test(msg))msg='المزود ده مشغول دلوقتي (حد الاستخدام المجاني). جرب نموذج تاني، أو استنى شوية.';
-      addBotDom('⚠️ '+msg,'','',0);
+    if(!d||d.error){
+      let msg='⚠️ المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
+      if(d&&/rate.?limit|cooldown|429/i.test((d.error&&d.error.message)||''))msg='⚠️ المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
+      addBotDom(msg,'','',0);
       $('#send').disabled=false;return;
     }
+    if(switched)note+=' • اتحوّل لنموذج شغال تلقائياً';
     const msg0=(d.choices&&d.choices[0]&&d.choices[0].message)||{};
     let reply=msg0.content||'(رد فاضي)';
     let reasoning=msg0.reasoning||'';
@@ -713,7 +729,7 @@ async function send(){
     if(th){reasoning=reasoning||th[1].trim();reply=reply.replace(/<think>[\s\S]*?<\/think>/i,'').trim();}
     const u=d.usage,tok=u?u.total_tokens:0;
     if(tok){dayTok.n+=tok;saveTok();}
-    const mdl=(d.model||model)+note;
+    const mdl=(d.model||used)+note;
     addBotDom(reply,reasoning,mdl,tok);
     c.msgs.push({r:'a',c:reply,reason:reasoning,model:mdl,tok:tok});
     saveChats();renderSide();bumpStats(d.model||model);
