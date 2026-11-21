@@ -11,6 +11,7 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(u.pathname==='/'&&req.method==='GET'&&(req.headers.accept||'').includes('text/html')){res.writeHead(302,{Location:'/ar.html'});res.end();return;}
   if(u.pathname==='/v1/client/fetch'&&req.method==='POST'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     let b='';req.on('data',x=>{b+=x;if(b.length>64*1024)req.destroy();});
