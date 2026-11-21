@@ -11,6 +11,17 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(u.pathname==='/v1/client/notes'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    const f=fileFor(KEY).replace('.json','.notes.json');
+    if(req.method==='GET'){let d;try{d=JSON.parse(fs.readFileSync(f,'utf8'));}catch(e){d={notes:''};}return J(res,200,d);}
+    if(req.method==='PUT'){
+      let b='';req.on('data',x=>{b+=x;if(b.length>131072)req.destroy();});
+      req.on('end',()=>{try{const d=JSON.parse(b);writeStore(f,{notes:String(d.notes||'').slice(0,20000)});J(res,200,{ok:true});}catch(e){J(res,400,{error:'bad json'});}});
+      return;
+    }
+    return J(res,405,{error:'method'});
+  }
   if(u.pathname==='/v1/client/memory'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     const f=fileFor(KEY).replace('.json','.memory.json');

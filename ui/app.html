@@ -195,6 +195,16 @@ a{color:var(--accD)}
 .trow{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px}
 .trow input,.trow select,.trow textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:inherit;font-size:12.5px;background:var(--bg);color:var(--txt)}
 .trow .tr1{display:flex;gap:6px}
+
+.pvbtn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;border:1px solid var(--acc);color:var(--accD);background:#FBEDE6;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
+#htmlPv .pvsheet{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column}
+#htmlPv .pvtools{display:flex;gap:6px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+#htmlPv .pvtools .sp{flex:1;font-weight:800;font-size:13.5px}
+#htmlPv iframe{flex:1;border:none;width:100%;background:#fff}
+#htmlPv pre{display:none;flex:1;overflow:auto;margin:0;padding:14px;font-size:12.5px;line-height:1.7;background:#1E1B16;color:#F5EFE6;direction:ltr;text-align:left}
+#htmlPv.showcode iframe{display:none}
+#htmlPv.showcode pre{display:block}
+#pvDiag{display:none;padding:8px 12px;font-size:12.5px;background:#FFF7E6;border-bottom:1px solid var(--line);max-height:120px;overflow:auto}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -292,6 +302,9 @@ a{color:var(--accD)}
       <div id="teamEdit" style="padding:0 16px 10px"></div>
       <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="addTeamMember()">+ أضف عضو للفريق</button></div>
       <div class="srow"><label>ذاكرة المساعد <div class="hint">بيفتكر اللي بتقوله عن نفسك بين المحادثات وعلى كل أجهزتك. محفوظ دلوقتي: <b id="memCount">0</b> معلومة</div></label><button class="sbtn" onclick="clearMem()">امسح الذاكرة</button></div>
+      <div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div>
+      <div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
+      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div>
       <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
     </div>
   </div>
@@ -315,6 +328,20 @@ a{color:var(--accD)}
     <div class="pvbody"><pre id="pvText"></pre>
       <button class="sbtn" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('pvText').textContent).then(()=>toast('اتنسخ'))">نسخ المحتوى</button>
     </div>
+  </div>
+</div>
+<div class="overlay" id="htmlPv">
+  <div class="pvsheet">
+    <div class="pvtools">
+      <span class="sp">👁 معاينة الصفحة</span>
+      <button class="sbtn" id="pvCodeBtn">الكود</button>
+      <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
+      <button class="sbtn" id="pvCopyBtn">نسخ</button>
+      <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
+    </div>
+    <div id="pvDiag"></div>
+    <iframe id="pvFrame" sandbox="allow-scripts allow-modals"></iframe>
+    <pre id="pvCode"></pre>
   </div>
 </div>
 <input type="file" id="impFile" accept=".json" style="display:none">
@@ -525,6 +552,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
   meta.innerHTML=h;d.appendChild(meta);
+  addPvBtn(d,content);
   $('#chat').appendChild(d);
   if(!silent){scrollDown();if(autoVoice)speakText(mi);}
 }
@@ -1107,7 +1135,7 @@ async function send(){
   if(tok)mh+='<span class="tk">'+arNum(tok)+' توكن</span>';
   mh+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   mh+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
-  bubble.meta.innerHTML=mh;bubble.meta.style.display='flex';
+  bubble.meta.innerHTML=mh;bubble.meta.style.display='flex';addPvBtn(bubble.d,reply);
   if(sources)renderSources(bubble.d,sources);
   scrollDown();
   if(autoVoice)speakText(mi);
@@ -1320,6 +1348,72 @@ send=(function(orig){return async function(){
   try{memSeen++;if(memSeen%4===0)memExtract();}catch(e){}
   return r;
 };})(send);
+
+/* ===== live HTML preview + diagnostics ===== */
+let pvCode='', pvErrs=[];
+function extractHtml(t){
+  if(!t)return null;
+  const m=t.match(/```html\s*([\s\S]*?)```/i);
+  if(m)return m[1].trim();
+  const i=t.search(/<!DOCTYPE html|<html[\s>]/i);
+  if(i>=0)return t.slice(i).trim();
+  return null;
+}
+function addPvBtn(d,content){
+  const code=extractHtml(content);
+  if(!code)return;
+  const b=document.createElement('button');b.className='pvbtn';
+  b.innerHTML='👁 معاينة الصفحة';
+  b.onclick=()=>openHtmlPv(code);
+  d.appendChild(b);
+}
+function pvInject(code){
+  const hook='<script>window.onerror=function(m,s,l,c){parent.postMessage({__pv:1,msg:String(m)+" (سطر "+l+")"},"*")};window.addEventListener("unhandledrejection",function(e){parent.postMessage({__pv:1,msg:"Promise: "+String(e.reason)},"*")});<\/script>';
+  return hook+code;
+}
+function openHtmlPv(code){
+  pvCode=code;pvErrs=[];
+  const ov=$('#htmlPv');
+  ov.classList.add('open');ov.classList.remove('showcode');
+  $('#pvDiag').style.display='none';
+  $('#pvCode').textContent=code;
+  $('#pvFrame').srcdoc=pvInject(code);
+}
+window.addEventListener('message',e=>{
+  if(e.data&&e.data.__pv&&pvErrs.length<10)pvErrs.push(String(e.data.msg));
+});
+$('#pvCodeBtn').onclick=()=>{const ov=$('#htmlPv');ov.classList.toggle('showcode');$('#pvCodeBtn').textContent=ov.classList.contains('showcode')?'معاينة':'الكود';};
+$('#pvCopyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(pvCode);toast('اتنسخ الكود ✅');}catch(e){toast('النسخ مش متاح هنا');}};
+$('#pvFixBtn').onclick=async()=>{
+  const dg=$('#pvDiag');
+  dg.style.display='block';dg.textContent='🔍 بيفحص الصفحة...';
+  pvErrs=[];
+  $('#pvFrame').srcdoc=pvInject(pvCode);
+  await new Promise(r=>setTimeout(r,2500));
+  try{
+    const errTxt=pvErrs.length?('أخطاء JavaScript ظهرت أثناء التشغيل:\n'+pvErrs.join('\n')):'مفيش أخطاء تشغيل ظاهرة.';
+    dg.textContent='🔍 بيراجع الكود وبيصلح...';
+    const r=await chatOnce('gemini-3-flash-preview',[
+      {role:'system',content:'أنت مراجع كود HTML/CSS/JS. افحص الصفحة، صلّح أي أخطاء، وحسّن ما يمكن بسرعة. رد بالصفحة الكاملة المصلحة في مربع ```html فقط، وبعدها سطر واحد بالعربي: "التقرير: ..." فيه ملخص اللي اتصلح أو اقتراحات.'},
+      {role:'user',content:errTxt+'\n\nالكود:\n'+pvCode.slice(0,24000)}
+    ],0.3,8000);
+    const fixed=extractHtml(r.content);
+    const rep=(r.content.match(/التقرير:[^\n]*/)||[null])[0];
+    if(fixed&&fixed.length>50){
+      pvCode=fixed;$('#pvCode').textContent=fixed;
+      $('#pvFrame').srcdoc=pvInject(fixed);
+      dg.textContent='✅ '+(rep?rep.replace('التقرير:',''):'اتصلحت الأخطاء واتحدثت المعاينة');
+    }else{
+      dg.textContent='✅ '+(rep?rep.replace('التقرير:',''):'الكود سليم، مفيش تعديل مطلوب');
+    }
+  }catch(e){
+    dg.textContent='⚠️ الفحص متعطل دلوقتي (مزود مشغول) - '+(pvErrs.length?('أخطاء ظاهرة: '+pvErrs[0]):'جرب تاني');
+  }
+};
+/* ===== saved notes ===== */
+async function notesPull(){try{const r=await fetch(API+'/v1/client/notes',{headers:{'Authorization':'Bearer '+KEY}});if(r.ok){const d=await r.json();const nb=$('#notesBox');if(nb)nb.value=d.notes||'';}}catch(e){}}
+async function saveNotes(){try{const r=await fetch(API+'/v1/client/notes',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({notes:$('#notesBox').value})});toast(r.ok?'اتحفظت الملاحظات ✅':'المزامنة متعطلة دلوقتي');}catch(e){toast('المزامنة متعطلة دلوقتي');}}
+notesPull();
 
 </script>
 </body>
