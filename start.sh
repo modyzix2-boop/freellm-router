@@ -1,18 +1,22 @@
 #!/bin/sh
-# FreeLLMAPI start wrapper for Hugging Face Spaces.
-# Free Spaces have ephemeral storage: on every boot the DB is recreated and
-# FREEAPI_CONFIG_JSON (a Space secret) re-seeds admin + provider keys. The one
-# thing the declarative config cannot set is the unified API key, which lives
-# in the settings table. If UNIFIED_API_KEY is set, wait for boot and force the
-# settings row to it so the user's client key survives restarts.
+# FreeLLMAPI start wrapper.
+# Ephemeral storage note: on every boot the DB is recreated and
+# FREEAPI_CONFIG_JSON re-seeds admin + provider keys. If UNIFIED_API_KEY is
+# set, force the settings row to it after boot so the client key survives
+# restarts. A tiny shim (shim.js) owns the public port: it serves key-scoped
+# chat sync at /v1/client/chats and proxies everything else to upstream.
 cd /app || exit 1
+UPORT=7861
 
-node server/dist/index.js &
+node /app/shim.js &
+SHIM_PID=$!
+
+PORT=$UPORT node server/dist/index.js &
 SERVER_PID=$!
 
 if [ -n "$UNIFIED_API_KEY" ]; then
   i=0
-  until node -e "fetch('http://127.0.0.1:'+(process.env.PORT||'7860')+'/api/ping').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" 2>/dev/null; do
+  until node -e "fetch('http://127.0.0.1:'+$UPORT+'/api/ping').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" 2>/dev/null; do
     i=$((i+1))
     if [ "$i" -gt 90 ]; then
       echo "[start] server did not become healthy in time; skipping unified-key restore"
@@ -29,4 +33,4 @@ if [ -n "$UNIFIED_API_KEY" ]; then
   " || echo "[start] unified-key restore failed"
 fi
 
-wait $SERVER_PID
+wait $SERVER_PID $SHIM_PID

@@ -1096,6 +1096,45 @@ async function send(){
   saveChats();renderSide();bumpStats(res.model||used);
 }
 
+/* server-side chat sync (shim /v1/client/chats, keyed by unified key) */
+const SYNC_URL=API+'/client/chats';
+let syncT=null;
+function syncPush(){
+  clearTimeout(syncT);
+  syncT=setTimeout(async()=>{
+    const dirty=chats.filter(c=>c._dirty);
+    for(const c of dirty){
+      c._dirty=false;
+      try{
+        const r=await fetch(SYNC_URL+'/'+encodeURIComponent(c.id),{method:'PUT',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({title:c.title,msgs:c.msgs})});
+        if(!r.ok)c._dirty=true;
+      }catch(e){c._dirty=true;}
+    }
+  },900);
+}
+saveChats=(function(orig){return function(){orig();const c=curChat();if(c)c._dirty=true;syncPush();};})(saveChats);
+delChat=(function(orig){return function(ev,id){try{fetch(SYNC_URL+'/'+encodeURIComponent(id),{method:'DELETE',headers:{Authorization:'Bearer '+KEY}});}catch(e){}orig(ev,id);};})(delChat);
+async function syncPull(){
+  try{
+    const r=await fetch(SYNC_URL,{headers:{Authorization:'Bearer '+KEY}});
+    if(!r.ok)return;
+    const d=await r.json();
+    const serverIds=new Set((d.chats||[]).map(x=>x.id));
+    const known=new Set(chats.map(c=>c.id));
+    let added=0;
+    for(const m of (d.chats||[]).filter(x=>!known.has(x.id)).slice(0,50)){
+      try{
+        const rr=await fetch(SYNC_URL+'/'+encodeURIComponent(m.id),{headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY}});
+        if(rr.ok){const c=await rr.json();if(c&&c.id&&Array.isArray(c.msgs)){chats.push(c);added++;}}
+      }catch(e){}
+    }
+    chats.forEach(c=>{if(!serverIds.has(c.id))c._dirty=true;});
+    if(added){try{localStorage.setItem('flk_chats',JSON.stringify(chats));}catch(e){}renderSide();renderChat();}
+    syncPush();
+  }catch(e){}
+}
+syncPull();
+
 </script>
 </body>
 </html>

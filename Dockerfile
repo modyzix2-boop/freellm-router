@@ -16,3 +16,4 @@ CMD ["sh", "/usr/local/bin/fapi-start.sh"]
 
 # Arabic RTL chat UI, served same-origin (avoids CORS) at /ar.html
 COPY ui/app.html /app/client/dist/ar.html
+COPY shim.js /app/shim.js
