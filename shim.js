@@ -55,10 +55,17 @@ http.createServer((req,res)=>{
     };
     const pushAll=async(repo,filesMap,msg)=>{
       const ref=await gh('GET','/repos/'+GO+'/'+repo+'/git/ref/heads/main');
-      const commit=await gh('GET','/repos/'+GO+'/'+repo+'/git/commits/'+ref.object.sha);
-      const tree=await gh('POST','/repos/'+GO+'/'+repo+'/git/trees',{base_tree:commit.tree.sha,tree:Object.keys(filesMap).map(path=>({path,mode:'100644',type:'blob',content:filesMap[path]}))});
-      const nc=await gh('POST','/repos/'+GO+'/'+repo+'/git/commits',{message:msg,tree:tree.sha,parents:[ref.object.sha]});
-      await gh('PATCH','/repos/'+GO+'/'+repo+'/git/refs/heads/main',{sha:nc.sha});
+      let baseTree=null,parents=[];
+      if(ref!==404){
+        const commit=await gh('GET','/repos/'+GO+'/'+repo+'/git/commits/'+ref.object.sha);
+        baseTree=commit.tree.sha;parents=[ref.object.sha];
+      }
+      const tb={tree:Object.keys(filesMap).map(path=>({path,mode:'100644',type:'blob',content:filesMap[path]}))};
+      if(baseTree)tb.base_tree=baseTree;
+      const tree=await gh('POST','/repos/'+GO+'/'+repo+'/git/trees',tb);
+      const nc=await gh('POST','/repos/'+GO+'/'+repo+'/git/commits',{message:msg,tree:tree.sha,parents});
+      if(ref===404)await gh('POST','/repos/'+GO+'/'+repo+'/git/refs',{ref:'refs/heads/main',sha:nc.sha});
+      else await gh('PATCH','/repos/'+GO+'/'+repo+'/git/refs/heads/main',{sha:nc.sha});
     };
     const counterF=fileFor(KEY).replace('.json','.apk.json');
     if(u.pathname==='/v1/client/apk/status'){
