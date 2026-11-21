@@ -223,6 +223,7 @@ a{color:var(--accD)}
 .galcard .gph{height:110px;display:grid;place-items:center;font-size:34px;background:var(--chip)}
 .galcard .gt{padding:7px 10px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .galcard .gd{padding:0 10px 8px;font-size:10.5px;color:var(--dim)}
+.ic{width:14px;height:14px;vertical-align:-2px;margin:0 4px;filter:invert(1)}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -360,8 +361,8 @@ a{color:var(--accD)}
       <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
       <button class="sbtn" id="pvGhBtn">ارفع جيت هب</button>
       <button class="sbtn" id="pvDlBtn">تحميل</button>
-      <button class="sbtn" id="pvApkBtn">📦 ابني APK</button>
-      <button class="sbtn" id="pvDevBtn">📱 موبايل</button>
+      <button class="sbtn" id="pvApkBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/package.svg"> ابني APK</button>
+      <button class="sbtn" id="pvDevBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/smartphone.svg"> موبايل</button>
       <button class="sbtn" id="pvCopyBtn">نسخ</button>
       <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
     </div>
@@ -484,11 +485,11 @@ function capOf(m){
 }
 function tagsFor(m){
   const c=capOf(m);let h='';
-  if(c.reason)h+='<span class="tag think">🧠 بيفكر</span>';
-  if(c.code)h+='<span class="tag code">💻 كود</span>';
-  if(c.v)h+='<span class="tag img">🖼️ بيفهم صور</span>';
+  if(c.reason)h+='<span class="tag think"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/brain.svg">بيفكر</span>';
+  if(c.code)h+='<span class="tag code"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/code.svg">كود</span>';
+  if(c.v)h+='<span class="tag img"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/image.svg">بيفهم صور</span>';
   if(c.t)h+='<span class="tag tool">⚡ ينفذ مهام</span>';
-  if(!c.code&&!c.v&&!c.reason)h+='<span class="tag txt">📝 نصوص وردود</span>';
+  if(!c.code&&!c.v&&!c.reason)h+='<span class="tag txt"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/file-text.svg">نصوص وردود</span>';
   return h;
 }
 function renderList(q){
@@ -834,7 +835,7 @@ async function send(){
   const tp=addTyping(thinkMode?'بيفكر ويخطط':'بيكتب');
   $('#send').disabled=true;
   try{
-    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
     const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
     const t=parseFloat($('#temp').value);
     const mt=parseInt($('#maxtok').value);
@@ -1110,7 +1111,7 @@ async function send(){
   const hist=c.msgs.filter(m=>!m.gen&&!m.art).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
   hist.push({role:'user',content:userContent});
 
-  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود.',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
   const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
   const t=parseFloat($('#temp').value);
   const mt=parseInt($('#maxtok').value);
@@ -1527,7 +1528,7 @@ $('#pvDevBtn').onclick=()=>{
   const f=$('#pvFrame');const mobile=f.style.maxWidth!=='390px';
   f.style.maxWidth=mobile?'390px':'';f.style.margin=mobile?'0 auto':'';
   f.style.borderLeft=mobile?'1px solid var(--line)':'';f.style.borderRight=mobile?'1px solid var(--line)':'';
-  $('#pvDevBtn').textContent=mobile?'💻 تابلت':'📱 موبايل';
+  $('#pvDevBtn').innerHTML=mobile?'<img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/tablet.svg"> تابلت':'<img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/smartphone.svg"> موبايل';
 };
 
 /* ===== artifact gallery ===== */
