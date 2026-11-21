@@ -106,7 +106,7 @@ http.createServer((req,res)=>{
           const mm=txt.match(/\{[\s\S]*\}/);
           const fix=mm?JSON.parse(mm[0]):null;
           if(!fix||!Array.isArray(fix.files)||!fix.files.length)return J(res,502,{error:'المراجعة مطلعتش إصلاح واضح'});
-          const allowed=new Set(files.concat(['app/src/main/assets/index.html']));
+          const allowed=new Set(files.concat(['app/src/main/assets/index.html','pubspec.yaml','lib/main.dart']));
           const fm={};
           for(const f of fix.files.slice(0,6)){
             if(!allowed.has(f.path)||typeof f.content!=='string')continue;
@@ -118,7 +118,7 @@ http.createServer((req,res)=>{
         }
         // build
         const html=String(d.html||'');
-        if(html.length<50)return J(res,400,{error:'html too small'});
+        if(String(d.type||'')!=='flutter'&&html.length<50)return J(res,400,{error:'html too small'});
         const appName=String(d.appName||'تطبيقي').slice(0,40);
         const exists=await gh('GET','/repos/'+GO+'/'+repo);
         if(exists===404)await gh('POST','/user/repos',{name:repo,private:false,description:'تطبيق اتبنى بأداة مساعدي 🤖'});
@@ -126,6 +126,7 @@ http.createServer((req,res)=>{
         if(exists!==404){try{
           const bg=await gh('GET','/repos/'+GO+'/'+repo+'/contents/app/build.gradle');
           if(bg&&bg!==404&&bg.content){const m=Buffer.from(bg.content,'base64').toString('utf8').match(/versionCode\s+(\d+)/);if(m)n=+m[1];}
+          if(!n){const ps=await gh('GET','/repos/'+GO+'/'+repo+'/contents/pubspec.yaml');if(ps&&ps!==404&&ps.content){const m2=Buffer.from(ps.content,'base64').toString('utf8').match(/version:\s*1\.0\.(\d+)/);if(m2)n=+m2[1];}}
         }catch(e){}}
         if(!n){let cnt={n:0};try{cnt=JSON.parse(fs.readFileSync(counterF,'utf8'));}catch(e){}n=cnt.n||0;}
         n=n+1;writeStore(counterF,{n});
@@ -137,7 +138,16 @@ http.createServer((req,res)=>{
         const MAN='<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <application android:label="'+appName.replace(/"/g,'')+'" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:usesCleartextTraffic="true">\n    <activity android:name=".MainActivity" android:exported="true">\n      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>\n    </activity>\n  </application>\n</manifest>\n';
         const KT='package com.masaedi.app\nimport android.app.Activity\nimport android.os.Bundle\nimport android.webkit.WebView\nimport android.webkit.WebViewClient\nclass MainActivity: Activity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    val w = WebView(this)\n    w.settings.javaScriptEnabled = true\n    w.settings.domStorageEnabled = true\n    w.webViewClient = WebViewClient()\n    w.loadUrl("file:///android_asset/index.html")\n    setContentView(w)\n  }\n}\n';
         const msg='نسخة v'+ver;
-        await pushAll(repo,{'settings.gradle':SETTINGS,'build.gradle':ROOT,'app/build.gradle':APPG,'app/src/main/AndroidManifest.xml':MAN,'app/src/main/java/com/masaedi/app/MainActivity.kt':KT,'app/src/main/assets/index.html':html,'.github/workflows/build.yml':WF},msg);
+        const isFlutter=String(d.type||'')==='flutter';
+        if(isFlutter){
+          const dart=String(d.dart||'');
+          if(dart.length<100||dart.indexOf('void main')<0)return J(res,400,{error:'dart too small'});
+          const PUB='name: masaedi_app\ndescription: "تطبيق اتبنى بأداة مساعدي"\npublish_to: "none"\nversion: 1.0.'+n+'+'+n+'\n\nenvironment:\n  sdk: ">=3.0.0 <4.0.0"\n\ndependencies:\n  flutter:\n    sdk: flutter\n\nflutter:\n  uses-material-design: true\n';
+          const FWF='name: build-apk\non: [workflow_dispatch, push]\nconcurrency: {group: apk-build, cancel-in-progress: true}\npermissions:\n  contents: write\nenv:\n  VER: "'+ver+'"\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: {distribution: temurin, java-version: "17"}\n      - uses: subosito/flutter-action@v2\n        with: {channel: stable, cache: true}\n      - run: flutter create --platforms android --project-name masaedi_app .\n      - run: flutter build apk --debug\n      - uses: softprops/action-gh-release@v2\n        if: success()\n        with:\n          tag_name: v${{ env.VER }}\n          name: "نسخة v${{ env.VER }}"\n          files: build/app/outputs/flutter-apk/app-debug.apk\n';
+          await pushAll(repo,{'pubspec.yaml':PUB,'lib/main.dart':dart,'.github/workflows/build.yml':FWF},msg);
+        }else{
+          await pushAll(repo,{'settings.gradle':SETTINGS,'build.gradle':ROOT,'app/build.gradle':APPG,'app/src/main/AndroidManifest.xml':MAN,'app/src/main/java/com/masaedi/app/MainActivity.kt':KT,'app/src/main/assets/index.html':html,'.github/workflows/build.yml':WF},msg);
+        }
         try{await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});}catch(e){}
         J(res,200,{ok:true,version:ver,repo,url:'https://github.com/'+GO+'/'+repo,apk:'https://github.com/'+GO+'/'+repo+'/releases/latest/download/app-debug.apk'});
       }catch(e){J(res,502,{error:String(e.message||e).slice(0,300)});}
