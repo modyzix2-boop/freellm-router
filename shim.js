@@ -97,12 +97,17 @@ http.createServer((req,res)=>{
         const html=String(d.html||'');
         if(html.length<50)return J(res,400,{error:'html too small'});
         const appName=String(d.appName||'تطبيقي').slice(0,40);
-        let cnt={n:0};try{cnt=JSON.parse(fs.readFileSync(counterF,'utf8'));}catch(e){}
-        cnt.n=(cnt.n||0)+1;writeStore(counterF,cnt);
-        const ver='1.0.'+cnt.n;
         const exists=await gh('GET','/repos/'+GO+'/'+repo);
         if(exists===404)await gh('POST','/user/repos',{name:repo,private:false,description:'تطبيق اتبنى بأداة مساعدي 🤖'});
-        const WF='name: build-apk\non: [workflow_dispatch, push]\npermissions:\n  contents: write\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: {distribution: temurin, java-version: "17"}\n      - uses: gradle/actions/setup-gradle@v4\n        with: {gradle-version: "8.7"}\n      - run: gradle assembleDebug --no-daemon\n      - name: version\n        run: echo "VER=$(grep -oP "versionName \x27\\K[^\x27]+" app/build.gradle)" >> $GITHUB_ENV\n      - uses: softprops/action-gh-release@v2\n        if: success()\n        with:\n          tag_name: v${{ env.VER }}\n          name: "نسخة v${{ env.VER }}"\n          files: app/build/outputs/apk/debug/app-debug.apk\n';
+        let n=0;
+        if(exists!==404){try{
+          const bg=await gh('GET','/repos/'+GO+'/'+repo+'/contents/app/build.gradle');
+          if(bg&&bg!==404&&bg.content){const m=Buffer.from(bg.content,'base64').toString('utf8').match(/versionCode\s+(\d+)/);if(m)n=+m[1];}
+        }catch(e){}}
+        if(!n){let cnt={n:0};try{cnt=JSON.parse(fs.readFileSync(counterF,'utf8'));}catch(e){}n=cnt.n||0;}
+        n=n+1;writeStore(counterF,{n});
+        const ver='1.0.'+n;
+        const WF='name: build-apk\non: [workflow_dispatch, push]\nconcurrency: {group: apk-build, cancel-in-progress: true}\npermissions:\n  contents: write\nenv:\n  VER: "'+ver+'"\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: {distribution: temurin, java-version: "17"}\n      - uses: gradle/actions/setup-gradle@v4\n        with: {gradle-version: "8.7"}\n      - run: gradle assembleDebug --no-daemon\n      - uses: softprops/action-gh-release@v2\n        if: success()\n        with:\n          tag_name: v${{ env.VER }}\n          name: "نسخة v${{ env.VER }}"\n          files: app/build/outputs/apk/debug/app-debug.apk\n';
         const SETTINGS='pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }\ndependencyResolutionManagement { repositories { google(); mavenCentral() } }\nrootProject.name="app"\ninclude ":app"\n';
         const ROOT='plugins { id "com.android.application" version "8.5.0" apply false }\n';
         const APPG='plugins { id "com.android.application" }\nandroid {\n  namespace "com.masaedi.app"\n  compileSdk 34\n  defaultConfig {\n    applicationId "com.masaedi.app"\n    minSdk 24\n    targetSdk 34\n    versionCode '+cnt.n+'\n    versionName "'+ver+'"\n  }\n}\n';
