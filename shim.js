@@ -1,7 +1,7 @@
 // Same-origin shim in front of the upstream FreeLLMAPI server.
 // Serves key-scoped chat sync at /v1/client/chats* (Bearer = UNIFIED_API_KEY)
 // and proxies everything else to upstream on 127.0.0.1:7861.
-const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
+const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto'),zlib=require('zlib');
 const UP=7861,PORT=process.env.PORT||7860,KEY=process.env.UNIFIED_API_KEY||'';
 const DIR='/app/server/data/chatsync';
 try{fs.mkdirSync(DIR,{recursive:true});}catch(e){}
@@ -273,7 +273,20 @@ http.createServer((req,res)=>{
     if(req.method==='DELETE'&&id){const s=readStore(f);delete s.chats[id];writeStore(f,s);return J(res,200,{ok:true});}
     return J(res,405,{error:'method'});
   }
-  const p=http.request({host:'127.0.0.1',port:UP,path:req.url,method:req.method,headers:req.headers},r=>{res.writeHead(r.statusCode,r.headers);r.pipe(res);});
+  const acceptGzip=(req.headers['accept-encoding']||'').includes('gzip');
+  const p=http.request({host:'127.0.0.1',port:UP,path:req.url,method:req.method,headers:Object.assign({},req.headers,{'accept-encoding':'identity'})},r=>{
+    const ct=String(r.headers['content-type']||'');
+    if(acceptGzip&&r.statusCode===200&&ct.includes('text/html')){
+      const chunks=[];r.on('data',c=>chunks.push(c));
+      r.on('end',()=>{zlib.gzip(Buffer.concat(chunks),(e,g)=>{
+        if(e){res.writeHead(500);res.end('gz');return;}
+        const h=Object.assign({},r.headers);
+        delete h['content-length'];delete h['content-encoding'];delete h['transfer-encoding'];
+        h['content-encoding']='gzip';h['content-length']=g.length;
+        res.writeHead(200,h);res.end(g);
+      });});
+    }else{res.writeHead(r.statusCode,r.headers);r.pipe(res);}
+  });
   p.on('error',()=>J(res,502,{error:'upstream starting'}));
   req.pipe(p);
 }).listen(PORT,()=>console.log('[shim] listening on '+PORT+', upstream on '+UP));
