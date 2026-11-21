@@ -421,7 +421,7 @@ function delChat(ev,id){
 }
 function renderSide(){
   $('#chats').innerHTML=chats.map(c=>
-    '<div class="citem '+(c.id===curId?'sel':'')+'" onclick="pickChat(\''+c.id+'\')">'+'<span class="t">'+esc(c.title)+'</span>'+'<button class="d" onclick="delChat(event,\''+c.id+'\')" title="امسح"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>').join('');
+    '<div class="citem '+(c.id===curId?'sel':'')+'" onclick="pickChat(\''+c.id+'\')">'+'<span class="t">'+esc(String(c.title||'').replace(/^[^0-9A-Za-z\u0600-\u06FF]+\s*/,''))+'</span>'+'<button class="d" onclick="delChat(event,\''+c.id+'\')" title="امسح"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>').join('');
 }
 function renderChat(){
   const c=curChat();
