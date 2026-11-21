@@ -2,7 +2,7 @@
 window.__BOOT_OK=false;
 window.__BEACON=function(kind,err){try{
 var b={t:Date.now(),kind:kind,build:window.__BUILD||'?',ua:navigator.userAgent.slice(0,180),href:location.pathname,
-keyPresent:!!(LS.getItem('flk_key')||''),setupShown:!!(document.getElementById('setup')&&document.getElementById('setup').classList.contains('open')),
+keyPresent:!!((window.LS&&LS.getItem('flk_key'))||''),setupShown:!!(document.getElementById('setup')&&document.getElementById('setup').classList.contains('open')),
 w:window.innerWidth,h:window.innerHeight,err:String(err||'').slice(0,300)};
 fetch('/v1/client/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b),keepalive:true}).catch(function(){});
 }catch(e){}};
