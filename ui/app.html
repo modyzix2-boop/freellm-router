@@ -1468,15 +1468,14 @@ function revokeGrant(k){delete GRANTS[k];saveGrants();renderPermEdit();toast('ا
 openSheet=(function(orig){return function(id){orig(id);if(id==='setSheet')renderPermEdit();};})(openSheet);
 function requestApproval(o){
   if(GRANTS[o.key]){o.run();return;}
-  const sc=$('#chat');
-  const card=document.createElement('div');card.className='mrow a';
-  card.innerHTML='<div class="approvalcard"><div class="at">🔐 طلب صلاحية: '+esc(o.title)+'</div><div class="ad">'+esc(o.desc)+'</div><div class="abtns">'
-    +'<button class="ok">موافقة</button><button class="always">موافقة دايماً</button><button class="no">رفض</button></div></div>';
-  sc.appendChild(card);scrollDown();
-  const btns=card.querySelectorAll('button');
-  const done=(html)=>{card.querySelector('.approvalcard').innerHTML='<div class="decided">'+html+'</div>';};
-  btns[0].onclick=()=>{done('✅ وافقت مرة واحدة - بينفذ دلوقتي...');o.run();};
-  btns[1].onclick=()=>{GRANTS[o.key]=true;saveGrants();renderPermEdit();done('✅ اتفعلت الموافقة الدائمة - مش هسألك عن كده تاني');o.run();};
+  const wrap=document.createElement('div');wrap.className='overlay open';wrap.style.zIndex='1200';
+  wrap.innerHTML='<div class="sheet" style="max-width:440px"><div class="approvalcard" style="border:none;background:transparent;padding:4px 2px;max-width:100%"><div class="at">🔐 طلب صلاحية: '+esc(o.title)+'</div><div class="ad">'+esc(o.desc)+'</div><div class="abtns">'
+    +'<button class="ok">موافقة</button><button class="always">موافقة دايماً</button><button class="no">رفض</button></div></div></div>';
+  document.body.appendChild(wrap);
+  const btns=wrap.querySelectorAll('button');
+  const done=(html,runIt)=>{wrap.querySelector('.approvalcard').innerHTML='<div class="decided">'+html+'</div>';setTimeout(()=>{wrap.remove();if(runIt)runIt();},runIt?700:1200);};
+  btns[0].onclick=()=>{done('✅ وافقت مرة واحدة - بينفذ دلوقتي...',()=>o.run());};
+  btns[1].onclick=()=>{GRANTS[o.key]=true;saveGrants();renderPermEdit();done('✅ اتفعلت الموافقة الدائمة - مش هسألك عن كده تاني',()=>o.run());};
   btns[2].onclick=()=>{done('🚫 اترفض - مفيش أي حاجة حصلت');toast('اترفض الطلب');};
 }
 function addSysNote(html){
