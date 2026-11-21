@@ -237,6 +237,10 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .pli{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13.5px;cursor:pointer}
 .pli input{accent-color:var(--acc);width:16px;height:16px}
 .pli input:checked+span{opacity:.55;text-decoration:line-through}
+.thgrid{display:flex;gap:8px;flex-wrap:wrap}
+.thsw{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-size:13px}
+.thsw.sel{border-color:var(--acc);font-weight:800}
+.thsw .dot{width:16px;height:16px;border-radius:50%;border:2px solid}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -324,6 +328,8 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
     <div style="overflow-y:auto">
       <div class="srow"><label>وضع المطور: شخصية المساعد <div class="hint">اكتب هنا هو يعمل إيه بالظبط: شخصيته، طريقة رده، دوره. بتتبعت مع كل رسالة.</div></label></div>
       <div class="srow" style="border:none;padding-top:0"><textarea id="sysPrompt" placeholder="مثال: رد باللهجة المصرية، كن صديقي وخبير برمجة، واشرح بأمثلة"></textarea></div>
+      <div class="srow"><label>الثيم <div class="hint">غيّر ألوان الأداة على مزاجك</div></label></div>
+      <div class="srow" style="border:none;padding-top:0"><div class="thgrid" id="thGrid"></div></div>
       <div class="srow"><label>اقرأ الردود بصوت <div class="hint">كل رد جديد يتقال بصوت عربي</div></label><div class="sw" id="voiceSw"></div></div>
       <div class="srow"><label>الإبداع (0 - 2) <div class="hint">أقل = أدق، أعلى = أكثر تنوع</div></label><input type="number" id="temp" min="0" max="2" step="0.1" placeholder="افتراضي"></div>
       <div class="srow"><label>أقصى طول للرد <div class="hint">بالتوكنز، سيبه فاضي للافتراضي</div></label><input type="number" id="maxtok" min="1" max="32000" placeholder="افتراضي"></div>
@@ -1844,6 +1850,35 @@ function dlFile(btn){
   a.download=fn;a.click();
   toast('اتنزّل: '+fn);
 }
+
+/* themes */
+const THEMES={
+  default:{name:'فاتح',vars:{}},
+  dark:{name:'داكن',vars:{'--bg':'#141412','--side':'#1C1B19','--card':'#242320','--line':'#35322E','--line2':'#423F3A','--txt':'#EDECE6','--dim':'#9B968C','--acc':'#D97757','--accD':'#E08A6C','--chip':'#2C2A27','--dark':'#0D0D0C','--darktxt':'#EDECE6'}},
+  night:{name:'ليلي أزرق',vars:{'--bg':'#0F1420','--side':'#141B2B','--card':'#1B2436','--line':'#29334C','--line2':'#35425E','--txt':'#E5EAF5','--dim':'#8B97B3','--acc':'#5B8DEF','--accD':'#7AA5F5','--chip':'#202B42','--dark':'#0A0E18','--darktxt':'#E5EAF5'}},
+  mint:{name:'نعناعي',vars:{'--bg':'#F2F7F4','--side':'#E7F0EA','--card':'#FFFFFF','--line':'#D4E2D8','--line2':'#C3D6C9','--txt':'#1E2B23','--dim':'#6B7B70','--acc':'#2E9E6B','--accD':'#24855A','--chip':'#E4EFE8','--dark':'#1E2B23','--darktxt':'#EDF5EF'}}
+};
+const THEME_VARS=['--bg','--side','--card','--line','--line2','--txt','--dim','--acc','--accD','--chip','--dark','--darktxt'];
+function applyTheme(id){
+  const t=THEMES[id]||THEMES.default;
+  for(const v of THEME_VARS){
+    if(t.vars[v])document.documentElement.style.setProperty(v,t.vars[v]);
+    else document.documentElement.style.removeProperty(v);
+  }
+  try{localStorage.setItem('flk_theme',id);}catch(e){}
+  renderThemeGrid();
+}
+function renderThemeGrid(){
+  const g=$('#thGrid');if(!g)return;
+  let cur='default';try{cur=localStorage.getItem('flk_theme')||'default';}catch(e){}
+  g.innerHTML=Object.keys(THEMES).map(id=>{
+    const t=THEMES[id];
+    const bg=t.vars['--bg']||'#FAF9F5',acc=t.vars['--acc']||'#D97757';
+    return '<button class="thsw'+(id===cur?' sel':'')+'" onclick="applyTheme(\''+id+'\')"><span class="dot" style="background:'+bg+';border-color:'+acc+'"></span>'+t.name+'</button>';
+  }).join('');
+}
+renderThemeGrid();
+try{const sv=localStorage.getItem('flk_theme');if(sv&&THEMES[sv]&&sv!=='default')applyTheme(sv);}catch(e){}
 
 </script>
 </body>
