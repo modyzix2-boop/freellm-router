@@ -229,6 +229,14 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .mact.on{color:var(--acc)}
 .pyout{margin-top:8px;padding:10px 12px;background:#0d1117;color:#7ee787;border-radius:10px;font-family:monospace;font-size:12px;white-space:pre-wrap;direction:ltr;text-align:left;max-height:260px;overflow:auto}
 .rbtn{color:#7ee787}
+.vidcard{margin:8px 0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+.vidcard video{width:100%;display:block}
+.vttl{padding:8px 12px;font-size:12px;color:var(--dim);background:var(--card)}
+.plancard{margin:8px 0;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 14px}
+.plt{font-weight:800;font-size:13px;margin-bottom:8px;color:var(--accD)}
+.pli{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13.5px;cursor:pointer}
+.pli input{accent-color:var(--acc);width:16px;height:16px}
+.pli input:checked+span{opacity:.55;text-decoration:line-through}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -460,8 +468,25 @@ function mdRender(t){
       const lm=parts[i].match(/^([a-zA-Z0-9+#.-]*)\n/);
       const lang=lm?lm[1].toLowerCase():'';
       const code=parts[i].replace(/^[a-zA-Z0-9+#. -]*\n/,'');
+      if(lang==='video'){
+        const vu=code.trim().split('\n')[0].trim().replace(/&amp;/g,'&');
+        out+='<div class="vidcard"><video controls playsinline preload="metadata" src="'+vu+'"></video><div class="vttl">فيديو متولّد</div></div>';
+      }else if(lang==='plan'){
+        const lines=code.split('\n').filter(l=>l.trim());
+        let items='';
+        for(const l of lines){
+          const m=l.match(/^\s*(?:[-*]|\d+[.)])\s*(\[(x| )\])?\s*(.*)$/);
+          const txt=m?m[3]:l;
+          const chk=m&&m[1];
+          items+='<label class="pli"><input type="checkbox" '+(m&&m[2]==='x'?'checked':'')+'> <span>'+txt+'</span></label>';
+        }
+        out+='<div class="plancard"><div class="plt">خطة العمل</div>'+items+'</div>';
+      }else if(lang==='file'){
+        out+='<pre class="cb" data-lang="file"><button class="cbtn" onclick="copyCode(this)">نسخ</button><button class="cbtn rbtn" onclick="dlFile(this)">تحميل</button><code>'+code+'</code></pre>';
+      }else{
       const runBtn=(lang==='python'||lang==='py')?'<button class="cbtn rbtn" onclick="runPy(this)">تشغيل</button>':'';
       out+='<pre class="cb" data-lang="'+lang+'"><button class="cbtn" onclick="copyCode(this)">نسخ</button>'+runBtn+'<code>'+code+'</code></pre>';
+      }
     } else out+=inlineMd(parts[i]);
   }
   return out;
@@ -851,7 +876,7 @@ async function send(){
   const tp=addTyping(thinkMode?'بيفكر ويخطط':'بيكتب');
   $('#send').disabled=true;
   try{
-    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود. لو المستخدم طلب تطبيق موبايل نيتيف أو قال فلاتر: اكتب كود Flutter/Dart كامل في مربع ```dart واحد (ملف main.dart كامل يشتغل لوحده، Material Design، واجهة عربية RTL، بأيقونات Icons من مكتبة فلاتر مش إيموجي).',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+    const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود. ولما تسلّم ملف يتحمّل: حطه في مربع ```file وأول سطر فيه // filename: الاسم. ولو بتعرض خطة شغل: حطها في مربع ```plan بخطوات على شكل - [ ] واللي اتعمل - [x]. ولو بتعرض فيديو: مربع ```video فيه رابط mp4 مباشر بس. لو المستخدم طلب تطبيق موبايل نيتيف أو قال فلاتر: اكتب كود Flutter/Dart كامل في مربع ```dart واحد (ملف main.dart كامل يشتغل لوحده، Material Design، واجهة عربية RTL، بأيقونات Icons من مكتبة فلاتر مش إيموجي).',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
     const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
     const t=parseFloat($('#temp').value);
     const mt=parseInt($('#maxtok').value);
@@ -1147,7 +1172,7 @@ async function send(){
   const hist=c.msgs.filter(m=>!m.gen&&!m.art).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
   hist.push({role:'user',content:userContent});
 
-  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود. لو المستخدم طلب تطبيق موبايل نيتيف أو قال فلاتر: اكتب كود Flutter/Dart كامل في مربع ```dart واحد (ملف main.dart كامل يشتغل لوحده، Material Design، واجهة عربية RTL، بأيقونات Icons من مكتبة فلاتر مش إيموجي).',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
+  const sp=[$('#sysPrompt').value.trim(),sysAdd,'لو حد سألك عن اسمك أو نموذجك: جاوب بصدق باسم النموذج الحقيقي الظاهر تحت ردك، ومتدّعيش إنك نموذج تاني.','لو المستخدم طلب يبني صفحة أو تطبيق: الأول اسأله سؤالين أو تلاتة قصار عن التفاصيل (الألوان، المحتوى، الستايل) إلا لو وضّح كل حاجة أو قال ابني على طول. ولما تبني: اكتب صفحة HTML كاملة في مربع ```html واحد، استخدم صور حقيقية بروابط مباشرة من https://image.pollinations.ai/prompt/وصف-بالإنجليزي?width=800 للصور والخلفيات، ورتّب الكود وعلّق عليه. ممنوع منعا باتا تستخدم أي إيموجي كأيقونة أو زرار أو زخرفة جوه الصفحة؛ لو محتاج أيقونة استخدم صورة SVG من CDN زي https://unpkg.com/lucide-static@latest/icons/ICON.svg (أسماء زي home, settings, user, search, menu, phone, mail, star, camera, download, share, arrow-right) أو ارسم SVG inline في الكود. ولما تسلّم ملف يتحمّل: حطه في مربع ```file وأول سطر فيه // filename: الاسم. ولو بتعرض خطة شغل: حطها في مربع ```plan بخطوات على شكل - [ ] واللي اتعمل - [x]. ولو بتعرض فيديو: مربع ```video فيه رابط mp4 مباشر بس. لو المستخدم طلب تطبيق موبايل نيتيف أو قال فلاتر: اكتب كود Flutter/Dart كامل في مربع ```dart واحد (ملف main.dart كامل يشتغل لوحده، Material Design، واجهة عربية RTL، بأيقونات Icons من مكتبة فلاتر مش إيموجي).',(MEM&&MEM.length?'معلومات محفوظة عن المستخدم (فتكرها واستخدمها بشكل طبيعي مش كأنك بتقايم): '+MEM.join('؛ '):''),(MEM&&MEM.length<10&&Math.random()<0.4?'في آخر ردك اسأل المستخدم سؤال واحد قصير وودود عن حياته أو أهدافه أو اهتماماته عشان تتعرف عليه أكتر (متكررش نفس السؤال).':'')].filter(Boolean).join('\n');
   const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
   const t=parseFloat($('#temp').value);
   const mt=parseInt($('#maxtok').value);
@@ -1807,6 +1832,18 @@ send=(function(orig){return async function(){
   }
   return orig();
 };})(send);
+
+/* downloadable file cards */
+function dlFile(btn){
+  const pre=btn.parentElement;
+  let code=pre.querySelector('code').textContent;
+  const fn=fnameOf(code)||'file.txt';
+  code=code.replace(/^\s*(?:\/\/|#|<!--|\/\*)\s*filename:[^\n]*\n?(?:-->\s*\n?|\*\/\s*\n?)?/,'');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([code],{type:'text/plain;charset=utf-8'}));
+  a.download=fn;a.click();
+  toast('اتنزّل: '+fn);
+}
 
 </script>
 </body>
