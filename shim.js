@@ -11,15 +11,6 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
-  if(req.method==='GET'&&(u.pathname==='/ar.html'||u.pathname==='/')){
-    try{
-      const LF2='/app/server/data/beaconlog.json';
-      let cur2;try{cur2=JSON.parse(fs.readFileSync(LF2,'utf8'));}catch(e){cur2={logs:[]};}
-      cur2.logs.push({t:Date.now(),kind:'http',build:'-',ua:String(req.headers['user-agent']||'').slice(0,180),href:u.pathname,keyPresent:false,setupShown:false,w:0,h:0,err:''});
-      if(cur2.logs.length>50)cur2.logs=cur2.logs.slice(-50);
-      fs.writeFileSync(LF2,JSON.stringify(cur2));
-    }catch(e){}
-  }
   if(u.pathname==='/'&&req.method==='GET'&&(req.headers.accept||'').includes('text/html')){res.writeHead(302,{Location:'/ar.html'});res.end();return;}
   if(u.pathname==='/v1/client/log'){
     const LF='/app/server/data/beaconlog.json';
@@ -274,18 +265,32 @@ http.createServer((req,res)=>{
     return J(res,405,{error:'method'});
   }
   const acceptGzip=(req.headers['accept-encoding']||'').includes('gzip');
+  const LOGF='/app/server/data/beaconlog.json';
+  const logHttp=(extra)=>{try{
+    if(req.method!=='GET'||!(u.pathname==='/ar.html'||u.pathname==='/'))return;
+    let c;try{c=JSON.parse(fs.readFileSync(LOGF,'utf8'));}catch(e){c={logs:[]};}
+    c.logs.push(Object.assign({t:Date.now(),kind:'http',build:'-',ua:String(req.headers['user-agent']||'').slice(0,180),href:u.pathname,keyPresent:false,setupShown:false,w:0,h:0,err:''},extra));
+    if(c.logs.length>50)c.logs=c.logs.slice(-50);
+    fs.writeFileSync(LOGF,JSON.stringify(c));
+  }catch(e){}};
   const p=http.request({host:'127.0.0.1',port:UP,path:req.url,method:req.method,headers:Object.assign({},req.headers,{'accept-encoding':'identity'})},r=>{
     const ct=String(r.headers['content-type']||'');
+    logHttp({kind:'http-req'});
     if(acceptGzip&&r.statusCode===200&&ct.includes('text/html')){
       const chunks=[];r.on('data',c=>chunks.push(c));
       r.on('end',()=>{zlib.gzip(Buffer.concat(chunks),(e,g)=>{
-        if(e){res.writeHead(500);res.end('gz');return;}
+        if(e){logHttp({kind:'http-res',err:'gz-fail'});res.writeHead(500);res.end('gz');return;}
         const h=Object.assign({},r.headers);
         delete h['content-length'];delete h['content-encoding'];delete h['transfer-encoding'];
         h['content-encoding']='gzip';h['content-length']=g.length;
         res.writeHead(200,h);res.end(g);
+        logHttp({kind:'http-res',err:'status=200 gz-bytes='+g.length});
       });});
-    }else{res.writeHead(r.statusCode,r.headers);r.pipe(res);}
+    }else{
+      let n=0;r.on('data',c=>{n+=c.length;});
+      res.writeHead(r.statusCode,r.headers);r.pipe(res);
+      res.on('finish',()=>logHttp({kind:'http-res',err:'status='+r.statusCode+' bytes='+n}));
+    }
   });
   p.on('error',()=>J(res,502,{error:'upstream starting'}));
   req.pipe(p);
