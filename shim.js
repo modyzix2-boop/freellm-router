@@ -11,6 +11,15 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(req.method==='GET'&&(u.pathname==='/ar.html'||u.pathname==='/')){
+    try{
+      const LF2='/app/server/data/beaconlog.json';
+      let cur2;try{cur2=JSON.parse(fs.readFileSync(LF2,'utf8'));}catch(e){cur2={logs:[]};}
+      cur2.logs.push({t:Date.now(),kind:'http',build:'-',ua:String(req.headers['user-agent']||'').slice(0,180),href:u.pathname,keyPresent:false,setupShown:false,w:0,h:0,err:''});
+      if(cur2.logs.length>50)cur2.logs=cur2.logs.slice(-50);
+      fs.writeFileSync(LF2,JSON.stringify(cur2));
+    }catch(e){}
+  }
   if(u.pathname==='/'&&req.method==='GET'&&(req.headers.accept||'').includes('text/html')){res.writeHead(302,{Location:'/ar.html'});res.end();return;}
   if(u.pathname==='/v1/client/log'){
     const LF='/app/server/data/beaconlog.json';
