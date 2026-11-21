@@ -7,7 +7,47 @@ const DIR='/app/server/data/chatsync';
 try{fs.mkdirSync(DIR,{recursive:true});}catch(e){}
 const fileFor=k=>path.join(DIR,crypto.createHash('sha256').update(k).digest('hex')+'.json');
 const readStore=f=>{try{return JSON.parse(fs.readFileSync(f,'utf8'))}catch(e){return{chats:{}}}};
-const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
+const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}ghSchedule(f);};
+// GitHub-backed persistence: sync files survive container restarts.
+const GH_T=process.env.GITHUB_TOKEN||'',GH_O=process.env.GITHUB_OWNER||'',GH_REPO=process.env.GH_SYNC_REPO||'masaedi';
+const ghTimers={},ghShaCache={};
+async function ghRead(name){
+  if(!GH_T||!GH_O)return null;
+  try{
+    const r=await fetch('https://api.github.com/repos/'+GH_O+'/'+GH_REPO+'/contents/sync/'+name,{headers:{Authorization:'Bearer '+GH_T,Accept:'application/vnd.github+json','User-Agent':'masaedi-shim'}});
+    if(!r.ok)return null;
+    const j=await r.json();
+    return {content:Buffer.from(j.content,'base64').toString('utf8'),sha:j.sha};
+  }catch(e){return null;}
+}
+async function ghWrite(name,content){
+  if(!GH_T||!GH_O||content.length>900*1024)return;
+  try{
+    let sha=ghShaCache[name];
+    if(sha===undefined){const cur=await ghRead(name);sha=cur?cur.sha:null;}
+    const body={message:'sync '+name,content:Buffer.from(content,'utf8').toString('base64')};
+    if(sha)body.sha=sha;
+    const r=await fetch('https://api.github.com/repos/'+GH_O+'/'+GH_REPO+'/contents/sync/'+name,{method:'PUT',headers:{Authorization:'Bearer '+GH_T,Accept:'application/vnd.github+json','User-Agent':'masaedi-shim','Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok&&j.content&&j.content.sha)ghShaCache[name]=j.content.sha;else delete ghShaCache[name];
+  }catch(e){}
+}
+function ghSchedule(f){
+  if(!GH_T||!GH_O)return;
+  const name=path.basename(f);
+  clearTimeout(ghTimers[name]);
+  ghTimers[name]=setTimeout(()=>{try{ghWrite(name,fs.readFileSync(f,'utf8'));}catch(e){}},4000);
+}
+// restore the chat store on boot if the local file is missing (post-restart)
+(async()=>{try{
+  if(KEY){
+    const f=fileFor(KEY);
+    if(!fs.existsSync(f)){
+      const r=await ghRead(path.basename(f));
+      if(r){fs.writeFileSync(f,r.content);ghShaCache[path.basename(f)]=r.sha;console.log('[shim] chat store restored from GitHub');}
+    }
+  }
+}catch(e){}})();
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
