@@ -54,8 +54,15 @@ http.createServer((req,res)=>{
       await gh('PUT','/repos/'+GO+'/'+repo+'/contents/'+enc,body);
     };
     const pushAll=async(repo,filesMap,msg)=>{
-      const ref=await gh('GET','/repos/'+GO+'/'+repo+'/git/ref/heads/main');
+      let ref=await gh('GET','/repos/'+GO+'/'+repo+'/git/ref/heads/main');
       let baseTree=null,parents=[];
+      if(ref===404){
+        const first=Object.keys(filesMap)[0];
+        await putFile(repo,first,filesMap[first],msg);
+        delete filesMap[first];
+        if(!Object.keys(filesMap).length)return;
+        ref=await gh('GET','/repos/'+GO+'/'+repo+'/git/ref/heads/main');
+      }
       if(ref!==404){
         const commit=await gh('GET','/repos/'+GO+'/'+repo+'/git/commits/'+ref.object.sha);
         baseTree=commit.tree.sha;parents=[ref.object.sha];
