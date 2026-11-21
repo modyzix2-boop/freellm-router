@@ -170,6 +170,17 @@ a{color:var(--accD)}
   #menuBtn{display:grid}
   .ub{max-width:88%}
 }
+#send.stop{background:#b3261e}
+#send.stop:hover{background:#9a1f1f}
+.fcard{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:8px;cursor:pointer;max-width:280px}
+.fcard:hover{border-color:var(--acc)}
+.fcard .fi{color:var(--accD)}
+.fcard .fn{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srcs{margin-top:8px;font-size:12px;color:var(--dim);border-top:1px dashed var(--line2);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.srcs a{color:var(--accD);text-decoration:none}
+.srcs a:hover{text-decoration:underline}
+.pvbody{padding:4px 20px 20px;overflow-y:auto}
+.pvbody pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12.5px;white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left;font-family:ui-monospace,Menlo,monospace;max-height:55vh;overflow:auto}
 </style>
 </head>
 <body>
@@ -260,6 +271,7 @@ a{color:var(--accD)}
         <div class="stbox"><div class="v" id="stMsg">0</div><div class="k">رسالة اتبعتت</div></div>
       </div>
       <table id="mtable"></table>
+      <div class="srow"><label>نقل المحادثات لجهاز تاني <div class="hint">صدّر نسخة هنا واستوردها على الموبايل أو التابلت التاني</div></label><div style="display:flex;gap:6px"><button class="sbtn" onclick="exportChats()">تصدير</button><button class="sbtn" onclick="document.getElementById('impFile').click()">استيراد</button></div></div>
       <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
     </div>
   </div>
@@ -277,6 +289,15 @@ a{color:var(--accD)}
     </div>
   </div>
 </div>
+<div class="overlay" id="pvSheet">
+  <div class="sheet">
+    <h3><span id="pvTitle">ملف</span> <button class="closex" onclick="closeSheet('pvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
+    <div class="pvbody"><pre id="pvText"></pre>
+      <button class="sbtn" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('pvText').textContent).then(()=>toast('اتنسخ'))">نسخ المحتوى</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="impFile" accept=".json" style="display:none">
 <div id="setup">
   <div class="scard">
     <span class="mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
@@ -793,6 +814,288 @@ renderSide();
 if(!curChat()){$('#empty').style.display='';}
 else renderChat();
 boot();
+/* ===== v2: streaming, stop button, live search, file preview, export/import ===== */
+let abortCtl=null;
+const UP_ARROW=$('#send').innerHTML;
+const STOP_SVG='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+function setBusy(b){
+  const s=$('#send');
+  if(b){s.classList.add('stop');s.innerHTML=STOP_SVG;s.disabled=false;}
+  else{s.classList.remove('stop');s.innerHTML=UP_ARROW;s.disabled=false;}
+}
+$('#send').onclick=()=>{if(abortCtl){abortCtl.abort();return;}send();};
+
+function openPv(name,text){
+  $('#pvTitle').textContent=name;
+  $('#pvText').textContent=text;
+  openSheet('pvSheet');
+}
+function exportChats(){
+  const data=JSON.stringify({v:1,chats:chats,stats:stats},null,1);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='mosa3edy-chats.json';a.click();
+  toast('اتنزّل ملف المحادثات');
+}
+$('#impFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const d=JSON.parse(rd.result);
+      if(!d||!Array.isArray(d.chats))throw 0;
+      chats=d.chats;stats=d.stats||stats;curId=chats[0]?chats[0].id:'';
+      try{localStorage.setItem('flk_cur',curId);}catch(e2){}
+      saveChats();bumpStats(null);stats.msgs--;renderSide();renderChat();
+      toast('اتحملت المحادثات ✅');
+    }catch(e2){toast('الملف ده مش نسخة محادثات صح');}
+  };
+  rd.readAsText(f);e.target.value='';
+});
+function renderSources(d,sources){
+  if(!sources||!sources.length)return;
+  const dv=document.createElement('div');dv.className='srcs';
+  dv.innerHTML='<b>المصادر:</b> '+sources.map((r,i)=>'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">['+(i+1)+'] '+esc(r.title||r.url)+'</a>').join(' ');
+  d.appendChild(dv);
+}
+/* override: user message with optional file card */
+function addUserDom(text,imgUrl,file){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow u';
+  const b=document.createElement('div');b.className='ub';
+  if(imgUrl){const im=document.createElement('img');im.src=imgUrl;b.appendChild(im);}
+  if(file){
+    const fc=document.createElement('div');fc.className='fcard';
+    fc.innerHTML='<span class="fi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg></span><span class="fn"></span>';
+    fc.querySelector('.fn').textContent=file.name;
+    fc.onclick=()=>openPv(file.name,file.text);
+    b.appendChild(fc);
+  }
+  if(text){const s2=document.createElement('span');s2.textContent=text;b.appendChild(s2);}
+  d.appendChild(b);$('#chat').appendChild(d);scrollDown();
+}
+/* override: replay with files+sources */
+function renderChat(){
+  const c=curChat();
+  $('#chat').innerHTML='';
+  $('#empty').style.display=c&&c.msgs.length?'none':'';
+  if(!c)return;
+  c.msgs.forEach(m=>{
+    if(m.r==='u')addUserDom(m.c,null,m.f);
+    else if(m.gen)addGenDom(m.gen.prompt,m.gen.url,true);
+    else{const d=addBotDom(m.c,m.reason,m.model,m.tok,true);if(m.sources)renderSources(d,m.sources);}
+  });
+  scrollDown();
+}
+/* override: addBotDom returns the row element */
+function addBotDom(content,reasoning,model,tok,silent){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow a';
+  if(reasoning){
+    const det=document.createElement('details');det.className='thinkbox';
+    const sum=document.createElement('summary');sum.innerHTML=IC.brain+' خطوات التفكير والتخطيط';
+    const tb=document.createElement('div');tb.className='tb';tb.textContent=reasoning;
+    det.appendChild(sum);det.appendChild(tb);d.appendChild(det);
+  }
+  const body=document.createElement('div');body.className='ab';body.innerHTML=mdRender(content||'(رد فاضي)');
+  d.appendChild(body);
+  const meta=document.createElement('div');meta.className='ameta';
+  const mi=MSG_T.push(content||'')-1;
+  let h='<span>'+esc(model||'')+'</span>';
+  if(tok)h+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
+  h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
+  meta.innerHTML=h;d.appendChild(meta);
+  $('#chat').appendChild(d);
+  if(!silent){scrollDown();if(autoVoice)speakText(mi);}
+  return d;
+}
+function createStreamBubble(){
+  $('#empty').style.display='none';
+  const d=document.createElement('div');d.className='mrow a';
+  const det=document.createElement('details');det.className='thinkbox';det.style.display='none';
+  det.innerHTML='<summary>'+IC.brain+' خطوات التفكير والتخطيط</summary><div class="tb"></div>';
+  const body=document.createElement('div');body.className='ab';
+  body.innerHTML='<span style="color:var(--dim)">…</span>';
+  const meta=document.createElement('div');meta.className='ameta';meta.style.display='none';
+  d.appendChild(det);d.appendChild(body);d.appendChild(meta);
+  $('#chat').appendChild(d);scrollDown();
+  return {d,det,body,meta};
+}
+async function streamChat(model,msgs,t,mt,bubble){
+  abortCtl=new AbortController();
+  const body={model,messages:msgs,stream:true};
+  if(!isNaN(t))body.temperature=t;
+  if(!isNaN(mt))body.max_tokens=mt;
+  const r=await fetch(API+'/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify(body),signal:abortCtl.signal});
+  const ct=r.headers.get('content-type')||'';
+  if(ct.indexOf('text/event-stream')!==0){
+    const d=await r.json();
+    if(d.error){const e=new Error('api');e.body=d;throw e;}
+    const m0=(d.choices&&d.choices[0]&&d.choices[0].message)||{};
+    return {content:m0.content||'',reasoning:m0.reasoning||'',model:d.model||model,tok:d.usage?d.usage.total_tokens:0};
+  }
+  const reader=r.body.getReader();
+  const dec=new TextDecoder();
+  let buf='',content='',reasoning='',mdl=model,tok=0;
+  for(;;){
+    const rd=await reader.read();
+    if(rd.done)break;
+    buf+=dec.decode(rd.value,{stream:true});
+    let idx;
+    while((idx=buf.indexOf('\n\n'))>=0){
+      const ev=buf.slice(0,idx);buf=buf.slice(idx+2);
+      const lines=ev.split('\n');
+      for(const line of lines){
+        if(line.indexOf('data:')!==0)continue;
+        const data=line.slice(5).trim();
+        if(data==='[DONE]')continue;
+        let j;try{j=JSON.parse(data);}catch(e2){continue;}
+        if(j.usage)tok=j.usage.total_tokens||tok;
+        if(j.model)mdl=j.model;
+        const ch=j.choices&&j.choices[0];
+        if(!ch)continue;
+        const dl=ch.delta||{};
+        if(dl.reasoning)reasoning+=dl.reasoning;
+        if(dl.content)content+=dl.content;
+        if(reasoning){bubble.det.style.display='';bubble.det.querySelector('.tb').textContent=reasoning;}
+        bubble.body.innerHTML=mdRender(content||'…');
+        scrollDown();
+      }
+    }
+  }
+  return {content,reasoning,model:mdl,tok};
+}
+
+/* override: send with streaming + stop + live search */
+async function doSearch(q){
+  const r=await fetch(API+'/v1/search',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({query:q,maxResults:5})});
+  const d=await r.json();
+  if(!r.ok||!d.results||!d.results.length)return null;
+  return d.results;
+}
+async function send(){
+  const text=inp.value.trim();
+  if(!text&&!attach)return;
+  if(abortCtl)return;
+  inp.value='';autoGrow();
+  let c=curChat();
+  if(!c){newChat();c=curChat();}
+
+  if(artMode){
+    if(!text){toast('اكتب وصف الصورة الأول');return;}
+    addUserDom('🎨 ارسم: '+text);
+    c.msgs.push({r:'u',c:'🎨 ارسم: '+text,art:true});
+    const url=genImage(text);
+    c.msgs.push({r:'a',gen:{prompt:text,url:url}});
+    if(c.title==='محادثة جديدة')c.title='🎨 '+text.slice(0,40);
+    saveChats();renderSide();
+    return;
+  }
+
+  const hadImg=attach&&attach.kind==='image';
+  const hadFile=attach&&attach.kind==='text';
+  const fileSnap=hadFile?{name:attach.name,text:attach.text}:null;
+  addUserDom(searchMode?('🔍 '+text):text,hadImg?attach.dataUrl:null,fileSnap);
+  c.msgs.push({r:'u',c:(searchMode?'🔍 ':'')+text+(hadImg?' [صورة]':'')+(hadFile?' [ملف: '+attach.name+']':''),f:fileSnap});
+  if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
+
+  let model=curModel, note='';
+  if(hadImg){
+    const m=MODELS.find(x=>x.id===curModel);
+    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note=' • حوّلت على نموذج بيفهم الصور';}
+  }
+  let sysAdd='';
+  if(thinkMode){
+    if(model==='auto'){model=THINK_MODEL;note+=' • وضع التفكير';}
+    sysAdd='فكّر خطوة بخطوة: اكتب خطة قصيرة أولاً، ثم نفّذها وأعطِ الإجابة النهائية بوضوح.';
+  }
+
+  let fullText=text;
+  let sources=null;
+  setBusy(true);
+  if(searchMode){
+    const tpS=addTyping('بدور على النت');
+    try{sources=await doSearch(text);}catch(e){sources=null;}
+    tpS.remove();
+    if(!sources){
+      addBotDom('⚠️ البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','',0);
+      setBusy(false);return;
+    }
+    const ctx=sources.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+(r.url||'')+'\n'+String(r.content||'').slice(0,900)).join('\n\n');
+    fullText='دي نتائج بحث حية من الإنترنت عن سؤال المستخدم.\n\n'+ctx+'\n\nسؤال المستخدم: '+text+'\n\nأجب بالعربي إجابة منظمة ومفيدة اعتماداً على النتائج دي، واذكر أرقام المصادر اللي اعتمدت عليها.';
+  }
+  if(hadFile)fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  const userContent=hadImg
+    ?[{type:'text',text:fullText||'اوصف الصورة دي'},{type:'image_url',image_url:{url:attach.dataUrl}}]
+    :fullText;
+  clearAttach();
+
+  const hist=c.msgs.filter(m=>!m.gen&&!m.art).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
+  hist.push({role:'user',content:userContent});
+
+  const sp=[$('#sysPrompt').value.trim(),sysAdd].filter(Boolean).join('\n');
+  const msgs=sp?[{role:'system',content:sp}].concat(hist):hist;
+  const t=parseFloat($('#temp').value);
+  const mt=parseInt($('#maxtok').value);
+  const tries=[model];
+  if(model==='auto')tries.push(VISION_FB);
+  else if(hadImg&&model!==VISION_FB)tries.push(VISION_FB);
+
+  const slow=setTimeout(()=>netbar('السيرفر بيصحى من النوم... ثانية واحدة'),6000);
+  let res=null,used=model,switched=false,lastErr=null,aborted=false;
+  for(const cand of tries){
+    const bubble=createStreamBubble();
+    try{
+      res=await streamChat(cand,msgs,t,mt,bubble);
+      used=cand;
+      if(res.content||res.reasoning){res._bubble=bubble;break;}
+      bubble.d.remove();switched=true;
+    }catch(e){
+      bubble.d.remove();
+      if(e&&e.name==='AbortError'){aborted=true;break;}
+      lastErr=(e&&e.body&&e.body.error)||null;switched=true;
+    }
+  }
+  clearTimeout(slow);netbar(null);
+  abortCtl=null;setBusy(false);
+
+  if(aborted){
+    addBotDom('⏹️ وقّفت الرد. ابعت تاني لما تكون جاهز.','','',0);
+    return;
+  }
+  if(!res||(!res.content&&!res.reasoning)){
+    let msg='⚠️ المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
+    if(lastErr&&/rate.?limit|cooldown|429/i.test(lastErr.message||''))msg='⚠️ المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
+    addBotDom(msg,'','',0);
+    return;
+  }
+  if(switched)note+=' • اتحوّل لنموذج شغال تلقائياً';
+  let reply=res.content||'(رد فاضي)';
+  let reasoning=res.reasoning||'';
+  const th=reply.match(/<think>([\s\S]*?)<\/think>/i);
+  if(th){reasoning=reasoning||th[1].trim();reply=reply.replace(/<think>[\s\S]*?<\/think>/i,'').trim();}
+  const tok=res.tok||0;
+  if(tok){dayTok.n+=tok;saveTok();}
+  const mdl=(res.model||used)+note;
+
+  const bubble=res._bubble;
+  if(reasoning){bubble.det.style.display='';bubble.det.querySelector('.tb').textContent=reasoning;}
+  bubble.body.innerHTML=mdRender(reply);
+  const mi=MSG_T.push(reply)-1;
+  let mh='<span>'+esc(mdl)+'</span>';
+  if(tok)mh+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  mh+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
+  mh+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
+  bubble.meta.innerHTML=mh;bubble.meta.style.display='flex';
+  if(sources)renderSources(bubble.d,sources);
+  scrollDown();
+  if(autoVoice)speakText(mi);
+
+  c.msgs.push({r:'a',c:reply,reason:reasoning,model:mdl,tok:tok,sources:sources?sources.map(r=>({title:r.title,url:r.url})):undefined});
+  saveChats();renderSide();bumpStats(res.model||used);
+}
+
 </script>
 </body>
 </html>
