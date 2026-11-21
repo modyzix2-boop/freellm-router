@@ -287,13 +287,15 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 </div>
 <input type="file" id="fileImg" accept="image/*" style="display:none">
 <input type="file" id="fileCam" accept="image/*" capture="environment" style="display:none">
-<input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh" style="display:none">
+<input type="file" id="fileProj" multiple accept=".zip,.txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.java,.kt,.dart,.gradle,.php,.sql,.sh,.properties,.toml,.ini,.cfg" style="display:none">
+    <input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh" style="display:none">
 <div class="overlay" id="attSheet">
   <div class="sheet">
     <h3>إرفاق <button class="closex" onclick="closeSheet('attSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
     <a class="slink" onclick="closeSheet('attSheet');fileImg.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-4.5-4.5L6 21"/></svg></span>صورة من الجهاز</a>
     <a class="slink" onclick="closeSheet('attSheet');fileCam.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>الكاميرا</a>
     <a class="slink" onclick="closeSheet('attSheet');fileTxt.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg></span>ملف نصي أو كود</a>
+    <a class="slink" onclick="closeSheet('attSheet');document.getElementById('fileProj').click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>مشروع كامل (ملفات أو ZIP)</a>
     <a class="slink" style="margin-bottom:14px" onclick="closeSheet('attSheet');openCanvas()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 19l7-7-4-4-7 7-1 5z"/><path d="M14 6l4 4"/></svg></span>لوحة رسم (ارسم بإيدك)</a>
   </div>
 </div>
@@ -808,9 +810,9 @@ async function send(){
   }
 
   const hadImg=attach&&attach.kind==='image';
-  const hadFile=attach&&attach.kind==='text';
+  const hadFile=attach&&(attach.kind==='text'||attach.kind==='project');
   addUserDom(text,hadImg?attach.dataUrl:null);
-  c.msgs.push({r:'u',c:text+(hadImg?' [صورة]':'')+(hadFile?' [ملف: '+attach.name+']':'')});
+  c.msgs.push({r:'u',c:text+(hadImg?' [صورة]':'')+(hadFile?(attach.kind==='project'?' [مشروع: '+attach.files.length+' ملفات]':' [ملف: '+attach.name+']'):'')});
   if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
 
   let model=curModel, note='';
@@ -825,7 +827,12 @@ async function send(){
   }
 
   let fullText=text;
-  if(hadFile)fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  if(hadFile){
+    if(attach.kind==='project'){
+      c.project=attach.files;
+      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+' ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
+    }else fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  }
   const userContent=hadImg
     ?[{type:'text',text:fullText||'اوصف الصورة دي'},{type:'image_url',image_url:{url:attach.dataUrl}}]
     :fullText;
@@ -1073,10 +1080,10 @@ async function send(){
   }
 
   const hadImg=attach&&attach.kind==='image';
-  const hadFile=attach&&attach.kind==='text';
-  const fileSnap=hadFile?{name:attach.name,text:attach.text}:null;
+  const hadFile=attach&&(attach.kind==='text'||attach.kind==='project');
+  const fileSnap=hadFile?(attach.kind==='project'?{name:'مشروع ('+attach.files.length+' ملفات)',text:attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')}:{name:attach.name,text:attach.text}):null;
   addUserDom(searchMode?('🔍 '+text):text,hadImg?attach.dataUrl:null,fileSnap);
-  c.msgs.push({r:'u',c:(searchMode?'🔍 ':'')+text+(hadImg?' [صورة]':'')+(hadFile?' [ملف: '+attach.name+']':''),f:fileSnap});
+  c.msgs.push({r:'u',c:(searchMode?'🔍 ':'')+text+(hadImg?' [صورة]':'')+(hadFile?(attach.kind==='project'?' [مشروع: '+attach.files.length+' ملفات]':' [ملف: '+attach.name+']'):''),f:fileSnap});
   if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
 
   let model=curModel, note='';
@@ -1119,7 +1126,12 @@ async function send(){
     if(got.length)fullText='المستخدم بعت رابط وعايز بيانات منه. دي البيانات المسحوبة حية من الرابط:\n\n'+got.join('\n\n')+'\n\nطلب المستخدم: '+text+'\n\nأجب بالعربي اعتماداً على البيانات دي، ولو المطلوب سعر أو رقم اذكره بوضوح مع المصدر والوقت.';
     else addSysNote('⚠️ معرفتش أسحب بيانات من الرابط ده - الموقع رافض أو بطيء');
   }
-  if(hadFile)fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  if(hadFile){
+    if(attach.kind==='project'){
+      c.project=attach.files;
+      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+' ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
+    }else fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
+  }
   const userContent=hadImg
     ?[{type:'text',text:fullText||'اوصف الصورة دي'},{type:'image_url',image_url:{url:attach.dataUrl}}]
     :fullText;
@@ -1634,6 +1646,89 @@ $('#pvApkBtn').onclick=()=>{
     }
   });
 };
+
+/* ===== project upload + code-aware editing ===== */
+async function ensureJSZip(){
+  if(window.JSZip)return;
+  await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';sc.onload=ok;sc.onerror=()=>no(new Error('cdn'));document.head.appendChild(sc);});
+}
+const PROJ_EXT=/\.(html?|css|js|ts|json|md|txt|py|java|kt|dart|gradle|xml|ya?ml|php|sql|sh|csv|properties|toml|ini|cfg|rb|go|rs|c|cpp|h)$/i;
+async function intakeProject(list){
+  let files=[];
+  try{
+    if(list.length===1&&/\.zip$/i.test(list[0].name)){
+      await ensureJSZip();
+      const zip=await JSZip.loadAsync(list[0]);
+      const names=Object.keys(zip.files).filter(n=>!zip.files[n].dir&&PROJ_EXT.test(n)&&!/(^|\/)(node_modules|\.git|build|dist|\.gradle)\//.test(n));
+      for(const n of names.slice(0,15)){
+        let t=await zip.files[n].async('string');
+        if(t.length>12000)t=t.slice(0,12000);
+        files.push({name:n,text:t});
+      }
+      if(!files.length){toast('الزيب مفيهوش ملفات كود مقروءة');return;}
+    }else{
+      for(const f of [...list].slice(0,15)){
+        if(!PROJ_EXT.test(f.name)&&!/\.(html?|css|js)$/i.test(f.name))continue;
+        let t=await f.text();
+        if(t.length>12000)t=t.slice(0,12000);
+        files.push({name:f.name,text:t});
+      }
+      if(!files.length){toast('اختار ملفات كود أو زيب');return;}
+    }
+  }catch(e){toast('قراءة الملفات فشلت: '+(e.message||''));return;}
+  const total=files.reduce((a,f)=>a+f.text.length,0);
+  if(total>45000){let acc=0;files=files.filter(f=>{acc+=f.text.length;return acc<=45000;});toast('المشروع كبير، خدت أول '+files.length+' ملف بس');}
+  attach={kind:'project',files};
+  $('#attachThumb').style.display='none';
+  $('#attachName').textContent='مشروع: '+files.length+' ملفات جاهزة';
+  $('#attachChip').classList.add('show');
+}
+document.getElementById('fileProj').onchange=function(){if(this.files&&this.files.length)intakeProject(this.files);this.value='';};
+
+/* auto-apply edited files from replies */
+function fnameOf(block){
+  const first=block.split('\n',1)[0];
+  const m=first.match(/^\s*(?:\/\/|#|<!--|\/\*)\s*filename:\s*([^\s*>-]+)/i);
+  return m?m[1].trim():null;
+}
+send=(function(orig){return async function(){
+  const r=await orig();
+  try{
+    const c=curChat();
+    if(c&&c.project&&c.project.length){
+      const lastA=c.msgs.filter(m=>m.r==='a'&&typeof m.c==='string').pop();
+      if(lastA){
+        const blocks=[...lastA.c.matchAll(/```(\w*)\s*\n([\s\S]*?)```/g)];
+        const updated=[];
+        for(const b of blocks){
+          const fn=fnameOf(b[2]);
+          if(!fn)continue;
+          const body=b[2].replace(/^\s*(?:\/\/|#|<!--|\/\*)\s*filename:[^\n]*\n?(?:-->\s*\n?|\*\/\s*\n?)?/,'');
+          const ex=c.project.find(f=>f.name===fn||f.name.endsWith('/'+fn)||fn.endsWith(f.name));
+          if(ex){ex.text=body;updated.push(fn);}else{c.project.push({name:fn,text:body});updated.push(fn+' (جديد)');}
+        }
+        if(updated.length){saveChats();addSysNote('📁 اتعدّلت الملفات في المشروع: '+updated.join('، ')+' - افتح المعاينة تشوف النتيجة');}
+      }
+    }
+  }catch(e){}
+  return r;};})(send);
+
+/* project-aware preview: rewrite relative refs to blob URLs */
+function mergeProject(code){
+  let c=curChat();
+  if(!c||!c.project||!c.project.length)return code;
+  let out=code;
+  for(const f of c.project){
+    if(/\.html?$/i.test(f.name))continue;
+    const blob=new Blob([f.text],{type:/\.css$/i.test(f.name)?'text/css':(/\.(js|ts)$/i.test(f.name)?'text/javascript':'text/plain')});
+    const u=URL.createObjectURL(blob);
+    const base=f.name.split('/').pop();
+    out=out.split('"'+f.name+'"').join('"'+u+'"').split("'"+f.name+"'").join("'"+u+"'").split('"'+base+'"').join('"'+u+'"').split("'"+base+"'").join("'"+u+"'");
+    out=out.split('(./'+base+')').join('('+u+')').split('('+base+')').join('('+u+')');
+  }
+  return out;
+}
+openHtmlPv=(function(orig){return function(code){return orig(mergeProject(code));};})(openHtmlPv);
 
 </script>
 </body>
