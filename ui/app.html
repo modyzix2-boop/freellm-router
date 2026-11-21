@@ -1097,7 +1097,7 @@ async function send(){
 }
 
 /* server-side chat sync (shim /v1/client/chats, keyed by unified key) */
-const SYNC_URL=API+'/client/chats';
+const SYNC_URL=API+'/v1/client/chats';
 let syncT=null;
 function syncPush(){
   clearTimeout(syncT);
