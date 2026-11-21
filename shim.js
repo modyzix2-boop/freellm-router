@@ -127,7 +127,7 @@ http.createServer((req,res)=>{
             const lt=await lr.text();
             logTail=lt.slice(-5000);
           }
-          const files=['settings.gradle','build.gradle','app/build.gradle','app/src/main/AndroidManifest.xml','app/src/main/java/com/masaedi/app/MainActivity.kt','.github/workflows/build.yml'];
+          const files=['settings.gradle','build.gradle','app/build.gradle','app/src/main/AndroidManifest.xml','app/src/main/java/com/masaedi/app/MainActivity.java','.github/workflows/build.yml'];
           const cur={};
           for(const f of files){
             const c=await gh('GET','/repos/'+GO+'/'+repo+'/contents/'+f.split('/').map(encodeURIComponent).join('/'));
@@ -172,7 +172,7 @@ http.createServer((req,res)=>{
         const ROOT='plugins { id "com.android.application" version "8.5.0" apply false }\n';
         const APPG='plugins { id "com.android.application" }\nandroid {\n  namespace "com.masaedi.app"\n  compileSdk 34\n  defaultConfig {\n    applicationId "com.masaedi.app"\n    minSdk 24\n    targetSdk 34\n    versionCode '+n+'\n    versionName "'+ver+'"\n  }\n}\n';
         const MAN='<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <application android:label="'+appName.replace(/"/g,'')+'" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:usesCleartextTraffic="true">\n    <activity android:name=".MainActivity" android:exported="true">\n      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>\n    </activity>\n  </application>\n</manifest>\n';
-        const KT='package com.masaedi.app\nimport android.app.Activity\nimport android.os.Bundle\nimport android.webkit.WebView\nimport android.webkit.WebViewClient\nclass MainActivity: Activity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    val w = WebView(this)\n    w.settings.javaScriptEnabled = true\n    w.settings.domStorageEnabled = true\n    w.webViewClient = WebViewClient()\n    w.loadUrl("file:///android_asset/index.html")\n    setContentView(w)\n  }\n}\n';
+        const JT='package com.masaedi.app;\nimport android.app.Activity;\nimport android.os.Bundle;\nimport android.webkit.WebView;\nimport android.webkit.WebViewClient;\npublic class MainActivity extends Activity {\n  @Override protected void onCreate(Bundle b) {\n    super.onCreate(b);\n    WebView w = new WebView(this);\n    w.getSettings().setJavaScriptEnabled(true);\n    w.getSettings().setDomStorageEnabled(true);\n    w.setWebViewClient(new WebViewClient());\n    w.loadUrl("file:///android_asset/index.html");\n    setContentView(w);\n  }\n}\n';
         const msg='نسخة v'+ver;
         const isFlutter=String(d.type||'')==='flutter';
         if(isFlutter){
@@ -182,7 +182,7 @@ http.createServer((req,res)=>{
           const FWF='name: build-apk\non: [workflow_dispatch, push]\nconcurrency: {group: apk-build, cancel-in-progress: true}\npermissions:\n  contents: write\nenv:\n  VER: "'+ver+'"\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: {distribution: temurin, java-version: "17"}\n      - uses: subosito/flutter-action@v2\n        with: {channel: stable, cache: true}\n      - run: flutter create --platforms android --project-name masaedi_app .\n      - run: flutter build apk --debug\n      - uses: softprops/action-gh-release@v2\n        if: success()\n        with:\n          tag_name: v${{ env.VER }}\n          name: "نسخة v${{ env.VER }}"\n          files: build/app/outputs/flutter-apk/app-debug.apk\n';
           await pushAll(repo,{'pubspec.yaml':PUB,'lib/main.dart':dart,'.github/workflows/build.yml':FWF},msg);
         }else{
-          await pushAll(repo,{'settings.gradle':SETTINGS,'build.gradle':ROOT,'app/build.gradle':APPG,'app/src/main/AndroidManifest.xml':MAN,'app/src/main/java/com/masaedi/app/MainActivity.kt':KT,'app/src/main/assets/index.html':html,'.github/workflows/build.yml':WF},msg);
+          await pushAll(repo,{'settings.gradle':SETTINGS,'build.gradle':ROOT,'app/build.gradle':APPG,'app/src/main/AndroidManifest.xml':MAN,'app/src/main/java/com/masaedi/app/MainActivity.java':JT,'app/src/main/assets/index.html':html,'.github/workflows/build.yml':WF},msg);
         }
         try{await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});}catch(e){}
         J(res,200,{ok:true,version:ver,repo,url:'https://github.com/'+GO+'/'+repo,apk:'https://github.com/'+GO+'/'+repo+'/releases/latest/download/app-debug.apk'});
