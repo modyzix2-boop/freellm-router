@@ -226,6 +226,7 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .galcard .gt{padding:7px 10px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .galcard .gd{padding:0 10px 8px;font-size:10.5px;color:var(--dim)}
 .ic{width:14px;height:14px;vertical-align:-2px;margin:0 4px;filter:invert(1)}
+.mact.on{color:var(--acc)}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -1729,6 +1730,28 @@ function mergeProject(code){
   return out;
 }
 openHtmlPv=(function(orig){return function(code){return orig(mergeProject(code));};})(openHtmlPv);
+
+/* message actions: like + share */
+addBotDom=(function(orig){return function(content,reasoning,model,tok,silent){
+  const d=orig(content,reasoning,model,tok,silent);
+  try{
+    const meta=d.querySelector('.ameta');
+    const mi=MSG_T.length-1;
+    if(meta){
+      const like=document.createElement('button');like.className='mact';like.title='عجبني';
+      like.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+      like.onclick=()=>{like.classList.toggle('on');toast(like.classList.contains('on')?'سجلنا إعجابك بالرد':'اتشال الإعجاب');};
+      const sh=document.createElement('button');sh.className='mact';sh.title='شارك';
+      sh.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>';
+      sh.onclick=async()=>{
+        const t=MSG_T[mi]||'';
+        if(navigator.share){try{await navigator.share({text:t});}catch(e){}}
+        else{try{await navigator.clipboard.writeText(t);toast('اتنسخ الرد - شاركه في أي حتة');}catch(e){toast('المشاركة مش متاحة هنا');}}
+      };
+      meta.appendChild(like);meta.appendChild(sh);
+    }
+  }catch(e){}
+  return d;};})(addBotDom);
 
 </script>
 </body>
