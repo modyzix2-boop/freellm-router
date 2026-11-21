@@ -11,6 +11,29 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(u.pathname==='/v1/client/fetch'&&req.method==='POST'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    let b='';req.on('data',x=>{b+=x;if(b.length>64*1024)req.destroy();});
+    req.on('end',()=>{(async()=>{
+      try{
+        const d=JSON.parse(b);
+        const url=String(d.url||'').trim();
+        if(!/^https?:\/\/[\w.-]+\.[a-z]{2,}([/?#]|$)/i.test(url))return J(res,400,{error:'bad url'});
+        const host=new URL(url).hostname;
+        if(/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|169\.254\.)/.test(host))return J(res,400,{error:'bad host'});
+        const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),15000);
+        const r=await fetch(url,{signal:ctrl.signal,redirect:'follow',headers:{'User-Agent':'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36','Accept-Language':'ar,en;q=0.8'}});
+        clearTimeout(to);
+        const ct=r.headers.get('content-type')||'';
+        if(!r.ok)return J(res,502,{error:'الموقع رد بـ '+r.status});
+        let raw=await r.text();raw=raw.slice(0,1024*1024);
+        const title=(raw.match(/<title[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'';
+        let text=raw.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<noscript[\s\S]*?<\/noscript>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim();
+        J(res,200,{ok:true,url,status:r.status,type:ct.slice(0,60),title:title.trim().slice(0,200),text:text.slice(0,8000)});
+      }catch(e){J(res,502,{error:String(e.message||e).slice(0,200)});}
+    })();});
+    return;
+  }
   if(u.pathname==='/v1/client/apk/build'&&req.method==='POST'||u.pathname==='/v1/client/apk/fix'&&req.method==='POST'||u.pathname==='/v1/client/apk/status'&&req.method==='GET'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     const GT=process.env.GITHUB_TOKEN||'',GO=process.env.GITHUB_OWNER||'';

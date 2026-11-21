@@ -1102,6 +1102,21 @@ async function send(){
     const ctx=sources.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+(r.url||'')+'\n'+String(r.content||'').slice(0,900)).join('\n\n');
     fullText='دي نتائج بحث حية من الإنترنت عن سؤال المستخدم.\n\n'+ctx+'\n\nسؤال المستخدم: '+text+'\n\nأجب بالعربي إجابة منظمة ومفيدة اعتماداً على النتائج دي، واذكر أرقام المصادر اللي اعتمدت عليها.';
   }
+  const urlM=text.match(/https?:\/\/[^\s<>"']+/g);
+  if(urlM&&urlM.length&&!searchMode){
+    const tpF=addTyping('بسحب البيانات من الموقع');
+    const got=[];
+    for(const u0 of urlM.slice(0,2)){
+      try{
+        const fr=await fetch(API+'/v1/client/fetch',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({url:u0})});
+        const fd=await fr.json();
+        if(fd&&fd.ok)got.push('محتوى صفحة "'+(fd.title||u0)+'" ('+u0+'):\n'+fd.text);
+      }catch(e){}
+    }
+    tpF.remove();
+    if(got.length)fullText='المستخدم بعت رابط وعايز بيانات منه. دي البيانات المسحوبة حية من الرابط:\n\n'+got.join('\n\n')+'\n\nطلب المستخدم: '+text+'\n\nأجب بالعربي اعتماداً على البيانات دي، ولو المطلوب سعر أو رقم اذكره بوضوح مع المصدر والوقت.';
+    else addSysNote('⚠️ معرفتش أسحب بيانات من الرابط ده - الموقع رافض أو بطيء');
+  }
   if(hadFile)fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
   const userContent=hadImg
     ?[{type:'text',text:fullText||'اوصف الصورة دي'},{type:'image_url',image_url:{url:attach.dataUrl}}]
