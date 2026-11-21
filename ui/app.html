@@ -247,6 +247,17 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%230D9488"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
 <body>
+<script>
+window.__BOOT_OK=false;
+(function wd(){setTimeout(function(){
+if(window.__BOOT_OK)return;
+if(document.readyState==='loading'||!document.body)return wd();
+var d=document.createElement('div');
+d.style.cssText='position:fixed;inset:0;background:#141412;color:#EDECE6;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:Cairo,sans-serif;text-align:center;padding:24px';
+d.innerHTML='<div style="font-size:19px;font-weight:900;margin-bottom:10px">الصفحة متحمّلتش كاملة</div><div style="font-size:14px;opacity:.75;margin-bottom:20px">النت اتقطع أثناء التحميل. دوس تحديث وهتظبط.</div><button onclick="location.reload()" style="background:#0D9488;color:#fff;border:none;padding:12px 34px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer">تحديث الصفحة</button>';
+document.body.appendChild(d);
+},6000);})();
+</script>
 <div id="app">
   <aside id="side">
     <div class="stop">
@@ -370,6 +381,7 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
       <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.8 12.2 21 2m-4 4 3 3"/></svg>الحساب</div>
       <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
     </div>
+      <div style="text-align:center;padding:14px;font-size:11px;color:var(--dim)">نسخة 21-11-ج</div>
   </div>
 </div>
 <div class="overlay" id="cvSheet">
@@ -1901,6 +1913,8 @@ function renderThemeGrid(){
 renderThemeGrid();
 try{const sv=localStorage.getItem('flk_theme');if(sv&&THEMES[sv]&&sv!=='default')applyTheme(sv);}catch(e){}
 
+
+window.__BOOT_OK=true;window.__BUILD='21-11-c';
 </script>
 </body>
 </html>
