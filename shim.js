@@ -30,6 +30,13 @@ http.createServer((req,res)=>{
       if(cur&&cur!==404&&cur.sha)body.sha=cur.sha;
       await gh('PUT','/repos/'+GO+'/'+repo+'/contents/'+enc,body);
     };
+    const pushAll=async(repo,filesMap,msg)=>{
+      const ref=await gh('GET','/repos/'+GO+'/'+repo+'/git/ref/heads/main');
+      const commit=await gh('GET','/repos/'+GO+'/'+repo+'/git/commits/'+ref.object.sha);
+      const tree=await gh('POST','/repos/'+GO+'/'+repo+'/git/trees',{base_tree:commit.tree.sha,tree:Object.keys(filesMap).map(path=>({path,mode:'100644',type:'blob',content:filesMap[path]}))});
+      const nc=await gh('POST','/repos/'+GO+'/'+repo+'/git/commits',{message:msg,tree:tree.sha,parents:[ref.object.sha]});
+      await gh('PATCH','/repos/'+GO+'/'+repo+'/git/refs/heads/main',{sha:nc.sha});
+    };
     const counterF=fileFor(KEY).replace('.json','.apk.json');
     if(u.pathname==='/v1/client/apk/status'){
       const repo=u.searchParams.get('repo')||'';
@@ -77,11 +84,13 @@ http.createServer((req,res)=>{
           const fix=mm?JSON.parse(mm[0]):null;
           if(!fix||!Array.isArray(fix.files)||!fix.files.length)return J(res,502,{error:'المراجعة مطلعتش إصلاح واضح'});
           const allowed=new Set(files.concat(['app/src/main/assets/index.html']));
+          const fm={};
           for(const f of fix.files.slice(0,6)){
             if(!allowed.has(f.path)||typeof f.content!=='string')continue;
-            await putFile(repo,f.path,f.content,'إصلاح بناء آلي: '+(fix.note||'').slice(0,80));
+            fm[f.path]=f.content;
           }
-          await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});
+          if(Object.keys(fm).length)await pushAll(repo,fm,'إصلاح بناء آلي: '+(fix.note||'').slice(0,80));
+          try{await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});}catch(e){}
           return J(res,200,{ok:true,note:String(fix.note||'').slice(0,300)});
         }
         // build
@@ -100,14 +109,8 @@ http.createServer((req,res)=>{
         const MAN='<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <application android:label="'+appName.replace(/"/g,'')+'" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:usesCleartextTraffic="true">\n    <activity android:name=".MainActivity" android:exported="true">\n      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>\n    </activity>\n  </application>\n</manifest>\n';
         const KT='package com.masaedi.app\nimport android.app.Activity\nimport android.os.Bundle\nimport android.webkit.WebView\nimport android.webkit.WebViewClient\nclass MainActivity: Activity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    val w = WebView(this)\n    w.settings.javaScriptEnabled = true\n    w.settings.domStorageEnabled = true\n    w.webViewClient = WebViewClient()\n    w.loadUrl("file:///android_asset/index.html")\n    setContentView(w)\n  }\n}\n';
         const msg='نسخة v'+ver;
-        await putFile(repo,'settings.gradle',SETTINGS,msg);
-        await putFile(repo,'build.gradle',ROOT,msg);
-        await putFile(repo,'app/build.gradle',APPG,msg);
-        await putFile(repo,'app/src/main/AndroidManifest.xml',MAN,msg);
-        await putFile(repo,'app/src/main/java/com/masaedi/app/MainActivity.kt',KT,msg);
-        await putFile(repo,'app/src/main/assets/index.html',html,msg);
-        await putFile(repo,'.github/workflows/build.yml',WF,msg);
-        await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});
+        await pushAll(repo,{'settings.gradle':SETTINGS,'build.gradle':ROOT,'app/build.gradle':APPG,'app/src/main/AndroidManifest.xml':MAN,'app/src/main/java/com/masaedi/app/MainActivity.kt':KT,'app/src/main/assets/index.html':html,'.github/workflows/build.yml':WF},msg);
+        try{await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});}catch(e){}
         J(res,200,{ok:true,version:ver,repo,url:'https://github.com/'+GO+'/'+repo,apk:'https://github.com/'+GO+'/'+repo+'/releases/latest/download/app-debug.apk'});
       }catch(e){J(res,502,{error:String(e.message||e).slice(0,300)});}
     })();});
