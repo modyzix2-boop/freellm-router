@@ -216,6 +216,13 @@ a{color:var(--accD)}
 .approvalcard .decided{font-size:12.5px;font-weight:800}
 .sysnote{align-self:center;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:11.5px;color:var(--dim);margin:6px auto;max-width:92%;text-align:center}
 .sysnote a{color:var(--accD);font-weight:800}
+
+.galgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 16px 16px}
+.galcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);cursor:pointer}
+.galcard img{width:100%;height:110px;object-fit:cover;display:block}
+.galcard .gph{height:110px;display:grid;place-items:center;font-size:34px;background:var(--chip)}
+.galcard .gt{padding:7px 10px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.galcard .gd{padding:0 10px 8px;font-size:10.5px;color:var(--dim)}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -228,6 +235,7 @@ a{color:var(--accD)}
     </div>
     <div id="chats"></div>
     <div class="sbot">
+      <a class="slink" onclick="openGal()"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>المعرض</a>
       <a class="slink" onclick="openSheet('setSheet')"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>الإعدادات ووضع المطور</a>
       <a class="slink" href="https://freellm-router.onrender.com" target="_blank"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>لوحة الإحصائيات الكاملة ↗</a>
     </div>
@@ -343,6 +351,7 @@ a{color:var(--accD)}
     </div>
   </div>
 </div>
+<div class="overlay" id="galSheet"><div class="sheet"><h3>المعرض <button class="closex" onclick="closeSheet('galSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div style="overflow-y:auto"><div class="galgrid" id="galGrid"></div></div></div></div>
 <div class="overlay" id="htmlPv">
   <div class="pvsheet">
     <div class="pvtools">
@@ -587,6 +596,7 @@ function addGenDom(prompt,url,silent){
   $('#chat').appendChild(d);
   im.src=url;
   if(!silent)scrollDown();
+  try{galAdd({type:'image',title:prompt.slice(0,50),src:url});}catch(e){}
 }
 function addTyping(txt){
   const tp=document.createElement('div');tp.className='typing';
@@ -1200,6 +1210,7 @@ async function syncPull(){
 syncPull();
 
 /* ===== team mode (فريق) ===== */
+const PROG={txt:''};
 let teamMode=false;
 const TEAM_LEAD_MODEL='gemini-3-flash-preview';
 let TEAM=[];
@@ -1257,6 +1268,7 @@ async function runTeam(text){
   const t=parseFloat($('#temp').value),mt=parseInt($('#maxtok').value);
   let totalTok=0;
   try{
+    PROG.txt='المدير بيقسم المهام على الفريق...';
     const s0=teamStep(box,'👔 المدير بيقسم المهام على الفريق...','act');
     let fullText=text;
     if(attach&&attach.kind==='image'){
@@ -1267,10 +1279,11 @@ async function runTeam(text){
     }
     clearAttach();
     const names=TEAM.map(a=>a.name).join('، ');
-    const planSys='أنت مدير فريق ذكاء اصطناعي. قسّم طلب المستخدم لمهام صغيرة واضحة على أعضاء فريقك: '+names+'. رد بصيغة JSON فقط بدون أي نص تاني: [{"name":"اسم العضو بالظبط زي ما اتقال","task":"مهمته بالتفصيل"}]. لو الطلب بسيط استخدم عضو أو اتنين بس. لو الطلب كبير وزّع على الكل.';
+    const planSys='أنت مدير فريق ذكاء اصطناعي. لو طلب المستخدم ناقص تفاصيل مهمة متقدرش تخمنها، رد بصيغة JSON فقط: {"ask":"سؤال واحد واضح للمستخدم يكمل الناقص"}. غير كده قسّم الطلب لمهام صغيرة واضحة على أعضاء فريقك: '+names+'. رد بصيغة JSON فقط بدون أي نص تاني: [{"name":"اسم العضو بالظبط زي ما اتقال","task":"مهمته بالتفصيل"}]. لو الطلب بسيط استخدم عضو أو اتنين بس. لو الطلب كبير وزّع على الكل.';
     const planRes=await chatOnce(TEAM_LEAD_MODEL,[{role:'system',content:planSys},{role:'user',content:fullText}],0.3,900,sig);
     totalTok+=planRes.tok;
     let plan=null;
+    try{const askM=planRes.content.match(/\{"ask"\s*:\s*"[^"]+"\s*\}/);if(askM){const a=JSON.parse(askM[0]);s0.className='tstep done';s0.textContent='👔 المدير محتاج توضيح منك الأول';box.remove();abortCtl=null;setBusy(false);addBotDom(a.ask,'','المدير • '+planRes.model,planRes.tok);c.msgs.push({r:'a',c:a.ask,model:'المدير • '+planRes.model,tok:planRes.tok});saveChats();renderSide();return;}}catch(e){}
     try{const mm=planRes.content.match(/\[[\s\S]*\]/);plan=JSON.parse(mm[0]);}catch(e){plan=null;}
     if(!Array.isArray(plan)||!plan.length)plan=TEAM.map(a=>({name:a.name,task:fullText}));
     plan=plan.filter(st=>TEAM.some(a=>a.name===st.name));
@@ -1285,11 +1298,14 @@ async function runTeam(text){
         try{const sr=await doSearch(st.task);if(sr)searchCtx='\nنتائج بحث حية من الإنترنت:\n'+sr.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+String(r.content||'').slice(0,400)).join('\n');}catch(e){}
       }
       const sys=(a.sys||'')+searchCtx+'\nأنت عضو في فريق بيشتغل على طلب واحد. الطلب الأصلي: '+fullText+'\nمهمتك أنت بالتحديد: '+st.task+'\nنفّذ مهمتك بس بإتقان. لو حد سألك عن اسمك: أنت "'+a.name+'" وشغال بالنموذج '+a.model+'.';
-      const r=await chatOnce(a.model,[{role:'system',content:sys},{role:'user',content:st.task}],isNaN(t)?0.7:t,isNaN(mt)?1500:mt,sig);
+      let r;
+      try{r=await chatOnce(a.model,[{role:'system',content:sys},{role:'user',content:st.task}],isNaN(t)?0.7:t,isNaN(mt)?1500:mt,sig);}
+      catch(e1){r=await chatOnce(VISION_FB,[{role:'system',content:sys},{role:'user',content:st.task}],isNaN(t)?0.7:t,isNaN(mt)?1500:mt,sig);}
       return {agent:a,task:st.task,res:r,idx};
     }));
+    PROG.txt='أعضاء الفريق بيشتغلوا...';
     let done=0;
-    const contribs=[];
+    const contribs=[];const failed=[];
     results.forEach((rr,i)=>{
       const st=plan[i];
       if(rr.status==='fulfilled'){
@@ -1302,15 +1318,17 @@ async function runTeam(text){
       }else{
         const e=rr.reason;
         if(e&&e.name==='AbortError')throw e;
-        box.children[1+i].className='tstep done';box.children[1+i].textContent='⚠️ '+st.name+' معرفش يرد (مزود مشغول)';
+        failed.push(st.name);
+        box.children[1+i].className='tstep done';box.children[1+i].textContent='⚠️ '+st.name+' معرفش يرد - المدير هيغطي مكانه';
       }
     });
     scrollDown();
     if(!contribs.length){teamStep(box,'⚠️ الفريق كله مشغول دلوقتي - جرب تاني بعد شوية','done');return;}
+    PROG.txt='المدير بيجمع شغل الفريق في الرد النهائي...';
     const sF=teamStep(box,'👔 المدير بيجمع شغل الفريق في رد نهائي...','act');
     const finRes=await chatOnce(TEAM_LEAD_MODEL,[
       {role:'system',content:'أنت مدير الفريق. اجمع شغل أعضاء فريقك في رد نهائي واحد منظم ومتكامل بالعربي للمستخدم. متكررش نفس الكلام، رتّب بعناوين واضحة، ولو في تعارض بين الأعضاء وضّحه. لو سُئلت عن اسمك قول إنك مدير الفريق وشغال بالنموذج '+TEAM_LEAD_MODEL+'.'},
-      {role:'user',content:'طلب المستخدم: '+fullText+'\n\nشغل الفريق:\n'+contribs.join('\n\n---\n\n')+'\n\nاكتب الرد النهائي للمستخدم.'}
+      {role:'user',content:'طلب المستخدم: '+fullText+'\n\nشغل الفريق:\n'+contribs.join('\n\n---\n\n')+(failed.length?'\n\nملحوظة: '+(failed.join('، '))+' معرفوش يردوا - غطّي أجزاءهم بنفسك واذكر ده باختصار في الآخر.':'')+'\n\nاكتب الرد النهائي للمستخدم.'}
     ],0.5,isNaN(mt)?2000:mt,sig);
     totalTok+=finRes.tok;
     sF.className='tstep done';sF.textContent='✅ الفريق خلّص ('+arNum(done)+'/'+arNum(plan.length)+' مهام نجحت)';
@@ -1324,6 +1342,7 @@ async function runTeam(text){
     if(e&&e.name==='AbortError'){teamStep(box,'⏹️ وقّفت شغل الفريق','done');}
     else teamStep(box,'⚠️ حصلت مشكلة في شغل الفريق - جرب تاني','done');
   }finally{
+    PROG.txt='';
     abortCtl=null;setBusy(false);scrollDown();
   }
 }
@@ -1332,7 +1351,10 @@ send=(function(orig){return async function(){
   if(teamMode&&!artMode){
     const text=inp.value.trim();
     if(!text&&!attach)return;
-    if(abortCtl)return;
+    if(abortCtl){
+      if(/وصلت|فين|خلص|تقدم|استنى|status/i.test(text)){inp.value='';autoGrow();addUserDom(text);addBotDom('📊 '+(PROG.txt||'شغال على طلبك دلوقتي...'),'','حالة الشغل',0);}
+      return;
+    }
     inp.value='';autoGrow();
     let c=curChat();
     if(!c){newChat();c=curChat();}
@@ -1453,6 +1475,7 @@ $('#pvGhBtn').onclick=()=>{
         if(r.ok&&d.url){
           dg.innerHTML='✅ اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';
           addSysNote('🔔 حصل تغيير: اترفع "'+esc(repo)+'" على جيت هب ✅ <a href="'+esc(d.url)+'" target="_blank">افتح الريبو</a>');
+          galAdd({type:'repo',title:repo,url:d.url});
         }
         else dg.textContent='⚠️ '+(d.error||'الرفع ما نجحش');
       }catch(e){dg.textContent='⚠️ الرفع متعطل دلوقتي - جرب تاني';}
@@ -1504,6 +1527,32 @@ $('#pvDevBtn').onclick=()=>{
   f.style.borderLeft=mobile?'1px solid var(--line)':'';f.style.borderRight=mobile?'1px solid var(--line)':'';
   $('#pvDevBtn').textContent=mobile?'💻 تابلت':'📱 موبايل';
 };
+
+/* ===== artifact gallery ===== */
+let GAL=[];
+try{GAL=JSON.parse(localStorage.getItem('flk_gal')||'[]');}catch(e){GAL=[];}
+function galSave(){try{localStorage.setItem('flk_gal',JSON.stringify(GAL.slice(0,60)));}catch(e){}}
+function galAdd(it){it.ts=Date.now();GAL.unshift(it);if(GAL.length>60)GAL.length=60;galSave();}
+function galTitle(code){const m=code.match(/<title[^>]*>([^<]{1,60})<\/title>/i);return m?m[1].trim():'صفحة بدون عنوان';}
+function openGal(){
+  const g=$('#galGrid');
+  g.innerHTML=GAL.length?GAL.map((it,i)=>{
+    const ic=it.type==='image'?'<img loading="lazy" src="'+esc(it.src)+'" alt="">':(it.type==='repo'?'<div class="gph">🐙</div>':'<div class="gph">📄</div>');
+    return '<div class="galcard" onclick="galOpen('+i+')">'+ic+'<div class="gt">'+esc(it.title)+'</div><div class="gd">'+new Date(it.ts).toLocaleDateString('ar-EG')+'</div></div>';
+  }).join(''):'<div class="hint" style="grid-column:1/-1;padding:10px">لسه مفيش حاجة. أول ما تبني صفحة أو تولّد صورة هتظهر هنا.</div>';
+  openSheet('galSheet');
+}
+function galOpen(i){
+  const it=GAL[i];if(!it)return;
+  if(it.type==='page'&&it.code){closeSheet('galSheet');openHtmlPv(it.code);}
+  else if(it.type==='repo'&&it.url){window.open(it.url,'_blank');}
+  else if(it.type==='image'){window.open(it.src,'_blank');}
+}
+/* hook: pages into gallery */
+openHtmlPv=(function(orig){return function(code){
+  if(!GAL.some(x=>x.type==='page'&&x.code===code))galAdd({type:'page',title:galTitle(code),code});
+  orig(code);
+};})(openHtmlPv);
 
 </script>
 </body>
