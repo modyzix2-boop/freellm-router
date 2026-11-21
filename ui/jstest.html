@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اختبار سريع</title>
+<style>
+body{font-family:system-ui,Tahoma,Arial,sans-serif;background:#f6f3ec;color:#1a1a1a;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+.card{background:#fff;border:1px solid #e5e0d5;border-radius:16px;max-width:560px;width:100%;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+h1{font-size:22px;margin:0 0 16px}
+.msg{display:none;font-size:20px;font-weight:700;padding:18px;border-radius:12px;margin:14px 0;line-height:1.7}
+.green{background:#e6f7ef;color:#0a7a4c;border:1px solid #9fdcc0}
+.red{background:#fdecec;color:#b3261e;border:1px solid #f2b8b5}
+.gray{background:#f0ede6;color:#5c5648;border:1px solid #ddd6c8}
+.steps{font-size:16px;line-height:2;color:#333}
+.num{display:inline-block;background:#0d8a80;color:#fff;border-radius:50%;width:28px;height:28px;line-height:28px;text-align:center;font-weight:700;margin-left:8px}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>اختبار سريع، قوللي شايف رقم كام</h1>
+
+<div id="jsok" class="msg green"><span class="num">1</span>الجافاسكريبت شغال على جهازك تمام. ابعتلي "شايف رقم 1"</div>
+
+<noscript>
+<style>.gray{display:none!important}</style>
+<div class="msg red" style="display:block"><span class="num">2</span>الجافاسكريبت مقفول في المتصفح نفسه.
+<div class="steps">الحل: كروم ← الإعدادات ← إعدادات المواقع ← JavaScript ← فعّله، وبعدين ارجع للينك بتاع مساعدي. ابعتلي "شايف رقم 2"</div>
+</div>
+</noscript>
+
+<div class="msg gray" style="display:block"><span class="num">3</span>لو ده الرقم الوحيد اللي ظاهر ولا 1 ولا 2 ظهروا: الأكواد بتتقص من الصفحات قبل ما توصل جهازك (تطبيق فلترة أو حاجة على الشبكة). ابعتلي "شايف رقم 3"</div>
+
+</div>
+<script>
+(function(){
+  var el=document.getElementById('jsok');
+  if(el){el.style.display='block';}
+  var g=document.querySelector('.gray');
+  if(g){g.style.display='none';}
+  try{
+    fetch('/v1/client/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'jstest',build:'1',ua:navigator.userAgent,href:'/jstest.html',keyPresent:false,setupShown:false,w:window.innerWidth||0,h:window.innerHeight||0,err:''})});
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
