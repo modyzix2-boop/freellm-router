@@ -11,6 +11,41 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(u.pathname==='/v1/client/github/push'&&req.method==='POST'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    const GT=process.env.GITHUB_TOKEN||'',GO=process.env.GITHUB_OWNER||'';
+    if(!GT||!GO)return J(res,500,{error:'github not configured'});
+    let b='';req.on('data',x=>{b+=x;if(b.length>2*1024*1024)req.destroy();});
+    req.on('end',()=>{(async()=>{
+      try{
+        const d=JSON.parse(b);
+        const repo=String(d.repo||'').trim();
+        if(!/^[\w][\w.-]{0,79}$/.test(repo))return J(res,400,{error:'bad repo name'});
+        const files=Array.isArray(d.files)?d.files.slice(0,20):[];
+        if(!files.length)return J(res,400,{error:'no files'});
+        const msg=String(d.message||'تحديث من مساعدي').slice(0,200);
+        const gh=async(method,path,body)=>{
+          const r=await fetch('https://api.github.com'+path,{method,headers:{Authorization:'Bearer '+GT,Accept:'application/vnd.github+json','Content-Type':'application/json','User-Agent':'masaedi-app'},body:body?JSON.stringify(body):undefined});
+          if(r.status===404)return 404;
+          const j=await r.json().catch(()=>({}));
+          if(!r.ok)throw new Error(j.message||('github '+r.status));
+          return j;
+        };
+        const exists=await gh('GET','/repos/'+GO+'/'+repo);
+        if(exists===404)await gh('POST','/user/repos',{name:repo,private:!!d.private,description:'اتبنى بأداة مساعدي 🤖'});
+        for(const f of files){
+          const fp=String(f.path||'').replace(/\.\./g,'').replace(/^\/+/, '').slice(0,120);
+          if(!fp)continue;
+          const cur=await gh('GET','/repos/'+GO+'/'+repo+'/contents/'+fp.split('/').map(encodeURIComponent).join('/'));
+          const body={message:msg,content:Buffer.from(String(f.content||''),'utf8').toString('base64')};
+          if(cur&&cur!==404&&cur.sha)body.sha=cur.sha;
+          await gh('PUT','/repos/'+GO+'/'+repo+'/contents/'+fp.split('/').map(encodeURIComponent).join('/'),body);
+        }
+        J(res,200,{ok:true,url:'https://github.com/'+GO+'/'+repo});
+      }catch(e){J(res,502,{error:String(e.message||e).slice(0,300)});}
+    })();});
+    return;
+  }
   if(u.pathname==='/v1/client/notes'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     const f=fileFor(KEY).replace('.json','.notes.json');

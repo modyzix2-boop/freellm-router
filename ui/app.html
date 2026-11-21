@@ -336,6 +336,7 @@ a{color:var(--accD)}
       <span class="sp">👁 معاينة الصفحة</span>
       <button class="sbtn" id="pvCodeBtn">الكود</button>
       <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
+      <button class="sbtn" id="pvGhBtn">ارفع جيت هب</button>
       <button class="sbtn" id="pvCopyBtn">نسخ</button>
       <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
     </div>
@@ -1414,6 +1415,21 @@ $('#pvFixBtn').onclick=async()=>{
 async function notesPull(){try{const r=await fetch(API+'/v1/client/notes',{headers:{'Authorization':'Bearer '+KEY}});if(r.ok){const d=await r.json();const nb=$('#notesBox');if(nb)nb.value=d.notes||'';}}catch(e){}}
 async function saveNotes(){try{const r=await fetch(API+'/v1/client/notes',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({notes:$('#notesBox').value})});toast(r.ok?'اتحفظت الملاحظات ✅':'المزامنة متعطلة دلوقتي');}catch(e){toast('المزامنة متعطلة دلوقتي');}}
 notesPull();
+
+/* github push from preview */
+$('#pvGhBtn').onclick=async()=>{
+  const dg=$('#pvDiag');
+  let repo='';
+  try{repo=(prompt('اسم المستودع على جيت هب (حروف إنجليزي):','my-app')||'').trim();}catch(e){}
+  if(!repo)return;
+  dg.style.display='block';dg.textContent='⬆️ بيرفع على جيت هب...';
+  try{
+    const r=await fetch(API+'/v1/client/github/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo,files:[{path:'index.html',content:pvCode}],message:'صفحة اتبنت بأداة مساعدي'})});
+    const d=await r.json();
+    if(r.ok&&d.url){dg.innerHTML='✅ اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';}
+    else dg.textContent='⚠️ '+(d.error||'الرفع ما نجحش');
+  }catch(e){dg.textContent='⚠️ الرفع متعطل دلوقتي - جرب تاني';}
+};
 
 </script>
 </body>
