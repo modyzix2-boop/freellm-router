@@ -360,6 +360,7 @@ a{color:var(--accD)}
       <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
       <button class="sbtn" id="pvGhBtn">ارفع جيت هب</button>
       <button class="sbtn" id="pvDlBtn">تحميل</button>
+      <button class="sbtn" id="pvApkBtn">📦 ابني APK</button>
       <button class="sbtn" id="pvDevBtn">📱 موبايل</button>
       <button class="sbtn" id="pvCopyBtn">نسخ</button>
       <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
@@ -596,7 +597,7 @@ function addGenDom(prompt,url,silent){
   $('#chat').appendChild(d);
   im.src=url;
   if(!silent)scrollDown();
-  try{galAdd({type:'image',title:prompt.slice(0,50),src:url});}catch(e){}
+  try{if(url.indexOf('blob:')!==0)galAdd({type:'image',title:prompt.slice(0,50),src:url});}catch(e){}
 }
 function addTyping(txt){
   const tp=document.createElement('div');tp.className='typing';
@@ -739,6 +740,7 @@ async function genImage(prompt){
         if(ct.indexOf('image')===0){
           const b=await r.blob();
           genDomShow(d,URL.createObjectURL(b),url);
+          try{galAdd({type:'image',title:prompt.slice(0,50),src:url});}catch(e){}
           return url;
         }
       }
@@ -1553,6 +1555,61 @@ openHtmlPv=(function(orig){return function(code){
   if(!GAL.some(x=>x.type==='page'&&x.code===code))galAdd({type:'page',title:galTitle(code),code});
   orig(code);
 };})(openHtmlPv);
+
+/* ===== APK build flow ===== */
+let apkPollT=null;
+async function apkPoll(repo,version,fixedOnce){
+  clearTimeout(apkPollT);
+  PROG.txt='بناء النسخة v'+version+' شغال على GitHub Actions...';
+  apkPollT=setTimeout(async()=>{
+    try{
+      const r=await fetch(API+'/v1/client/apk/status?repo='+encodeURIComponent(repo),{headers:{Authorization:'Bearer '+KEY}});
+      const d=await r.json();
+      if(d.state==='completed'&&d.conclusion==='success'){
+        PROG.txt='';
+        const link='https://github.com/modyzix2-boop/'+repo+'/releases/latest/download/app-debug.apk';
+        addSysNote('🎉 النسخة v'+version+' جاهزة! <a href="'+link+'" target="_blank">حمّل الـ APK</a> • <a href="https://github.com/modyzix2-boop/'+repo+'" target="_blank">الريبو</a>');
+        galAdd({type:'repo',title:repo+' v'+version+' (APK)',url:'https://github.com/modyzix2-boop/'+repo+'/releases'});
+        toast('🎉 التطبيق جاهز للتحميل');
+        return;
+      }
+      if(d.state==='completed'&&d.conclusion==='failure'&&!fixedOnce){
+        PROG.txt='البناء فشل - براجع اللوج وبصلح الخطأ...';
+        addSysNote('⚠️ بناء v'+version+' فشل - الفريق بيراجع الخطأ وبيصلحه دلوقتي...');
+        try{
+          const fr=await fetch(API+'/v1/client/apk/fix',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo})});
+          const fd=await fr.json();
+          if(fr.ok&&fd.ok){addSysNote('🔧 اتصلح: '+esc(fd.note||'')+' - وبيتبني تاني...');apkPoll(repo,version,true);return;}
+          addSysNote('🛑 المدير معرفش يصلحه لوحده: '+esc(fd.error||'خطأ غير واضح'));
+        }catch(e){addSysNote('🛑 مراجعة الخطأ متعطلة دلوقتي');}
+        PROG.txt='';return;
+      }
+      if(d.state==='completed'&&d.conclusion==='failure'&&fixedOnce){PROG.txt='';addSysNote('🛑 البناء فشل تاني بعد الإصلاح - محتاج تدخل يدوي. راجع الريبو.');return;}
+      apkPoll(repo,version,fixedOnce);
+    }catch(e){apkPoll(repo,version,fixedOnce);}
+  },20000);
+}
+$('#pvApkBtn').onclick=()=>{
+  let repo='';
+  try{repo=(prompt('اسم ريبو التطبيق (حروف إنجليزي):','my-app')||'').trim();}catch(e){}
+  if(!repo)return;
+  requestApproval({
+    key:'apk-build',
+    title:'بناء تطبيق أندرويد',
+    desc:'الأداة هتعمل مشروع أندرويد كامل في ريبو "'+repo+'" على حسابك، وGitHub Actions هيبني الـ APK (بياخد دقايق). كل بناء ليه رقم نسخة، ولو البناء فشل الفريق هيراجع اللوج ويصلحه ويعيد المحاولة مرة واحدة.',
+    run:async()=>{
+      addSysNote('📦 بدأ تجهيز مشروع الأندرويد ورفعه...');
+      try{
+        const r=await fetch(API+'/v1/client/apk/build',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo,html:pvCode,appName:galTitle(pvCode)})});
+        const d=await r.json();
+        if(r.ok&&d.ok){
+          addSysNote('🔔 اترفع المشروع v'+esc(d.version)+' وبدأ البناء على GitHub Actions - هقولك أول ما يخلص ⏳');
+          apkPoll(repo,d.version,false);
+        }else addSysNote('⚠️ '+(d.error||'تجهيز البناء ما نجحش'));
+      }catch(e){addSysNote('⚠️ تجهيز البناء متعطل دلوقتي');}
+    }
+  });
+};
 
 </script>
 </body>

@@ -11,6 +11,108 @@ const writeStore=(f,d)=>{try{fs.writeFileSync(f,JSON.stringify(d));}catch(e){}};
 const J=(res,code,obj)=>{res.writeHead(code,{'Content-Type':'application/json'});res.end(JSON.stringify(obj));};
 http.createServer((req,res)=>{
   const u=new URL(req.url,'http://x');
+  if(u.pathname==='/v1/client/apk/build'&&req.method==='POST'||u.pathname==='/v1/client/apk/fix'&&req.method==='POST'||u.pathname==='/v1/client/apk/status'&&req.method==='GET'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    const GT=process.env.GITHUB_TOKEN||'',GO=process.env.GITHUB_OWNER||'';
+    if(!GT||!GO)return J(res,500,{error:'github not configured'});
+    const gh=async(method,path,body,raw)=>{
+      const r=await fetch('https://api.github.com'+path,{method,headers:{Authorization:'Bearer '+GT,Accept:'application/vnd.github+json','Content-Type':'application/json','User-Agent':'masaedi-app'},body:body?JSON.stringify(body):undefined});
+      if(raw)return r;
+      if(r.status===404)return 404;
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(j.message||('github '+r.status));
+      return j;
+    };
+    const putFile=async(repo,fp,content,msg)=>{
+      const enc=fp.split('/').map(encodeURIComponent).join('/');
+      const cur=await gh('GET','/repos/'+GO+'/'+repo+'/contents/'+enc);
+      const body={message:msg||'تحديث',content:Buffer.from(content,'utf8').toString('base64')};
+      if(cur&&cur!==404&&cur.sha)body.sha=cur.sha;
+      await gh('PUT','/repos/'+GO+'/'+repo+'/contents/'+enc,body);
+    };
+    const counterF=fileFor(KEY).replace('.json','.apk.json');
+    if(u.pathname==='/v1/client/apk/status'){
+      const repo=u.searchParams.get('repo')||'';
+      if(!/^[\w][\w.-]{0,79}$/.test(repo))return J(res,400,{error:'bad repo'});
+      (async()=>{try{
+        const runs=await gh('GET','/repos/'+GO+'/'+repo+'/actions/runs?per_page=1');
+        const run=runs&&runs.workflow_runs&&runs.workflow_runs[0];
+        if(!run)return J(res,200,{state:'none'});
+        J(res,200,{state:run.status,conclusion:run.conclusion,url:run.html_url,runId:run.id});
+      }catch(e){J(res,502,{error:String(e.message||e).slice(0,200)});}})();
+      return;
+    }
+    let b='';req.on('data',x=>{b+=x;if(b.length>2*1024*1024)req.destroy();});
+    req.on('end',()=>{(async()=>{
+      try{
+        const d=JSON.parse(b);
+        const repo=String(d.repo||'').trim();
+        if(!/^[\w][\w.-]{0,79}$/.test(repo))return J(res,400,{error:'bad repo name'});
+        if(u.pathname==='/v1/client/apk/fix'){
+          // review failed run log, ask the router's model for a fix, push, re-dispatch
+          const runs=await gh('GET','/repos/'+GO+'/'+repo+'/actions/runs?per_page=1');
+          const run=runs&&runs.workflow_runs&&runs.workflow_runs[0];
+          if(!run||run.conclusion!=='failure')return J(res,400,{error:'no failed run'});
+          const jobs=await gh('GET','/repos/'+GO+'/'+repo+'/actions/runs/'+run.id+'/jobs?per_page=5');
+          const job=(jobs.jobs||[]).find(x=>x.conclusion==='failure')||(jobs.jobs||[])[0];
+          let logTail='';
+          if(job){
+            const lr=await gh('GET','/repos/'+GO+'/'+repo+'/actions/jobs/'+job.id+'/logs',null,true);
+            const lt=await lr.text();
+            logTail=lt.slice(-5000);
+          }
+          const files=['settings.gradle','build.gradle','app/build.gradle','app/src/main/AndroidManifest.xml','app/src/main/java/com/masaedi/app/MainActivity.kt','.github/workflows/build.yml'];
+          const cur={};
+          for(const f of files){
+            const c=await gh('GET','/repos/'+GO+'/'+repo+'/contents/'+f.split('/').map(encodeURIComponent).join('/'));
+            if(c&&c!==404&&c.content)cur[f]=Buffer.from(c.content,'base64').toString('utf8');
+          }
+          const llm=await fetch('http://127.0.0.1:'+7861+'/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({model:'gemini-3-flash-preview',temperature:0.2,messages:[
+            {role:'system',content:'أنت مهندس أندرويد. بناء GitHub Actions لمشروع أندرويد فشل. هتديك جزء من اللوج والملفات الحالية. رد بصيغة JSON فقط: {"note":"سطر واحد بالعربي يشرح المشكلة والحل","files":[{"path":"مسار الملف","content":"محتواه الكامل المصلح"}]}. صلّح أقل عدد ملفات ممكن. ماتغيرش مسارات الملفات.'},
+            {role:'user',content:'اللوج (آخر جزء):\n'+logTail+'\n\nالملفات الحالية:\n'+Object.keys(cur).map(f=>'--- '+f+' ---\n'+cur[f]).join('\n\n').slice(0,12000)}
+          ]})});
+          const ld=await llm.json();
+          const txt=ld.choices&&ld.choices[0]&&ld.choices[0].message&&ld.choices[0].message.content||'';
+          const mm=txt.match(/\{[\s\S]*\}/);
+          const fix=mm?JSON.parse(mm[0]):null;
+          if(!fix||!Array.isArray(fix.files)||!fix.files.length)return J(res,502,{error:'المراجعة مطلعتش إصلاح واضح'});
+          const allowed=new Set(files.concat(['app/src/main/assets/index.html']));
+          for(const f of fix.files.slice(0,6)){
+            if(!allowed.has(f.path)||typeof f.content!=='string')continue;
+            await putFile(repo,f.path,f.content,'إصلاح بناء آلي: '+(fix.note||'').slice(0,80));
+          }
+          await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});
+          return J(res,200,{ok:true,note:String(fix.note||'').slice(0,300)});
+        }
+        // build
+        const html=String(d.html||'');
+        if(html.length<50)return J(res,400,{error:'html too small'});
+        const appName=String(d.appName||'تطبيقي').slice(0,40);
+        let cnt={n:0};try{cnt=JSON.parse(fs.readFileSync(counterF,'utf8'));}catch(e){}
+        cnt.n=(cnt.n||0)+1;writeStore(counterF,cnt);
+        const ver='1.0.'+cnt.n;
+        const exists=await gh('GET','/repos/'+GO+'/'+repo);
+        if(exists===404)await gh('POST','/user/repos',{name:repo,private:false,description:'تطبيق اتبنى بأداة مساعدي 🤖'});
+        const WF='name: build-apk\non: [workflow_dispatch, push]\npermissions:\n  contents: write\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-java@v4\n        with: {distribution: temurin, java-version: "17"}\n      - uses: android-actions/setup-android@v3\n      - uses: gradle/actions/setup-gradle@v4\n        with: {gradle-version: "8.7"}\n      - run: gradle assembleDebug --no-daemon\n      - name: version\n        run: echo "VER=$(grep -oP "versionName \x27\\K[^\x27]+" app/build.gradle)" >> $GITHUB_ENV\n      - uses: softprops/action-gh-release@v2\n        if: success()\n        with:\n          tag_name: v${{ env.VER }}\n          name: "نسخة v${{ env.VER }}"\n          files: app/build/outputs/apk/debug/app-debug.apk\n';
+        const SETTINGS='pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }\ndependencyResolutionManagement { repositories { google(); mavenCentral() } }\nrootProject.name="app"\ninclude ":app"\n';
+        const ROOT='plugins { id "com.android.application" version "8.5.0" apply false }\n';
+        const APPG='plugins { id "com.android.application" }\nandroid {\n  namespace "com.masaedi.app"\n  compileSdk 34\n  defaultConfig {\n    applicationId "com.masaedi.app"\n    minSdk 24\n    targetSdk 34\n    versionCode '+cnt.n+'\n    versionName "'+ver+'"\n  }\n}\n';
+        const MAN='<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-permission android:name="android.permission.INTERNET"/>\n  <application android:label="'+appName.replace(/"/g,'')+'" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:usesCleartextTraffic="true">\n    <activity android:name=".MainActivity" android:exported="true">\n      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>\n    </activity>\n  </application>\n</manifest>\n';
+        const KT='package com.masaedi.app\nimport android.app.Activity\nimport android.os.Bundle\nimport android.webkit.WebView\nimport android.webkit.WebViewClient\nclass MainActivity: Activity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    val w = WebView(this)\n    w.settings.javaScriptEnabled = true\n    w.settings.domStorageEnabled = true\n    w.webViewClient = WebViewClient()\n    w.loadUrl("file:///android_asset/index.html")\n    setContentView(w)\n  }\n}\n';
+        const msg='نسخة v'+ver;
+        await putFile(repo,'settings.gradle',SETTINGS,msg);
+        await putFile(repo,'build.gradle',ROOT,msg);
+        await putFile(repo,'app/build.gradle',APPG,msg);
+        await putFile(repo,'app/src/main/AndroidManifest.xml',MAN,msg);
+        await putFile(repo,'app/src/main/java/com/masaedi/app/MainActivity.kt',KT,msg);
+        await putFile(repo,'app/src/main/assets/index.html',html,msg);
+        await putFile(repo,'.github/workflows/build.yml',WF,msg);
+        await gh('POST','/repos/'+GO+'/'+repo+'/actions/workflows/build.yml/dispatches',{ref:'main'});
+        J(res,200,{ok:true,version:ver,repo,url:'https://github.com/'+GO+'/'+repo,apk:'https://github.com/'+GO+'/'+repo+'/releases/latest/download/app-debug.apk'});
+      }catch(e){J(res,502,{error:String(e.message||e).slice(0,300)});}
+    })();});
+    return;
+  }
   if(u.pathname==='/v1/client/github/push'&&req.method==='POST'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     const GT=process.env.GITHUB_TOKEN||'',GO=process.env.GITHUB_OWNER||'';
