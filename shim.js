@@ -18,7 +18,7 @@ http.createServer((req,res)=>{
     const gh=async(method,path,body,raw)=>{
       const r=await fetch('https://api.github.com'+path,{method,headers:{Authorization:'Bearer '+GT,Accept:'application/vnd.github+json','Content-Type':'application/json','User-Agent':'masaedi-app'},body:body?JSON.stringify(body):undefined});
       if(raw)return r;
-      if(r.status===404)return 404;
+      if(r.status===404&&method==='GET')return 404;
       const j=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(j.message||('github '+r.status));
       return j;
