@@ -205,6 +205,17 @@ a{color:var(--accD)}
 #htmlPv.showcode iframe{display:none}
 #htmlPv.showcode pre{display:block}
 #pvDiag{display:none;padding:8px 12px;font-size:12.5px;background:#FFF7E6;border-bottom:1px solid var(--line);max-height:120px;overflow:auto}
+
+.approvalcard{background:var(--card);border:1.5px solid var(--acc);border-radius:14px;padding:12px 14px;max-width:92%;margin-top:8px}
+.approvalcard .at{font-weight:900;font-size:13.5px;margin-bottom:3px}
+.approvalcard .ad{font-size:12.5px;color:var(--dim);line-height:1.9;margin-bottom:10px}
+.approvalcard .abtns{display:flex;gap:8px;flex-wrap:wrap}
+.approvalcard .abtns button{border-radius:999px;padding:7px 16px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(--bg);color:var(--txt)}
+.approvalcard .abtns .ok{background:var(--acc);border-color:var(--acc);color:#fff}
+.approvalcard .abtns .always{background:#FBEDE6;border-color:var(--acc);color:var(--accD)}
+.approvalcard .decided{font-size:12.5px;font-weight:800}
+.sysnote{align-self:center;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:11.5px;color:var(--dim);margin:6px auto;max-width:92%;text-align:center}
+.sysnote a{color:var(--accD);font-weight:800}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -305,6 +316,8 @@ a{color:var(--accD)}
       <div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div>
       <div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
       <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div>
+      <div class="srow"><label>الصلاحيات المعتمدة <div class="hint">الحاجات اللي وافقت عليها قبل كده - الأداة بتنفذها من غير ما تسألك تاني</div></label></div>
+      <div id="permEdit" style="padding:0 16px 10px"></div>
       <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
     </div>
   </div>
@@ -1417,19 +1430,59 @@ async function saveNotes(){try{const r=await fetch(API+'/v1/client/notes',{metho
 notesPull();
 
 /* github push from preview */
-$('#pvGhBtn').onclick=async()=>{
-  const dg=$('#pvDiag');
+$('#pvGhBtn').onclick=()=>{
   let repo='';
   try{repo=(prompt('اسم المستودع على جيت هب (حروف إنجليزي):','my-app')||'').trim();}catch(e){}
   if(!repo)return;
-  dg.style.display='block';dg.textContent='⬆️ بيرفع على جيت هب...';
-  try{
-    const r=await fetch(API+'/v1/client/github/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo,files:[{path:'index.html',content:pvCode}],message:'صفحة اتبنت بأداة مساعدي'})});
-    const d=await r.json();
-    if(r.ok&&d.url){dg.innerHTML='✅ اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';}
-    else dg.textContent='⚠️ '+(d.error||'الرفع ما نجحش');
-  }catch(e){dg.textContent='⚠️ الرفع متعطل دلوقتي - جرب تاني';}
+  requestApproval({
+    key:'github-push',
+    title:'رفع على جيت هب',
+    desc:'الأداة عايزة تعمل (أو تحدّث) مستودع "'+repo+'" على حسابك modyzix2-boop وترفع فيه الصفحة المعروضة (index.html). مفيش حاجة تانية هتتلمس.',
+    run:async()=>{
+      const dg=$('#pvDiag');
+      dg.style.display='block';dg.textContent='⬆️ بيرفع على جيت هب...';
+      try{
+        const r=await fetch(API+'/v1/client/github/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo,files:[{path:'index.html',content:pvCode}],message:'صفحة اتبنت بأداة مساعدي'})});
+        const d=await r.json();
+        if(r.ok&&d.url){
+          dg.innerHTML='✅ اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';
+          addSysNote('🔔 حصل تغيير: اترفع "'+esc(repo)+'" على جيت هب ✅ <a href="'+esc(d.url)+'" target="_blank">افتح الريبو</a>');
+        }
+        else dg.textContent='⚠️ '+(d.error||'الرفع ما نجحش');
+      }catch(e){dg.textContent='⚠️ الرفع متعطل دلوقتي - جرب تاني';}
+    }
+  });
 };
+
+/* ===== approvals / permissions layer ===== */
+let GRANTS={};
+try{GRANTS=JSON.parse(localStorage.getItem('flk_grants')||'{}');}catch(e){GRANTS={};}
+function saveGrants(){try{localStorage.setItem('flk_grants',JSON.stringify(GRANTS));}catch(e){}}
+const GRANT_NAMES={'github-push':'رفع على جيت هب'};
+function renderPermEdit(){
+  const box=$('#permEdit');if(!box)return;
+  const ks=Object.keys(GRANTS).filter(k=>GRANTS[k]);
+  box.innerHTML=ks.length?ks.map(k=>'<div class="trow"><div class="tr1" style="align-items:center"><b style="flex:1;font-size:13px">'+esc(GRANT_NAMES[k]||k)+'</b><button class="sbtn" onclick="revokeGrant(\''+esc(k)+'\')">إلغاء الصلاحية</button></div></div>').join(''):'<div class="hint" style="padding:4px 0">لسه مفيش صلاحيات معتمدة. أول مرة الأداة تحتاج حاجة هتسألك.</div>';
+}
+function revokeGrant(k){delete GRANTS[k];saveGrants();renderPermEdit();toast('اتلغت الصلاحية - هتسألك تاني المرة الجاية');}
+openSheet=(function(orig){return function(id){orig(id);if(id==='setSheet')renderPermEdit();};})(openSheet);
+function requestApproval(o){
+  if(GRANTS[o.key]){o.run();return;}
+  const sc=$('#chat');
+  const card=document.createElement('div');card.className='mrow a';
+  card.innerHTML='<div class="approvalcard"><div class="at">🔐 طلب صلاحية: '+esc(o.title)+'</div><div class="ad">'+esc(o.desc)+'</div><div class="abtns">'
+    +'<button class="ok">موافقة</button><button class="always">موافقة دايماً</button><button class="no">رفض</button></div></div>';
+  sc.appendChild(card);scrollDown();
+  const btns=card.querySelectorAll('button');
+  const done=(html)=>{card.querySelector('.approvalcard').innerHTML='<div class="decided">'+html+'</div>';};
+  btns[0].onclick=()=>{done('✅ وافقت مرة واحدة - بينفذ دلوقتي...');o.run();};
+  btns[1].onclick=()=>{GRANTS[o.key]=true;saveGrants();renderPermEdit();done('✅ اتفعلت الموافقة الدائمة - مش هسألك عن كده تاني');o.run();};
+  btns[2].onclick=()=>{done('🚫 اترفض - مفيش أي حاجة حصلت');toast('اترفض الطلب');};
+}
+function addSysNote(html){
+  const n=document.createElement('div');n.className='sysnote';n.innerHTML=html;
+  $('#chat').appendChild(n);scrollDown();
+}
 
 </script>
 </body>
