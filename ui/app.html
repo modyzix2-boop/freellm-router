@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>مساعدي</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>مساعدي</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><style>
 :root{
   --bg:#FAF9F5; --side:#F0EEE6; --card:#FFFFFF; --line:#E6E3D9; --line2:#D9D5C8;
   --txt:#1F1E1B; --dim:#73706A; --acc:#0D9488; --accD:#0B7A70; --chip:#EFEDE6;
@@ -243,11 +235,7 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .thsw{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-size:13px}
 .thsw.sel{border-color:var(--acc);font-weight:800}
 .thsw .dot{width:16px;height:16px;border-radius:50%;border:2px solid}
-</style>
-<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%230D9488"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
-</head>
-<body>
-<script>
+</style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%230D9488"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'></head><body><script>
 window.__BOOT_OK=false;
 window.__BEACON=function(kind,err){try{
 var b={t:Date.now(),kind:kind,build:window.__BUILD||'?',ua:navigator.userAgent.slice(0,180),href:location.pathname,
@@ -255,7 +243,7 @@ keyPresent:!!(LS.getItem('flk_key')||''),setupShown:!!(document.getElementById('
 w:window.innerWidth,h:window.innerHeight,err:String(err||'').slice(0,300)};
 fetch('/v1/client/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b),keepalive:true}).catch(function(){});
 }catch(e){}};
-window.addEventListener('error',function(e){window.__BEACON('jserror',(e.message||'')+' @'+(e.filename||'')+':'+(e.lineno||''));});
+window.addEventListener('error',function(e){window.__BEACON('jserror',(e.message||'')+'@'+(e.filename||'')+':'+(e.lineno||''));});
 window.addEventListener('unhandledrejection',function(e){window.__BEACON('promise',e.reason);});
 setTimeout(function(){window.__BEACON(window.__BOOT_OK?'boot-ok':'boot-fail');},8000);
 (function wd(){setTimeout(function(){
@@ -266,193 +254,14 @@ d.style.cssText='position:fixed;inset:0;background:#141412;color:#EDECE6;display
 d.innerHTML='<div style="font-size:19px;font-weight:900;margin-bottom:10px">الصفحة متحمّلتش كاملة</div><div style="font-size:14px;opacity:.75;margin-bottom:20px">النت اتقطع أثناء التحميل. دوس تحديث وهتظبط.</div><button onclick="location.reload()" style="background:#0D9488;color:#fff;border:none;padding:12px 34px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer">تحديث الصفحة</button>';
 document.body.appendChild(d);
 },6000);})();
-</script>
-<div id="app">
-  <aside id="side">
-    <div class="stop">
-      <div class="brand"><span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M7.25 3.8l9.5 16.4M16.75 3.8l-9.5 16.4"/></svg></span>مساعدي</div>
-      <button id="newChat" title="محادثة جديدة"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
-    </div>
-    <div id="chats"></div>
-    <div class="sbot">
-      <a class="slink" onclick="openGal()"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>المعرض</a>
-      <a class="slink" onclick="openSheet('setSheet')"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>الإعدادات ووضع المطور</a>
-      
-    </div>
-  </aside>
-  <div id="main">
-    <div id="topbar">
-      <button class="ticon" id="menuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-      <span class="tt">مساعدي</span>
-      <span id="utok">النهارده: <b>0</b></span>
-      <button class="ticon" onclick="openSheet('setSheet')" title="الإعدادات"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
-    </div>
-    <div id="netbar"></div>
-    <div id="scroll"><div id="chatwrap">
-      <div id="empty">
-        <span class="emark"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg></span>
-        <h2>أهلاً بيك في مساعدي</h2>
-        <p>أكتر من ١٠٠ نموذج مجاني تحت إيدك: كلام، صور، رسم، بحث، وتفكير بخطوات.</p>
-        <div class="sugs">
-          <button class="sug" onclick="sug(this)">اشرحلي أي موضوع ببساطة</button>
-          <button class="sug" onclick="sugArt(this)">قطة بتطير في الفضاء</button>
-          <button class="sug" onclick="sug(this)">اكتبلي كود لعبة بسيطة</button>
-          <button class="sug" onclick="sugSearch(this)">ابحث عن أخبار التقنية النهارده</button>
-        </div>
-      </div>
-      <div id="chat"></div>
-    </div></div>
-    <div id="comp">
-      <div id="modelbar">
-        <button class="pill" id="modelpick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span id="curModel">تلقائي</span><span class="pv" id="curProv"></span></button>
-        <button class="modechip" id="thinkBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>تفكير</button>
-        <button class="modechip" id="searchBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>بحث</button>
-        <button class="modechip" id="artBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r=".9" fill="currentColor"/><circle cx="12" cy="7.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="10" r=".9" fill="currentColor"/><path d="M12 21c-1.2 0-1.7-1.1-1-2 .9-1.1 0-2.5-1.5-2.5H6.5"/></svg>رسم</button>
-        <button class="modechip" id="teamBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M15.5 15.2c2.2.3 3.9 1.6 4.4 3.8"/></svg>فريق</button>
-        <button class="modechip" id="devBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg>مطوّر</button>
-      </div>
-      <div id="attachChip"><img id="attachThumb"><span class="an" id="attachName"></span><button class="x" onclick="clearAttach()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div id="box">
-        <textarea id="inp" rows="1" placeholder="اكتب رسالتك هنا..."></textarea>
-        <div id="tools">
-          <button class="tbtn" id="camBtn" title="إرفاق: صورة / كاميرا / ملف / رسم"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 12.5l-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.85 1.85 0 0 1-2.6-2.6l7.8-7.8"/></svg></button>
-          <button class="tbtn" id="micBtn" title="تكلم بدل الكتابة"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-          <button id="send" title="ابعت"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<input type="file" id="fileImg" accept="image/*" style="display:none">
-<input type="file" id="fileCam" accept="image/*" capture="environment" style="display:none">
-<input type="file" id="fileProj" multiple accept=".zip,.txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.java,.kt,.dart,.gradle,.php,.sql,.sh,.properties,.toml,.ini,.cfg" style="display:none">
-    <input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh" style="display:none">
-<div class="overlay" id="attSheet">
-  <div class="sheet">
-    <h3>إرفاق <button class="closex" onclick="closeSheet('attSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
-    <a class="slink" onclick="closeSheet('attSheet');fileImg.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-4.5-4.5L6 21"/></svg></span>صورة من الجهاز</a>
-    <a class="slink" onclick="closeSheet('attSheet');fileCam.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>الكاميرا</a>
-    <a class="slink" onclick="closeSheet('attSheet');fileTxt.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg></span>ملف نصي أو كود</a>
-    <a class="slink" onclick="closeSheet('attSheet');document.getElementById('fileProj').click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>مشروع كامل (ملفات أو ZIP)</a>
-    <a class="slink" style="margin-bottom:14px" onclick="closeSheet('attSheet');openCanvas()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 19l7-7-4-4-7 7-1 5z"/><path d="M14 6l4 4"/></svg></span>لوحة رسم (ارسم بإيدك)</a>
-  </div>
-</div>
-<div class="overlay" id="modelSheet">
-  <div class="sheet">
-    <h3>اختار النموذج <button class="closex" onclick="closeSheet('modelSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
-    <input id="msearch" placeholder="دوّر على نموذج...">
-    <div id="mlist">
-  </div></div>
-</div>
-<div class="overlay" id="setSheet">
-  <div class="sheet">
-    <h3>الإعدادات <button class="closex" onclick="closeSheet('setSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
-    <div style="overflow-y:auto">
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H14a2.5 2.5 0 0 0-2 4z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="11.5" r="1"/></svg>المظهر</div>
-      <div class="srow"><label>الثيم <div class="hint">غيّر ألوان الأداة كلها على مزاجك - بتتحفظ على جهازك</div></label></div>
-      <div class="srow" style="border:none;padding-top:0"><div class="thgrid" id="thGrid"></div></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>شخصية المساعد</div>
-      <div class="srow"><label>وضع المطور: شخصية المساعد <div class="hint">اكتب هنا هو يعمل إيه بالظبط: شخصيته، طريقة رده، دوره. بتتبعت مع كل رسالة.</div></label></div>
-      <div class="srow" style="border:none;padding-top:0"><textarea id="sysPrompt" placeholder="مثال: رد باللهجة المصرية، كن صديقي وخبير برمجة، واشرح بأمثلة"></textarea></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>الصوت والردود</div>
-      <div class="srow"><label>اقرأ الردود بصوت <div class="hint">كل رد جديد يتقال بصوت عربي</div></label><div class="sw" id="voiceSw"></div></div>
-      <div class="srow"><label>الإبداع (0 - 2) <div class="hint">أقل = أدق، أعلى = أكثر تنوع</div></label><input type="number" id="temp" min="0" max="2" step="0.1" placeholder="افتراضي"></div>
-      <div class="srow"><label>أقصى طول للرد <div class="hint">بالتوكنز، سيبه فاضي للافتراضي</div></label><input type="number" id="maxtok" min="1" max="32000" placeholder="افتراضي"></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>فريق النماذج</div>
-      <div class="srow"><label>تشكيل الفريق <div class="hint">كل عضو ليه دوره وتعليماته الخاصة. المدير بيقسم طلبك عليهم ويجمع شغلهم في رد واحد.</div></label></div>
-      <div id="teamEdit" style="padding:0 16px 10px"></div>
-      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="addTeamMember()">+ أضف عضو للفريق</button></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>الذاكرة والملاحظات</div>
-      <div class="srow"><label>ذاكرة المساعد <div class="hint">بيفتكر اللي بتقوله عن نفسك بين المحادثات وعلى كل أجهزتك. محفوظ دلوقتي: <b id="memCount">0</b> معلومة</div></label><button class="sbtn" onclick="clearMem()">امسح الذاكرة</button></div>
-      <div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div>
-      <div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
-      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>المحادثات</div>
-      <div class="srow"><label>نقل المحادثات لجهاز تاني <div class="hint">المحادثات بتتحفظ على السيرفر تلقائياً دلوقتي - دي نسخة احتياطية زيادة</div></label><div style="display:flex;gap:6px"><button class="sbtn" onclick="exportChats()">تصدير</button><button class="sbtn" onclick="document.getElementById('impFile').click()">استيراد</button></div></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>الصلاحيات المعتمدة</div>
-      <div class="srow"><label>حاجات وافقت عليها قبل كده <div class="hint">الأداة بتنفذها من غير ما تسألك تاني</div></label></div>
-      <div id="permEdit" style="padding:0 16px 10px"></div>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>إحصائياتك</div>
-      <div class="srow"><label>أرقامك <div class="hint">من جهازك مباشرة</div></label></div>
-      <div class="stgrid">
-        <div class="stbox"><div class="v" id="stTok">0</div><div class="k">توكنز النهارده</div></div>
-        <div class="stbox"><div class="v" id="stMsg">0</div><div class="k">رسالة اتبعتت</div></div>
-      </div>
-      <table id="mtable"></table>
-
-      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.8 12.2 21 2m-4 4 3 3"/></svg>الحساب</div>
-      <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
-    </div>
-      <div style="text-align:center;padding:14px;font-size:11px;color:var(--dim)">نسخة 21-11-ج</div>
-  </div>
-</div>
-<div class="overlay" id="cvSheet">
-  <div class="sheet">
-    <h3>لوحة الرسم <button class="closex" onclick="closeSheet('cvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
-    <div id="cvWrap">
-      <canvas id="drawCv"></canvas>
-      <div class="cvrow">
-        <input type="color" id="cvColor" value="#1F1E1B" title="اللون">
-        <button class="sbtn" onclick="cvClear()">مسح</button>
-        <button class="sbtn" style="background:var(--acc);color:#fff;border-color:var(--acc)" onclick="cvAttach()">إرفاق الرسمة</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="overlay" id="pvSheet">
-  <div class="sheet">
-    <h3><span id="pvTitle">ملف</span> <button class="closex" onclick="closeSheet('pvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
-    <div class="pvbody"><pre id="pvText"></pre>
-      <button class="sbtn" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('pvText').textContent).then(()=>toast('اتنسخ'))">نسخ المحتوى</button>
-    </div>
-  </div>
-</div>
-<div class="overlay" id="galSheet"><div class="sheet"><h3>المعرض <button class="closex" onclick="closeSheet('galSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div style="overflow-y:auto"><div class="galgrid" id="galGrid"></div></div></div></div>
-<div class="overlay" id="htmlPv">
-  <div class="pvsheet">
-    <div class="pvtools">
-      <span class="sp">👁 معاينة الصفحة</span>
-      <button class="sbtn" id="pvCodeBtn">الكود</button>
-      <button class="sbtn" id="pvFixBtn">فحص وإصلاح</button>
-      <button class="sbtn" id="pvGhBtn">ارفع جيت هب</button>
-      <button class="sbtn" id="pvDlBtn">تحميل</button>
-      <button class="sbtn" id="pvApkBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/package.svg"> ابني APK</button>
-      <button class="sbtn" id="pvDevBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/smartphone.svg"> موبايل</button>
-      <button class="sbtn" id="pvCopyBtn">نسخ</button>
-      <button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button>
-    </div>
-    <div id="pvDiag"></div>
-    <iframe id="pvFrame" sandbox="allow-scripts allow-modals"></iframe>
-    <pre id="pvCode"></pre>
-  </div>
-</div>
-<input type="file" id="impFile" accept=".json" style="display:none">
-<div id="setup">
-  <div class="scard">
-    <span class="mark"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M7.25 3.8l9.5 16.4M16.75 3.8l-9.5 16.4"/></svg></span>
-    <h2 style="font-weight:900">مفتاح التشغيل</h2>
-    <input type="password" id="keyInp" placeholder="الصق المفتاح هنا (sk-...)">
-    <button class="go" onclick="saveKey()">ابدأ</button>
-    <div class="hint">المفتاح بيتخزن في متصفحك بس.<br>هتلاقيه في لوحة التحكم ← صفحة Keys.</div>
-  </div>
-</div>
-<div id="toast"></div>
-<script>
+</script><div id="app"><aside id="side"><div class="stop"><div class="brand"><span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M7.25 3.8l9.5 16.4M16.75 3.8l-9.5 16.4"/></svg></span>مساعدي</div><button id="newChat" title="محادثة جديدة"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div><div id="chats"></div><div class="sbot"><a class="slink" onclick="openGal()"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>المعرض</a><a class="slink" onclick="openSheet('setSheet')"><span class="gr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>الإعدادات ووضع المطور</a></div></aside><div id="main"><div id="topbar"><button class="ticon" id="menuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><span class="tt">مساعدي</span><span id="utok">النهارده: <b>0</b></span><button class="ticon" onclick="openSheet('setSheet')" title="الإعدادات"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button></div><div id="netbar"></div><div id="scroll"><div id="chatwrap"><div id="empty"><span class="emark"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg></span><h2>أهلاً بيك في مساعدي</h2><p>أكتر من ١٠٠ نموذج مجاني تحت إيدك: كلام، صور، رسم، بحث، وتفكير بخطوات.</p><div class="sugs"><button class="sug" onclick="sug(this)">اشرحلي أي موضوع ببساطة</button><button class="sug" onclick="sugArt(this)">قطة بتطير في الفضاء</button><button class="sug" onclick="sug(this)">اكتبلي كود لعبة بسيطة</button><button class="sug" onclick="sugSearch(this)">ابحث عن أخبار التقنية النهارده</button></div></div><div id="chat"></div></div></div><div id="comp"><div id="modelbar"><button class="pill" id="modelpick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span id="curModel">تلقائي</span><span class="pv" id="curProv"></span></button><button class="modechip" id="thinkBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>تفكير</button><button class="modechip" id="searchBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>بحث</button><button class="modechip" id="artBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r=".9" fill="currentColor"/><circle cx="12" cy="7.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="10" r=".9" fill="currentColor"/><path d="M12 21c-1.2 0-1.7-1.1-1-2 .9-1.1 0-2.5-1.5-2.5H6.5"/></svg>رسم</button><button class="modechip" id="teamBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M15.5 15.2c2.2.3 3.9 1.6 4.4 3.8"/></svg>فريق</button><button class="modechip" id="devBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg>مطوّر</button></div><div id="attachChip"><img id="attachThumb"><span class="an" id="attachName"></span><button class="x" onclick="clearAttach()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="box"><textarea id="inp" rows="1" placeholder="اكتب رسالتك هنا..."></textarea><div id="tools"><button class="tbtn" id="camBtn" title="إرفاق: صورة / كاميرا / ملف / رسم"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 12.5l-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.85 1.85 0 0 1-2.6-2.6l7.8-7.8"/></svg></button><button class="tbtn" id="micBtn" title="تكلم بدل الكتابة"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button id="send" title="ابعت"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div></div></div></div><input type="file" id="fileImg" accept="image/*" style="display:none"><input type="file" id="fileCam" accept="image/*" capture="environment" style="display:none"><input type="file" id="fileProj" multiple accept=".zip,.txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.java,.kt,.dart,.gradle,.php,.sql,.sh,.properties,.toml,.ini,.cfg" style="display:none"><input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.sh" style="display:none"><div class="overlay" id="attSheet"><div class="sheet"><h3>إرفاق <button class="closex" onclick="closeSheet('attSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><a class="slink" onclick="closeSheet('attSheet');fileImg.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-4.5-4.5L6 21"/></svg></span>صورة من الجهاز</a><a class="slink" onclick="closeSheet('attSheet');fileCam.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>الكاميرا</a><a class="slink" onclick="closeSheet('attSheet');fileTxt.click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg></span>ملف نصي أو كود</a><a class="slink" onclick="closeSheet('attSheet');document.getElementById('fileProj').click()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>مشروع كامل (ملفات أو ZIP)</a><a class="slink" style="margin-bottom:14px" onclick="closeSheet('attSheet');openCanvas()"><span class="gr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 19l7-7-4-4-7 7-1 5z"/><path d="M14 6l4 4"/></svg></span>لوحة رسم (ارسم بإيدك)</a></div></div><div class="overlay" id="modelSheet"><div class="sheet"><h3>اختار النموذج <button class="closex" onclick="closeSheet('modelSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><input id="msearch" placeholder="دوّر على نموذج..."><div id="mlist"></div></div></div><div class="overlay" id="setSheet"><div class="sheet"><h3>الإعدادات <button class="closex" onclick="closeSheet('setSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div style="overflow-y:auto"><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H14a2.5 2.5 0 0 0-2 4z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="11.5" r="1"/></svg>المظهر</div><div class="srow"><label>الثيم <div class="hint">غيّر ألوان الأداة كلها على مزاجك - بتتحفظ على جهازك</div></label></div><div class="srow" style="border:none;padding-top:0"><div class="thgrid" id="thGrid"></div></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>شخصية المساعد</div><div class="srow"><label>وضع المطور: شخصية المساعد <div class="hint">اكتب هنا هو يعمل إيه بالظبط: شخصيته، طريقة رده، دوره. بتتبعت مع كل رسالة.</div></label></div><div class="srow" style="border:none;padding-top:0"><textarea id="sysPrompt" placeholder="مثال: رد باللهجة المصرية، كن صديقي وخبير برمجة، واشرح بأمثلة"></textarea></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>الصوت والردود</div><div class="srow"><label>اقرأ الردود بصوت <div class="hint">كل رد جديد يتقال بصوت عربي</div></label><div class="sw" id="voiceSw"></div></div><div class="srow"><label>الإبداع (0 - 2) <div class="hint">أقل = أدق، أعلى = أكثر تنوع</div></label><input type="number" id="temp" min="0" max="2" step="0.1" placeholder="افتراضي"></div><div class="srow"><label>أقصى طول للرد <div class="hint">بالتوكنز، سيبه فاضي للافتراضي</div></label><input type="number" id="maxtok" min="1" max="32000" placeholder="افتراضي"></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>فريق النماذج</div><div class="srow"><label>تشكيل الفريق <div class="hint">كل عضو ليه دوره وتعليماته الخاصة. المدير بيقسم طلبك عليهم ويجمع شغلهم في رد واحد.</div></label></div><div id="teamEdit" style="padding:0 16px 10px"></div><div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="addTeamMember()">+ أضف عضو للفريق</button></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>الذاكرة والملاحظات</div><div class="srow"><label>ذاكرة المساعد <div class="hint">بيفتكر اللي بتقوله عن نفسك بين المحادثات وعلى كل أجهزتك. محفوظ دلوقتي: <b id="memCount">0</b> معلومة</div></label><button class="sbtn" onclick="clearMem()">امسح الذاكرة</button></div><div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div><div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div><div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>المحادثات</div><div class="srow"><label>نقل المحادثات لجهاز تاني <div class="hint">المحادثات بتتحفظ على السيرفر تلقائياً دلوقتي - دي نسخة احتياطية زيادة</div></label><div style="display:flex;gap:6px"><button class="sbtn" onclick="exportChats()">تصدير</button><button class="sbtn" onclick="document.getElementById('impFile').click()">استيراد</button></div></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>الصلاحيات المعتمدة</div><div class="srow"><label>حاجات وافقت عليها قبل كده <div class="hint">الأداة بتنفذها من غير ما تسألك تاني</div></label></div><div id="permEdit" style="padding:0 16px 10px"></div><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>إحصائياتك</div><div class="srow"><label>أرقامك <div class="hint">من جهازك مباشرة</div></label></div><div class="stgrid"><div class="stbox"><div class="v" id="stTok">0</div><div class="k">توكنز النهارده</div></div><div class="stbox"><div class="v" id="stMsg">0</div><div class="k">رسالة اتبعتت</div></div></div><table id="mtable"></table><div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.8 12.2 21 2m-4 4 3 3"/></svg>الحساب</div><div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div></div><div style="text-align:center;padding:14px;font-size:11px;color:var(--dim)">نسخة 21-11-ج</div></div></div><div class="overlay" id="cvSheet"><div class="sheet"><h3>لوحة الرسم <button class="closex" onclick="closeSheet('cvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div id="cvWrap"><canvas id="drawCv"></canvas><div class="cvrow"><input type="color" id="cvColor" value="#1F1E1B" title="اللون"><button class="sbtn" onclick="cvClear()">مسح</button><button class="sbtn" style="background:var(--acc);color:#fff;border-color:var(--acc)" onclick="cvAttach()">إرفاق الرسمة</button></div></div></div></div><div class="overlay" id="pvSheet"><div class="sheet"><h3><span id="pvTitle">ملف</span><button class="closex" onclick="closeSheet('pvSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div class="pvbody"><pre id="pvText"></pre><button class="sbtn" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('pvText').textContent).then(()=>toast('اتنسخ'))">نسخ المحتوى</button></div></div></div><div class="overlay" id="galSheet"><div class="sheet"><h3>المعرض <button class="closex" onclick="closeSheet('galSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3><div style="overflow-y:auto"><div class="galgrid" id="galGrid"></div></div></div></div><div class="overlay" id="htmlPv"><div class="pvsheet"><div class="pvtools"><span class="sp"> معاينة الصفحة</span><button class="sbtn" id="pvCodeBtn">الكود</button><button class="sbtn" id="pvFixBtn">فحص وإصلاح</button><button class="sbtn" id="pvGhBtn">ارفع جيت هب</button><button class="sbtn" id="pvDlBtn">تحميل</button><button class="sbtn" id="pvApkBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/package.svg"> ابني APK</button><button class="sbtn" id="pvDevBtn"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/smartphone.svg"> موبايل</button><button class="sbtn" id="pvCopyBtn">نسخ</button><button class="sbtn" onclick="closeSheet('htmlPv')">إغلاق</button></div><div id="pvDiag"></div><iframe id="pvFrame" sandbox="allow-scripts allow-modals"></iframe><pre id="pvCode"></pre></div></div><input type="file" id="impFile" accept=".json" style="display:none"><div id="setup"><div class="scard"><span class="mark"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M7.25 3.8l9.5 16.4M16.75 3.8l-9.5 16.4"/></svg></span><h2 style="font-weight:900">مفتاح التشغيل</h2><input type="password" id="keyInp" placeholder="الصق المفتاح هنا (sk-...)"><button class="go" onclick="saveKey()">ابدأ</button><div class="hint">المفتاح بيتخزن في متصفحك بس.<br>هتلاقيه في لوحة التحكم ← صفحة Keys.</div></div></div><div id="toast"></div><script>
 const API='https://freellm-router.onrender.com';
 const CAP={"gemini-2.5-flash": {"p": "electronhub", "t": true, "v": true, "n": "Gemini 2.5 Flash (ElectronHub)"}, "glm-4.5-flash": {"p": "zhipu", "t": true, "v": false, "n": "GLM-4.5 Flash"}, "codestral-latest": {"p": "airforce", "t": false, "v": false, "n": "codestral-latest (Api.Airforce)"}, "gemini-2.5-flash-lite": {"p": "electronhub", "t": true, "v": true, "n": "Gemini 2.5 Flash-Lite (ElectronHub)"}, "command-r-plus-08-2024": {"p": "cohere", "t": true, "v": false, "n": "Command R+ (08-2024)"}, "@cf/meta/llama-3.3-70b-instruct-fp8-fast": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 3.3 70B fp8-fast (CF)"}, "openai/gpt-oss-120b": {"p": "groq", "t": true, "v": false, "n": "GPT-OSS 120B (Groq)"}, "@cf/openai/gpt-oss-120b": {"p": "cloudflare", "t": true, "v": false, "n": "GPT-OSS 120B (CF)"}, "@cf/zai-org/glm-4.7-flash": {"p": "cloudflare", "t": true, "v": false, "n": "GLM-4.7 Flash (CF)"}, "@cf/meta/llama-4-scout-17b-16e-instruct": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 4 Scout (CF)"}, "openai/gpt-oss-20b": {"p": "speka", "t": false, "v": false, "n": "GPT-OSS 20B (Speka)"}, "command-a-03-2025": {"p": "cohere", "t": true, "v": false, "n": "Command-A (03-2025)"}, "@cf/qwen/qwen3-30b-a3b-fp8": {"p": "cloudflare", "t": true, "v": false, "n": "Qwen3 30B-A3B fp8 (CF)"}, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b": {"p": "cloudflare", "t": true, "v": false, "n": "DeepSeek R1 Distill Qwen 32B (CF)"}, "gemini-3-flash-preview": {"p": "google", "t": true, "v": true, "n": "Gemini 3 Flash Preview"}, "gemini-3.1-flash-lite-preview": {"p": "google", "t": true, "v": true, "n": "Gemini 3.1 Flash Lite Preview (Google AI Studio)"}, "google/gemma-4-31b-it:free": {"p": "openrouter", "t": false, "v": false, "n": "Gemma 4 31B (free)"}, "glm-4.7-flash": {"p": "electronhub", "t": true, "v": false, "n": "GLM 4.7 Flash (ElectronHub)"}, "google/gemma-4-26b-a4b-it:free": {"p": "openrouter", "t": false, "v": false, "n": "Gemma 4 26B-A4B (free)"}, "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {"p": "kilo", "t": false, "v": true, "n": "Nemotron 3 Nano Omni Reasoning (Kilo)"}, "@cf/ibm-granite/granite-4.0-h-micro": {"p": "cloudflare", "t": false, "v": false, "n": "Granite 4.0 H Micro (CF)"}, "google/gemma-4-31b-it": {"p": "speka", "t": false, "v": false, "n": "Gemma 4 31B IT (Speka)"}, "nvidia/nemotron-3-super-120b-a12b": {"p": "nvidia", "t": true, "v": false, "n": "Nemotron 3 Super 120B (NV)"}, "gemini-3.5-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.5 Flash"}, "@cf/nvidia/nemotron-3-120b-a12b": {"p": "cloudflare", "t": false, "v": false, "n": "Nemotron 3 120B (CF)"}, "command-a-reasoning-08-2025": {"p": "cohere", "t": true, "v": false, "n": "Command A Reasoning (08-2025)"}, "openai/gpt-oss-safeguard-20b": {"p": "llmtr", "t": false, "v": false, "n": "GPT OSS Safeguard 20B (LLMTR)"}, "@cf/google/gemma-4-26b-a4b-it": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 4 26B-A4B it (CF)"}, "command-r-08-2024": {"p": "electronhub", "t": true, "v": false, "n": "Command R (08-2024) (ElectronHub)"}, "ministral-8b-latest": {"p": "airforce", "t": false, "v": false, "n": "ministral-8b-latest (Api.Airforce)"}, "gemma-4-31b-it": {"p": "electronhub", "t": true, "v": true, "n": "Gemma 4 31B (ElectronHub)"}, "gemma-4-26b-a4b-it": {"p": "electronhub", "t": true, "v": true, "n": "Gemma 4 26B A4B (ElectronHub)"}, "nvidia/nemotron-3-ultra-550b-a55b:free": {"p": "kilo", "t": true, "v": false, "n": "Nemotron 3 Ultra 550B (Kilo)"}, "glm-4.6v-flash": {"p": "zhipu", "t": true, "v": true, "n": "GLM-4.6V Flash"}, "anthropic/claude-haiku-4.5": {"p": "aclide", "t": false, "v": false, "n": "Claude Haiku 4.5 (ACLIDE)"}, "mistralai/codestral-2508": {"p": "xkiro", "t": true, "v": false, "n": "Codestral (xKiro)"}, "mistralai/devstral-medium": {"p": "xkiro", "t": true, "v": false, "n": "Devstral 2 (xKiro)"}, "mistralai/ministral-14b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 14B (xKiro)"}, "mistralai/ministral-3b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 3B (xKiro)"}, "mistralai/ministral-8b": {"p": "xkiro", "t": true, "v": false, "n": "Ministral 3 8B (xKiro)"}, "mistralai/mistral-medium-3.5": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Medium 3.5 (xKiro)"}, "qwen/qwen-plus-2025-07-28:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen Plus 2025-07-28 (ACLIDE)"}, "qwen/qwen3-coder-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Coder Plus (ACLIDE)"}, "qwen/qwen3-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Max (ACLIDE)"}, "qwen/qwen3-omni-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 Omni Flash (ACLIDE)"}, "qwen/qwen3-vl-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3 VL Plus (ACLIDE)"}, "qwen/qwen3.5-397b-a17b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 397B (ACLIDE)"}, "qwen/qwen3.5-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Flash (ACLIDE)"}, "qwen/qwen3.5-omni-flash:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Omni Flash (ACLIDE)"}, "qwen/qwen3.5-omni-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Omni Plus (ACLIDE)"}, "qwen/qwen3.5-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.5 Plus (ACLIDE)"}, "qwen/qwen3.6-27b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 27B (ACLIDE)"}, "qwen/qwen3.6-35b-a3b:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 35B A3B (ACLIDE)"}, "qwen/qwen3.6-max-preview:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 Max Preview (ACLIDE)"}, "qwen/qwen3.6-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.6 Plus (ACLIDE)"}, "qwen/qwen3.7-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.7 Max (ACLIDE)"}, "qwen/qwen3.7-plus:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.7 Plus (ACLIDE)"}, "qwen/qwen3.8-max:free": {"p": "aclide", "t": true, "v": false, "n": "Qwen3.8 Max (ACLIDE)"}, "z-ai/glm-4.5-airx": {"p": "aclide", "t": true, "v": false, "n": "GLM-4.5 AirX (ACLIDE)"}, "z-ai/glm-4.7-flashx": {"p": "aclide", "t": true, "v": false, "n": "GLM-4.7 FlashX (ACLIDE)"}, "z-ai/glm-5": {"p": "aclide", "t": false, "v": false, "n": "GLM 5 (ACLIDE)"}, "z-ai/glm-5-turbo": {"p": "aclide", "t": true, "v": false, "n": "GLM-5 Turbo (ACLIDE)"}, "z-ai/glm-5v-turbo": {"p": "aclide", "t": true, "v": false, "n": "GLM-5V Turbo (ACLIDE)"}, "agnes-2.5-flash": {"p": "agnes", "t": true, "v": true, "n": "Agnes 2.5 Flash"}, "agnes-3.0-flash": {"p": "agnes", "t": false, "v": false, "n": "Agnes 3.0 Flash (Agnes AI)"}, "aphrodite/SicariusSicariiStuff/Impish_Bloodmoon_12B": {"p": "aihorde", "t": false, "v": false, "n": "Impish Bloodmoon 12B (AI Horde)"}, "aphrodite/SicariusSicariiStuff/Impish_LLAMA_4B": {"p": "aihorde", "t": false, "v": false, "n": "Impish LLAMA 4B (AI Horde)"}, "aphrodite/TheDrummer/Behemoth-X-123B-v2.1": {"p": "aihorde", "t": false, "v": false, "n": "Behemoth-X-123B-v2 1 (AI Horde)"}, "aphrodite/TheDrummer/Cydonia-24B-v4.3": {"p": "aihorde", "t": false, "v": false, "n": "Cydonia 24B v4.3 (AI Horde)"}, "aphrodite/TheDrummer/Skyfall-31B-v4.2": {"p": "aihorde", "t": false, "v": false, "n": "Skyfall 31B v4.2 (AI Horde)"}, "koboldcpp/Angelic_Eclipse-12B": {"p": "aihorde", "t": false, "v": false, "n": "Angelic Eclipse 12B (AI Horde)"}, "koboldcpp/Cydonia-24B-v4.3": {"p": "aihorde", "t": false, "v": false, "n": "Cydonia 24B v4.3 (AI Horde koboldcpp)"}, "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive": {"p": "aihorde", "t": false, "v": false, "n": "Gemma 4 E4B Uncensored Aggressive (AI Horde)"}, "koboldcpp/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "Gemma-4-E4B-Uncensored-HauhauCS-Aggressive-Q4 K M (AI Horde)"}, "koboldcpp/L3-8B-Stheno-v3.2": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3 Stheno 8B v3.2 (AI Horde)"}, "koboldcpp/L3-8B-Stheno-v3.2-Q5_K_M": {"p": "aihorde", "t": false, "v": false, "n": "L3-8B-Stheno-v3 2-Q5 K M (AI Horde)"}, "koboldcpp/L3-Super-Nova-RP-8B": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3 Super Nova RP 8B (AI Horde)"}, "koboldcpp/Llama-3.2-1B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-1B-Instruct (AI Horde)"}, "koboldcpp/Llama-3.2-3B": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3.2 3B (AI Horde)"}, "koboldcpp/Llama-3.2-3B-Instruct-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-3B-Instruct-Q4 K M (AI Horde)"}, "koboldcpp/MN-Violet-Lotus-12B.Q8_0": {"p": "aihorde", "t": false, "v": false, "n": "MN-Violet-Lotus-12B Q8 0 (AI Horde)"}, "koboldcpp/Qwen/Qwen3.5-0.8B": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3.5 0.8B (AI Horde)"}, "koboldcpp/Qwen2.5-Coder-3B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Qwen2.5 Coder 3B Instruct (AI Horde)"}, "koboldcpp/Qwen3-4B-Nymphaea-RP.i1-Q4_K_S": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3-4B-Nymphaea-RP i1-Q4 K S (AI Horde)"}, "koboldcpp/Qwen_Qwen3-0.6B-IQ4_XS": {"p": "aihorde", "t": false, "v": false, "n": "Qwen3 0.6B IQ4 (AI Horde)"}, "koboldcpp/ReadyArt/Forgotten-Safeword-22B": {"p": "aihorde", "t": false, "v": false, "n": "Forgotten-Safeword-22B (AI Horde)"}, "koboldcpp/TheDrummer_Behemoth-128B-v3-Q4_K_M": {"p": "aihorde", "t": false, "v": false, "n": "TheDrummer Behemoth-128B-v3-Q4 K M (AI Horde)"}, "koboldcpp/[ctx:65536] Magidonia-24B-heretic-": {"p": "aihorde", "t": false, "v": false, "n": "[ctx:65536] Magidonia-24B-heretic- (AI Horde)"}, "koboldcpp/digo-prayudha/unsloth-llama-3.2-1b-gguf": {"p": "aihorde", "t": false, "v": false, "n": "Llama 3.2 1B Unsloth (AI Horde)"}, "koboldcpp/gemma-4-31B-it-heretic": {"p": "aihorde", "t": false, "v": false, "n": "Gemma 4 31B Heretic (AI Horde)"}, "koboldcpp/llama-3.2-3b-instruct-q4_k_m": {"p": "aihorde", "t": false, "v": false, "n": "llama-3 2-3b-instruct-q4 k m (AI Horde)"}, "koboldcpp/lunahr/thea-rp-3b-25r": {"p": "aihorde", "t": false, "v": false, "n": "thea-rp-3b-25r (AI Horde)"}, "koboldcpp/mini-magnum-12b-v1.1": {"p": "aihorde", "t": false, "v": false, "n": "Mini Magnum 12B v1.1 (AI Horde)"}, "koboldcpp/mradermacher/Cerebras-GPT-111M-instruction-GGUF": {"p": "aihorde", "t": false, "v": false, "n": "Cerebras GPT 111M Instruct (AI Horde)"}, "koboldcpp/mradermacher/pythia-70m-deduped.f16.gguf": {"p": "aihorde", "t": false, "v": false, "n": "Pythia 70M Deduped (AI Horde)"}, "meta-llama/Llama-3.2-3B-Instruct": {"p": "aihorde", "t": false, "v": false, "n": "Llama-3 2-3B-Instruct (AI Horde)"}, "aion-labs/aion-2.0": {"p": "aion", "t": false, "v": false, "n": "Aion 2.0"}, "aion-labs/aion-3.0": {"p": "aion", "t": false, "v": false, "n": "Aion 3.0"}, "aion-labs/aion-3.0-mini": {"p": "aion", "t": false, "v": false, "n": "Aion 3.0 Mini"}, "aion-labs/aion-rp-llama-3.1-8b": {"p": "aion", "t": false, "v": false, "n": "Aion-RP Llama 3.1 8B"}, "codestral-2508": {"p": "mistral", "t": true, "v": false, "n": "Codestral 2508"}, "gpt-oss-20b": {"p": "ovh", "t": true, "v": false, "n": "GPT-OSS 20B (OVH)"}, "llama-instant": {"p": "airforce", "t": false, "v": false, "n": "llama-instant (Api.Airforce)"}, "ministral-14b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 14B (2512)"}, "ministral-14b-latest": {"p": "mistral", "t": true, "v": false, "n": "Ministral 14B"}, "ministral-3b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 3B (2512)"}, "ministral-3b-latest": {"p": "mistral", "t": true, "v": true, "n": "Ministral 3B"}, "ministral-8b-2512": {"p": "mistral", "t": true, "v": true, "n": "Ministral 8B (2512)"}, "mistral-code-fim-latest": {"p": "mistral", "t": false, "v": false, "n": "Mistral Code FIM"}, "mistral-code-latest": {"p": "mistral", "t": true, "v": false, "n": "Mistral Code"}, "mistral-tiny-2407": {"p": "airforce", "t": false, "v": false, "n": "mistral-tiny-2407 (Api.Airforce)"}, "mistral-tiny-latest": {"p": "airforce", "t": false, "v": false, "n": "mistral-tiny-latest (Api.Airforce)"}, "open-mistral-nemo": {"p": "airforce", "t": false, "v": false, "n": "open-mistral-nemo (Api.Airforce)"}, "open-mistral-nemo-2407": {"p": "electronhub", "t": true, "v": false, "n": "Open Mistral Nemo 2407 (ElectronHub)"}, "rnj-1": {"p": "airforce", "t": false, "v": false, "n": "rnj-1 (Api.Airforce)"}, "unmoderated-gpt": {"p": "airforce", "t": false, "v": false, "n": "unmoderated-gpt (Api.Airforce)"}, "voxtral-small-2507": {"p": "mistral", "t": true, "v": false, "n": "Voxtral Small 2507"}, "voxtral-small-latest": {"p": "mistral", "t": true, "v": false, "n": "Voxtral Small"}, "free/deepseek-v4-pro-0813": {"p": "apinex", "t": false, "v": false, "n": "Deepseek V4 Pro (APINex Free)"}, "free/deepseek-v4.1-flash": {"p": "apinex", "t": false, "v": false, "n": "Deepseek V4.1 Flash (APINex Free)"}, "free/gemini-3.8-flash": {"p": "apinex", "t": false, "v": false, "n": "Gemini 3.8 Flash (APINex Free)"}, "free/glm-5.3": {"p": "apinex", "t": false, "v": false, "n": "GLM 5.3 (APINex Free)"}, "free/glm-5.3-flash": {"p": "blaze", "t": false, "v": false, "n": "GLM 5.3 Flash (BlazeAPI)"}, "free/gpt-6-luna": {"p": "apinex", "t": false, "v": false, "n": "Gpt 6 Luna (APINex Free)"}, "auto:free": {"p": "bazaarlink", "t": true, "v": false, "n": "BazaarLink Auto (free router)"}, "deepseek/deepseek-v4-flash-0731free:free": {"p": "bazaarlink", "t": true, "v": false, "n": "DeepSeek V4 Flash (BazaarLink free)"}, "qwen/qwen3.7-flash:free": {"p": "bazaarlink", "t": true, "v": false, "n": "Qwen3.7 Flash (BazaarLink free)"}, "free/qwen3.8-27b": {"p": "blaze", "t": false, "v": false, "n": "Qwen3.8 27B (BlazeAPI)"}, "free/qwen3.8-flash-next": {"p": "blaze", "t": false, "v": false, "n": "Qwen3.8 Flash Next (BlazeAPI)"}, "nvidia/llama-3.2-11b-vision": {"p": "blockrun", "t": false, "v": false, "n": "Llama 3.2 11B Vision (BlockRun)"}, "nvidia/muse-glimmer-30b": {"p": "requesty", "t": false, "v": false, "n": "Muse Glimmer 30B (Requesty)"}, "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning": {"p": "requesty", "t": false, "v": true, "n": "Nemotron 3 Nano Omni Reasoning (Requesty)"}, "poolside/laguna-xs-2.1": {"p": "speka", "t": false, "v": false, "n": "Poolside Laguna XS 2.1 (Speka)"}, "GPT OSS 120B": {"p": "clod", "t": false, "v": false, "n": "GPT OSS 120B (CLōD)"}, "GPT OSS 20B": {"p": "clod", "t": false, "v": false, "n": "GPT OSS 20B (CLōD)"}, "Gemma 4 31B IT": {"p": "clod", "t": false, "v": false, "n": "Gemma 4 31B IT (CLōD)"}, "Qwen 3.5 9B": {"p": "clod", "t": false, "v": false, "n": "Qwen 3.5 9B (CLōD)"}, "@cf/aisingapore/gemma-sea-lion-v4-27b-it": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma SEA-LION v4 27B (CF)"}, "@cf/google/gemma-2b-it-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 2B IT LoRA (CF)"}, "@cf/google/gemma-7b-it-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Gemma 7B IT LoRA (CF)"}, "@cf/llava-hf/llava-1.5-7b-hf": {"p": "cloudflare", "t": false, "v": true, "n": "LLaVA 1.5 7B (Cloudflare Workers AI)"}, "@cf/meta-llama/llama-2-7b-chat-hf-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 2 7B Chat LoRA (CF)"}, "@cf/meta/llama-3.1-8b-instruct-fp8": {"p": "cloudflare", "t": true, "v": false, "n": "Llama 3.1 8B (CF)"}, "@cf/meta/llama-3.2-11b-vision-instruct": {"p": "cloudflare", "t": false, "v": true, "n": "Llama 3.2 11B Vision (CF)"}, "@cf/meta/llama-3.2-1b-instruct": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 3.2 1B Instruct (CF)"}, "@cf/meta/llama-3.2-3b-instruct": {"p": "cloudflare", "t": false, "v": false, "n": "Llama 3.2 3B (CF)"}, "@cf/meta/llama-guard-3-8b": {"p": "cloudflare", "t": false, "v": false, "n": "Llama Guard 3 8B (CF)"}, "@cf/mistral/mistral-7b-instruct-v0.2-lora": {"p": "cloudflare", "t": false, "v": false, "n": "Mistral 7B Instruct v0.2 LoRA (CF)"}, "@cf/mistralai/mistral-small-3.1-24b-instruct": {"p": "cloudflare", "t": true, "v": true, "n": "Mistral Small 3.1 24B (CF)"}, "@cf/moondream/moondream3.1-9B-A2B": {"p": "cloudflare", "t": false, "v": true, "n": "Moondream 3.1 9B A2B (CF)"}, "@cf/openai/gpt-oss-20b": {"p": "cloudflare", "t": true, "v": false, "n": "GPT-OSS 20B (CF)"}, "@cf/qwen/qwen2.5-coder-32b-instruct": {"p": "cloudflare", "t": true, "v": false, "n": "Qwen2.5 Coder 32B (CF)"}, "@cf/qwen/qwen3.8-27b": {"p": "cloudflare", "t": true, "v": true, "n": "Qwen 3.8 27B (Cloudflare Workers AI)"}, "@cf/qwen/qwq-32b": {"p": "cloudflare", "t": true, "v": false, "n": "QwQ 32B (CF)"}, "c4ai-aya-expanse-32b": {"p": "cohere", "t": false, "v": false, "n": "Aya Expanse 32B"}, "c4ai-aya-vision-32b": {"p": "cohere", "t": false, "v": true, "n": "Aya Vision 32B"}, "command-a-plus-05-2026": {"p": "cohere", "t": true, "v": true, "n": "Command A+ (05-2026)"}, "command-a-translate-08-2025": {"p": "cohere", "t": true, "v": false, "n": "Command A Translate (08-2025)"}, "command-a-vision-07-2025": {"p": "cohere", "t": false, "v": true, "n": "Command A Vision (07-2025)"}, "command-r7b-12-2024": {"p": "cohere", "t": true, "v": false, "n": "Command R7B (12-2024)"}, "command-r7b-arabic-02-2025": {"p": "cohere", "t": true, "v": false, "n": "Command R7B Arabic (02-2025)"}, "north-mini-code-1-0": {"p": "electronhub", "t": false, "v": false, "n": "North Mini Code (ElectronHub)"}, "north-small-translate-09-2026": {"p": "cohere", "t": false, "v": false, "n": "North Small Translate (Cohere)"}, "tiny-aya-earth": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Earth"}, "tiny-aya-fire": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Fire"}, "tiny-aya-global": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Global"}, "tiny-aya-water": {"p": "cohere", "t": false, "v": false, "n": "Tiny Aya Water"}, "auto": {"p": "dreamprompting", "t": false, "v": false, "n": "Auto route (DreamPrompting)"}, "chat/ch.at": {"p": "dreamprompting", "t": false, "v": false, "n": "ch.at (DreamPrompting)"}, "cloudflare-vision/@cf/meta/llama-4-scout-17b-16e-instruct": {"p": "dreamprompting", "t": true, "v": false, "n": "Llama 4 Scout (CF)"}, "cloudflare/@cf/ibm-granite/granite-4.0-h-micro": {"p": "dreamprompting", "t": true, "v": false, "n": "Granite 4.0 H Micro (CF)"}, "cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast": {"p": "dreamprompting", "t": true, "v": false, "n": "Llama 3.3 70B fp8-fast (CF)"}, "codestral/codestral-latest": {"p": "dreamprompting", "t": false, "v": false, "n": "Codestral (DreamPrompting)"}, "google/gemini-2.5-flash": {"p": "dreamprompting", "t": true, "v": false, "n": "Gemini 2.5 Flash"}, "google/gemini-3.1-flash-lite": {"p": "dreamprompting", "t": true, "v": false, "n": "Gemini 3.1 Flash-Lite"}, "groq/groq/compound-mini": {"p": "dreamprompting", "t": false, "v": false, "n": "Groq Compound Mini (DreamPrompting)"}, "groq/openai/gpt-oss-120b": {"p": "dreamprompting", "t": false, "v": false, "n": "GPT-OSS 120B (via Groq) (DreamPrompting)"}, "groq/openai/gpt-oss-20b": {"p": "dreamprompting", "t": false, "v": false, "n": "GPT-OSS 20B (via Groq) (DreamPrompting)"}, "nvidia-vision/meta/llama-3.2-11b-vision-instruct": {"p": "dreamprompting", "t": false, "v": true, "n": "Llama 3.2 11B Vision (DreamPrompting)"}, "nvidia/nvidia/nemotron-3-super-120b-a12b": {"p": "dreamprompting", "t": false, "v": false, "n": "Nemotron 3 Super 120B (via NVIDIA) (DreamPrompting)"}, "openrouter/nvidia/nemotron-3-super-120b-a12b:free": {"p": "dreamprompting", "t": false, "v": false, "n": "Nemotron 3 Super 120B (via OpenRouter) (DreamPrompting)"}, "deepseek-r1-distill-qwen-32b": {"p": "electronhub", "t": true, "v": false, "n": "R1 Distill Qwen 32B (ElectronHub)"}, "deepseek-v4-flash": {"p": "electronhub", "t": true, "v": false, "n": "DeepSeek V4 Flash (ElectronHub)"}, "deepseek-v4-flash-0731": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V4 Flash 0731 (Inferbase)"}, "deepseek-v4-flash-thinking": {"p": "electronhub", "t": false, "v": false, "n": "DeepSeek V4 Flash Thinking (ElectronHub)"}, "devstral-2512": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Devstral 2512 (ElectronHub)"}, "gemini-3.5-flash-lite": {"p": "google", "t": true, "v": true, "n": "Gemini 3.5 Flash Lite"}, "gemma-2-27b-it": {"p": "electronhub", "t": false, "v": false, "n": "Google: Gemma 2 27B (ElectronHub)"}, "gemma-2-9b-it": {"p": "electronhub", "t": true, "v": false, "n": "Gemma 2 9B (ElectronHub)"}, "gemma-3-12b-it": {"p": "electronhub", "t": true, "v": false, "n": "gemma 3 12b it (ElectronHub)"}, "gemma-3-1b-it": {"p": "electronhub", "t": true, "v": false, "n": "Gemma 3 1B (ElectronHub)"}, "gemma-3-27b-it": {"p": "electronhub", "t": false, "v": false, "n": "Google: Gemma 3 27B (ElectronHub)"}, "gemma-3-4b-it": {"p": "electronhub", "t": true, "v": false, "n": "gemma 3 4b it (ElectronHub)"}, "gemma-4-31b-aura-large-v1.1": {"p": "electronhub", "t": false, "v": false, "n": "Gemma-4-31B-Aura-Large-v1.1 (ElectronHub)"}, "glm-4.5-air": {"p": "electronhub", "t": false, "v": false, "n": "ZhipuAI: GLM 4.5 Air (ElectronHub)"}, "gpt-4.1": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4.1 (ElectronHub)"}, "gpt-4.1-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4.1 Mini (ElectronHub)"}, "gpt-4o": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4o (ElectronHub)"}, "gpt-4o-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 4o Mini (ElectronHub)"}, "gpt-5-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5 Mini (ElectronHub)"}, "gpt-5-nano": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5 Nano (ElectronHub)"}, "gpt-5.4-mini": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5.4 Mini (ElectronHub)"}, "gpt-5.4-nano": {"p": "electronhub", "t": true, "v": true, "n": "GPT 5.4 Nano (ElectronHub)"}, "gpt-5.6-luna": {"p": "electronhub", "t": true, "v": true, "n": "GPT-5.6 Luna (ElectronHub)"}, "gpt-6-luna": {"p": "electronhub", "t": false, "v": false, "n": "OpenAI: GPT-6 Luna (ElectronHub)"}, "gpt-oss-120b": {"p": "ovh", "t": true, "v": false, "n": "GPT-OSS 120B (OVH)"}, "hermes-4-14b": {"p": "electronhub", "t": true, "v": false, "n": "Hermes 4 14B (ElectronHub)"}, "hunyuan-a13b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Hunyuan A13B Instruct (ElectronHub)"}, "hy4-preview": {"p": "electronhub", "t": false, "v": false, "n": "Tencent: Hy4 Preview (ElectronHub)"}, "l3-lunaris-8b": {"p": "electronhub", "t": false, "v": false, "n": "L3 8B Lunaris v1 (ElectronHub)"}, "labs-devstral-small-2512": {"p": "electronhub", "t": false, "v": false, "n": "Devstral Small 2 (ElectronHub)"}, "laguna-s-2.1": {"p": "electronhub", "t": true, "v": false, "n": "Laguna S 2.1 (ElectronHub)"}, "laguna-xs-2.1": {"p": "electronhub", "t": true, "v": false, "n": "Laguna XS 2.1 (ElectronHub)"}, "llama-3.2-1b": {"p": "electronhub", "t": true, "v": false, "n": "Llama 3.2 1B (ElectronHub)"}, "llama-3.2-3b": {"p": "electronhub", "t": true, "v": false, "n": "Llama 3.2 3B (ElectronHub)"}, "llama-4-scout-17b-16e-instruct": {"p": "electronhub", "t": true, "v": true, "n": "Llama 4 Scout (ElectronHub)"}, "longcat-flash-chat": {"p": "electronhub", "t": true, "v": false, "n": "LongCat Flash Chat (ElectronHub)"}, "mimo-v2.6-flash": {"p": "electronhub", "t": false, "v": false, "n": "Xiaomi: MiMo V2.6 Flash (ElectronHub)"}, "mimo-v2.6-flash-mopd": {"p": "electronhub", "t": false, "v": false, "n": "MiMo-V2.6-Flash-MOPD (ElectronHub)"}, "minimax-m2.1": {"p": "electronhub", "t": false, "v": false, "n": "MiniMax: MiniMax M2.1 (ElectronHub)"}, "minimax-m2.5": {"p": "electronhub", "t": true, "v": false, "n": "MiniMax M2.5 (ElectronHub)"}, "minimax-m2.7": {"p": "electronhub", "t": true, "v": false, "n": "MiniMax M2.7 (ElectronHub)"}, "minimax-m3": {"p": "inferbase", "t": false, "v": false, "n": "MiniMax M3 (Inferbase)"}, "mistral-large-2512": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Large 3 (ElectronHub)"}, "mistral-medium-3-5": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Medium 3.5 (ElectronHub)"}, "mistral-small-2603": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Small 4 (ElectronHub)"}, "mistral-small-3.1-24b-instruct": {"p": "electronhub", "t": false, "v": false, "n": "Mistral: Mistral Small 3.1 24B (ElectronHub)"}, "mistral-small-3.2-24b-instruct": {"p": "electronhub", "t": false, "v": false, "n": "Mistral Small 3.2 24B (ElectronHub)"}, "mytho-max-l2-13b": {"p": "electronhub", "t": false, "v": false, "n": "MythoMax L2 13B (ElectronHub)"}, "nemotron-3-nano-omni-30b-a3b-reasoning": {"p": "electronhub", "t": true, "v": true, "n": "Nemotron 3 Nano Omni  (ElectronHub)"}, "nemotron-3-ultra-550b-a55b": {"p": "electronhub", "t": true, "v": false, "n": "Nemotron 3 Ultra (ElectronHub)"}, "nemotron-3.5-content-safety": {"p": "electronhub", "t": false, "v": false, "n": "Nemotron 3.5 Content Safety (ElectronHub)"}, "nemotron-3.5-lightning": {"p": "electronhub", "t": true, "v": false, "n": "Nemotron 3.5 Lightning (ElectronHub)"}, "phi-4": {"p": "electronhub", "t": true, "v": false, "n": "phi 4 (ElectronHub)"}, "qwen-2.5-32b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 32B Instruct (ElectronHub)"}, "qwen-2.5-72b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 72B Instruct (ElectronHub)"}, "qwen-2.5-7b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 7B Instruct (ElectronHub)"}, "qwen-2.5-coder-32b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 Coder 32B Instruct (ElectronHub)"}, "qwen-2.5-coder-7b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen2.5 Coder 7B Instruct (ElectronHub)"}, "qwen3-30b-a3b-instruct-2507": {"p": "electronhub", "t": true, "v": false, "n": "Qwen3 30B A3B Instruct 2507 (ElectronHub)"}, "qwen3-coder-30-a3b-instruct": {"p": "electronhub", "t": true, "v": false, "n": "Qwen3 Coder 30B A3B Instruct (ElectronHub)"}, "qwen3.7-flash": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.7 Flash (ElectronHub)"}, "qwen3.8-27b": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.8 27B (ElectronHub)"}, "qwen3.8-27b-omnimerge-v6": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-27B-Omnimerge-v6 (ElectronHub)"}, "qwen3.8-27b-swift": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-27B-Swift (ElectronHub)"}, "qwen3.8-flash": {"p": "electronhub", "t": true, "v": true, "n": "Qwen3.8 Flash (ElectronHub)"}, "qwen3.8-flash-next": {"p": "electronhub", "t": false, "v": false, "n": "Qwen3.8-Flash-Next (ElectronHub)"}, "step-3.5-flash": {"p": "electronhub", "t": true, "v": false, "n": "Step 3.5 Flash (ElectronHub)"}, "step-3.7-flash": {"p": "electronhub", "t": true, "v": true, "n": "Step 3.7 Flash (ElectronHub)"}, "nvidia/nemotron-3-super-120b-a12b:free": {"p": "gizmo", "t": false, "v": false, "n": "Nemotron 3 Super 120B (Gizmo)"}, "nvidia/nemotron-3.5-lightning:free": {"p": "openrouter", "t": true, "v": false, "n": "Nemotron 3.5 Lightning (free)"}, "poolside/laguna-s-2.1:free": {"p": "gizmo", "t": false, "v": false, "n": "Poolside Laguna S 2.1 (Gizmo)"}, "poolside/laguna-xs-2.1:free": {"p": "gizmo", "t": false, "v": false, "n": "Poolside Laguna XS 2.1 (Gizmo)"}, "qwen/qwen3.8-27b:free": {"p": "gizmo", "t": false, "v": false, "n": "Qwen3.8 27B (Gizmo)"}, "gemini-3.1-flash-lite": {"p": "google", "t": true, "v": true, "n": "Gemini 3.1 Flash-Lite"}, "gemini-3.6-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.6 Flash"}, "gemini-3.7-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.7 Flash"}, "gemini-3.8-flash": {"p": "google", "t": true, "v": true, "n": "Gemini 3.8 Flash"}, "gemini-flash-latest": {"p": "google", "t": true, "v": true, "n": "Gemini Flash (latest alias) (Google AI Studio)"}, "gemini-flash-lite-latest": {"p": "google", "t": true, "v": true, "n": "Gemini Flash Lite (latest alias) (Google AI Studio)"}, "gemini-robotics-er-2-preview": {"p": "google", "t": false, "v": true, "n": "Gemini Robotics-ER 2 Preview"}, "allam-2-7b": {"p": "groq", "t": false, "v": false, "n": "ALLaM 2 7B (Groq)"}, "meta-llama/llama-prompt-guard-2-22m": {"p": "groq", "t": false, "v": false, "n": "Llama Prompt Guard 2 22M (Groq)"}, "meta-llama/llama-prompt-guard-2-86m": {"p": "groq", "t": false, "v": false, "n": "Llama Prompt Guard 2 86M (Groq)"}, "qwen/qwen3.8-27b": {"p": "groq", "t": true, "v": true, "n": "Qwen3.8 27B (Groq)"}, "deepseek-v3": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3 (Inferbase)"}, "deepseek-v3-1:fp4": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3.1 FP4 (Inferbase)"}, "deepseek-v3-2:fp4": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V3.2 FP4 (Inferbase)"}, "deepseek-v4-flash:fp8": {"p": "inferbase", "t": false, "v": false, "n": "DeepSeek V4 Flash (fp8) (Inferbase)"}, "google-gemma-3-12b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 12B (Inferbase)"}, "google-gemma-3-27b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 27B (Inferbase)"}, "google-gemma-3-4b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 3 4B (Inferbase)"}, "google-gemma-4-26b-a4b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 4 26B A4B IT (Inferbase)"}, "google-gemma-4-31b-it": {"p": "inferbase", "t": false, "v": false, "n": "Gemma 4 31B IT (Inferbase)"}, "meta-llama-3-1-8b-instruct": {"p": "inferbase", "t": false, "v": false, "n": "Llama 3.1 8B (Inferbase)"}, "meta-llama-3-3-70b-instruct": {"p": "inferbase", "t": false, "v": false, "n": "Llama 3.3 70B Instruct (Inferbase)"}, "meta-llama-4-scout-17b-16e-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Llama 4 Scout 17B 16E Instruct (fp8) (Inferbase)"}, "mistral-nemo-instruct-2407:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Nemo FP8 (Inferbase)"}, "mistral-small-24b-instruct-2501:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Small 24B FP8 (Inferbase)"}, "mistral-small-3-2-24b-instruct-2506:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Mistral Small 3.2 24B Instruct 2506 (fp8) (Inferbase)"}, "nvidia-nemotron-3-nano-30b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "NVIDIA Nemotron 3 Nano 30B A3B (Inferbase)"}, "openai-gpt-oss-120b": {"p": "inferbase", "t": false, "v": false, "n": "GPT Oss 120B (Inferbase)"}, "openai-gpt-oss-20b": {"p": "inferbase", "t": false, "v": false, "n": "GPT Oss 20B (Inferbase)"}, "qwen2-5-72b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen2.5 72B FP8 (Inferbase)"}, "qwen3-14b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 14B (fp8) (Inferbase)"}, "qwen3-30b-a3b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 30B A3B FP8 (Inferbase)"}, "qwen3-32b:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 32B FP8 (Inferbase)"}, "qwen3-5-35b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3.5 35B A3B"}, "qwen3-5-9b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3.5 9B (Inferbase)"}, "qwen3-6-35b-a3b": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3.6 35B A3B (Inferbase)"}, "qwen3-8-flash": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3.8 Flash (Inferbase)"}, "qwen3-coder-480b-a35b-instruct:turbo": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 Coder 480B A35B Instruct (turbo) (Inferbase)"}, "qwen3-next-80b-a3b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Instruct (fp8) (Inferbase)"}, "qwen3-vl-235b-a22b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 VL 235B A22B Instruct (fp8) (Inferbase)"}, "qwen3-vl-30b-a3b-instruct:fp8": {"p": "inferbase", "t": false, "v": false, "n": "Qwen 3 VL 30B A3B Instruct (fp8) (Inferbase)"}, "zai-glm-4-5-air": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.5 Air (Inferbase)"}, "zai-glm-4-5v": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.5V (Inferbase)"}, "zai-glm-4-6:fp4": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.6 FP4 (Inferbase)"}, "zai-glm-4-6v": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.6V (Inferbase)"}, "zai-glm-4-7-flash": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.7 Flash (Inferbase)"}, "zai-glm-4-7:fp4": {"p": "inferbase", "t": false, "v": false, "n": "GLM 4.7 (FP4)"}, "cohere/north-mini-code:free": {"p": "openrouter", "t": true, "v": false, "n": "North Mini Code (free)"}, "dots-studio/dots-3-note-preview:free": {"p": "openrouter", "t": true, "v": true, "n": "Dots3 Note Preview (free)"}, "kilo-auto/free": {"p": "kilo", "t": true, "v": false, "n": "Kilo Auto Free"}, "nvidia/nemotron-3.5-super-vl:free": {"p": "openrouter", "t": false, "v": false, "n": "Nemotron 3.5 Super VL (Free)"}, "openrouter/free": {"p": "kilo", "t": true, "v": true, "n": "Free Router (Kilo)"}, "default": {"p": "llm7", "t": false, "v": false, "n": "Default (LLM7)"}, "gpt-oss:20b": {"p": "llm7", "t": false, "v": false, "n": "gpt-oss:20b (LLM7)"}, "mistral-Nemo-Instruct-2407": {"p": "llm7", "t": true, "v": false, "n": "Mistral Nemo Instruct 2407 (LLM7)"}, "nvidia/nemotron-3-ultra-550b-a55b": {"p": "speka", "t": false, "v": false, "n": "Nemotron 3 Ultra 550B (Speka)"}, "nvidia/nemotron-3.5-super-vl-free": {"p": "llmtr", "t": false, "v": false, "n": "Nemotron 3.5 Super VL (Free)"}, "qwen/qwen3.8-27b-free": {"p": "llmtr", "t": false, "v": false, "n": "Qwen3.8 27B (LLMTR)"}, "gemma-4-26b": {"p": "logfare", "t": false, "v": false, "n": "Gemma 4 26B (Logfare)"}, "logfare/auto": {"p": "logfare", "t": false, "v": false, "n": "Logfare Auto (Logfare)"}, "MiniMax/MiniMax-M3": {"p": "modelscope", "t": false, "v": false, "n": "MiniMax M3 (ModelScope)"}, "Qwen/Qwen3-235B-A22B-Instruct-2507": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 235B A22B Instruct 2507 (ModelScope)"}, "Qwen/Qwen3-235B-A22B-Thinking-2507": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 235B A22B Thinking 2507 (ModelScope)"}, "Qwen/Qwen3-Coder-30B-A3B-Instruct": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Coder 30B A3B Instruct (ModelScope)"}, "Qwen/Qwen3-Next-80B-A3B-Instruct": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Instruct (ModelScope)"}, "Qwen/Qwen3-Next-80B-A3B-Thinking": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3 Next 80B A3B Thinking (ModelScope)"}, "Qwen/Qwen3-VL-235B-A22B-Instruct": {"p": "modelscope", "t": false, "v": true, "n": "Qwen3 VL 235B A22B Instruct (ModelScope)"}, "Qwen/Qwen3.5-397B-A17B": {"p": "modelscope", "t": false, "v": false, "n": "Qwen3.5 397B A17B (ModelScope)"}, "ZhipuAI/GLM-4.7-Flash": {"p": "modelscope", "t": false, "v": false, "n": "GLM-4.7 Flash (ModelScope)"}, "ZhipuAI/GLM-5.2": {"p": "modelscope", "t": false, "v": false, "n": "GLM-5.2 (ModelScope)"}, "deepseek-ai/DeepSeek-V4-Pro": {"p": "modelscope", "t": false, "v": false, "n": "DeepSeek V4 Pro (ModelScope)"}, "moondream3-preview": {"p": "moondream", "t": false, "v": true, "n": "Moondream 3 Preview"}, "moondream3.1-9B-A2B": {"p": "moondream", "t": false, "v": true, "n": "Moondream 3.1 9B A2B"}, "google/diffusiongemma-26b-a4b-it": {"p": "nvidia", "t": false, "v": true, "n": "DiffusionGemma 26B A4B IT (NV)"}, "meta/llama-3.2-90b-vision-instruct": {"p": "nvidia", "t": true, "v": true, "n": "Llama 3.2 90B Vision (NV)"}, "meta/muse-glimmer-30b": {"p": "speka", "t": false, "v": false, "n": "Muse Glimmer 30B (Speka)"}, "nvidia/ising-calibration-1.5-31b": {"p": "nvidia", "t": false, "v": true, "n": "Ising Calibration 1.5 31B (NV)"}, "nvidia/llama-3.1-nemoguard-8b-content-safety": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 NemoGuard 8B Content Safety (NVIDIA NIM)"}, "nvidia/llama-3.1-nemoguard-8b-topic-control": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 NemoGuard 8B Topic Control (NVIDIA NIM)"}, "nvidia/llama-3.1-nemotron-safety-guard-8b-v3": {"p": "nvidia", "t": false, "v": false, "n": "Llama 3.1 Nemotron Safety Guard 8B v3 (NVIDIA NIM)"}, "nvidia/nemotron-3.5-content-safety": {"p": "nvidia", "t": false, "v": false, "n": "Nemotron 3.5 Content Safety (NV)"}, "nvidia/nemotron-3.5-lightning-30b-a3b": {"p": "speka", "t": false, "v": false, "n": "Nemotron 3.5 Lightning 30B (Speka)"}, "nvidia/nemotron-parse-2.0": {"p": "nvidia", "t": false, "v": true, "n": "Nemotron Parse 2.0 (NVIDIA NIM)"}, "nvidia/riva-translate-4b-instruct-v2": {"p": "nvidia", "t": false, "v": false, "n": "Riva Translate 4B Instruct v2 (NVIDIA NIM)"}, "stepfun-ai/step-5-preview": {"p": "speka", "t": false, "v": false, "n": "Step 5 Preview (Speka)"}, "z-ai/glm-5.3-flash": {"p": "nvidia", "t": true, "v": false, "n": "GLM 5.3 Flash (NV)"}, "Meta-Llama-3_3-70B-Instruct": {"p": "ovh", "t": true, "v": false, "n": "Llama 3.3 70B (OVH)"}, "Mistral-Small-3.2-24B-Instruct-2506": {"p": "ovh", "t": true, "v": false, "n": "Mistral Small 3.2 24B (OVH)"}, "Qwen2.5-VL-72B-Instruct": {"p": "ovh", "t": false, "v": true, "n": "Qwen2.5 VL 72B (OVH)"}, "Qwen3.5-397B-A17B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.5 397B (OVH)"}, "Qwen3.5-9B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.5 9B (OVH)"}, "Qwen3.6-27B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.6 27B (OVH)"}, "Qwen3.8-27B": {"p": "ovh", "t": true, "v": false, "n": "Qwen3.8 27B (OVH)"}, "Qwen3Guard-Gen-0.6B": {"p": "ovh", "t": false, "v": false, "n": "Qwen3Guard Gen 0.6B (OVH safety)"}, "Qwen3Guard-Gen-8B": {"p": "ovh", "t": false, "v": false, "n": "Qwen3Guard Gen 8B (OVH safety)"}, "plugsky-lite": {"p": "plugsky", "t": false, "v": false, "n": "Plugsky Lite"}, "plugsky-micro": {"p": "plugsky", "t": false, "v": false, "n": "Plugsky Micro"}, "DeepSeek-V4-Flash": {"p": "radeon", "t": true, "v": false, "n": "DeepSeek V4 Flash (AMD Radeon Cloud)"}, "Qwen3.8-Flash-Next": {"p": "radeon", "t": true, "v": false, "n": "Qwen3.8 Flash Next (AMD Radeon Cloud)"}, "mistral/leanstral-1-5": {"p": "requesty", "t": true, "v": false, "n": "Leanstral 1.5 (Requesty)"}, "novita/ling-3.1-flash": {"p": "requesty", "t": false, "v": false, "n": "Ling 3.1 Flash (Requesty)"}, "deepseek/deepseek-v4-flash": {"p": "router9", "t": false, "v": false, "n": "DeepSeek V4 Flash 0731 (Router9)"}, "deepseek/deepseek-v4-pro": {"p": "router9", "t": false, "v": false, "n": "DeepSeek V4 Pro (Router9)"}, "qwen/qwen3-235b-a22b-2507": {"p": "router9", "t": false, "v": false, "n": "Qwen3 235B A22B Instruct 2507 (Router9)"}, "z-ai/glm-5.2": {"p": "router9", "t": false, "v": false, "n": "GLM 5.2 (Router9)"}, "gemma-4-26b-a4b-it-chimerax:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT chimerax (Routeway free)"}, "gemma-4-26b-a4b-it-darksoul:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT darksoul (Routeway free)"}, "gemma-4-26b-a4b-it-luminous:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT luminous (Routeway free)"}, "gemma-4-26b-a4b-it-meromero:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT meromero (Routeway free)"}, "gemma-4-26b-a4b-it-moonlight:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT moonlight (Routeway free)"}, "gemma-4-26b-a4b-it-musica:free": {"p": "routeway", "t": false, "v": false, "n": "Gemma 4 26B A4B IT musica (Routeway free)"}, "muse-glimmer-30b:free": {"p": "routeway", "t": true, "v": true, "n": "Muse Glimmer 30B (Routeway free)"}, "aisingapore/Gemma-SEA-LION-v4-27B-IT": {"p": "sealion", "t": false, "v": false, "n": "Gemma SEA-LION v4 27B (SEA-LION)"}, "aisingapore/Llama-SEA-LION-v3-70B-IT": {"p": "sealion", "t": false, "v": false, "n": "Llama SEA-LION v3 70B (SEA-LION)"}, "aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B": {"p": "sealion", "t": true, "v": false, "n": "Nemotron 3 Super 120B (NV)"}, "aisingapore/Qwen-SEA-LION-v4-32B-IT": {"p": "sealion", "t": false, "v": false, "n": "Qwen SEA-LION v4 32B (SEA-LION)"}, "aisingapore/Qwen-SEA-LION-v4.5-27B-IT": {"p": "sealion", "t": false, "v": false, "n": "Qwen SEA-LION v4.5 27B (SEA-LION)"}, "aisingapore/SEA-Guard": {"p": "sealion", "t": false, "v": false, "n": "SEA-Guard (SEA-LION)"}, "gemma-4-31b-it-free": {"p": "septor", "t": false, "v": false, "n": "Gemma 4 31B IT (Septor Labs)"}, "hermes-3-llama-3.1-405b-free": {"p": "septor", "t": true, "v": false, "n": "Hermes 3 Llama 3.1 405B (Septor Labs)"}, "minimax-m2.5-free": {"p": "septor", "t": true, "v": false, "n": "MiniMax M2.5 (Septor Labs)"}, "qwen3-coder-free": {"p": "septor", "t": true, "v": false, "n": "Qwen3 Coder (Septor Labs)"}, "qwen3-next-80b-a3b-instruct-free": {"p": "septor", "t": true, "v": false, "n": "Qwen3 Next 80B A3B Instruct (Septor Labs)"}, "free-Llama-3.1-8B-Instruct": {"p": "simplellm", "t": false, "v": false, "n": "Llama 3.1 8B Free (SimpleLLM)"}, "free-gemma-4-E4B": {"p": "simplellm", "t": false, "v": false, "n": "Gemma E4B Free (SimpleLLM)"}, "typhoon-v2.5-30b-a3b-instruct": {"p": "typhoon", "t": true, "v": false, "n": "Typhoon 2.5 30B A3B Instruct"}, "glm-5.3-flash:free": {"p": "unorouter", "t": true, "v": true, "n": "GLM 5.3 Flash (UnoRouter free)"}, "glm-5.3:free": {"p": "unorouter", "t": true, "v": false, "n": "GLM 5.3 (UnoRouter free)"}, "kimi-k3-nvidia-direct": {"p": "waterfall", "t": false, "v": false, "n": "Kimi K3 NVIDIA Direct (Waterfall)"}, "laguna-s-2.1-free": {"p": "waterfall", "t": false, "v": false, "n": "laguna-s-2.1 (Waterfall)"}, "lfm-2.5-2.6b-free": {"p": "waterfall", "t": false, "v": false, "n": "lfm-2.5-2.6b (Waterfall)"}, "ling-3.0-flash-sante-free": {"p": "waterfall", "t": false, "v": false, "n": "ling-3.0-flash-sante (Waterfall)"}, "ling-3.0-flash-vl-free": {"p": "waterfall", "t": false, "v": false, "n": "ling-3.0-flash-vl (Waterfall)"}, "nemotron-3-nano-omni-30b-a3b-reasoning-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-nano-omni-30b-a3b-reasoning (Waterfall)"}, "nemotron-3-super-120b-a12b-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-super-120b-a12b (Waterfall)"}, "nemotron-3-super-120b-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3-super-120b (Waterfall)"}, "nemotron-3.5-lightning-free": {"p": "waterfall", "t": false, "v": false, "n": "nemotron-3.5-lightning (Waterfall)"}, "nex-n2.5-mini-free": {"p": "waterfall", "t": false, "v": false, "n": "nex-n2.5-mini (Waterfall)"}, "nex-n2.5-pro-free": {"p": "waterfall", "t": false, "v": false, "n": "nex-n2.5-pro (Waterfall)"}, "mistralai/mistral-large-2512": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Large 3 (xKiro)"}, "mistralai/mistral-small-2603": {"p": "xkiro", "t": true, "v": true, "n": "Mistral Small 4 (xKiro)"}, "sensenova/sensenova-6.8-flash-lite": {"p": "xkiro", "t": true, "v": true, "n": "SenseNova 6.8 Flash-Lite (xKiro)"}};;
 const IC={
   spk:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>',
   copy:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
   dl:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>',
-  brain:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>'
-};
+  brain:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3c1 0 2-.5 3-1.5V5.5C11 4.5 10 4 9 4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3c-1 0-2-.5-3-1.5"/></svg>'};
 const LS=(()=>{try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return localStorage;}catch(e){const m={};return{getItem:k=>(k in m)?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]}};}})();let KEY=LS.getItem('flk_key')||'';
 let MODELS=[], curModel='auto';
 let attach=null;
@@ -472,8 +281,8 @@ const today=()=>new Date().toDateString();
 if(dayTok.d!==today())dayTok={d:today(),n:0};
 function saveTok(){try{LS.setItem('flk_tok',JSON.stringify(dayTok));}catch(e){}renderTok();}
 function arNum(n){
-  if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+' مليون';
-  if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+' ألف';
+  if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'مليون';
+  if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+'ألف';
   return ''+n;
 }
 function renderTok(){$('#utok').innerHTML='النهارده: <b>'+arNum(dayTok.n)+'</b>';}
@@ -524,7 +333,7 @@ function mdRender(t){
           const m=l.match(/^\s*(?:[-*]|\d+[.)])\s*(\[(x| )\])?\s*(.*)$/);
           const txt=m?m[3]:l;
           const chk=m&&m[1];
-          items+='<label class="pli"><input type="checkbox" '+(m&&m[2]==='x'?'checked':'')+'> <span>'+txt+'</span></label>';
+          items+='<label class="pli"><input type="checkbox" '+(m&&m[2]==='x'?'checked':'')+'><span>'+txt+'</span></label>';
         }
         out+='<div class="plancard"><div class="plt">خطة العمل</div>'+items+'</div>';
       }else if(lang==='file'){
@@ -570,7 +379,7 @@ function tagsFor(m){
   if(c.reason)h+='<span class="tag think"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/brain.svg">بيفكر</span>';
   if(c.code)h+='<span class="tag code"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/code.svg">كود</span>';
   if(c.v)h+='<span class="tag img"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/image.svg">بيفهم صور</span>';
-  if(c.t)h+='<span class="tag tool">⚡ ينفذ مهام</span>';
+  if(c.t)h+='<span class="tag tool"> ينفذ مهام</span>';
   if(!c.code&&!c.v&&!c.reason)h+='<span class="tag txt"><img class="ic" alt="" src="https://unpkg.com/lucide-static@latest/icons/file-text.svg">نصوص وردود</span>';
   return h;
 }
@@ -580,9 +389,7 @@ function renderList(q){
   const f=items.filter(m=>!q||m.id.toLowerCase().includes(q)||(m.name||'').toLowerCase().includes(q));
   el.innerHTML=f.slice(0,120).map(m=>{
     const c=m.auto?{}:capOf(m);
-    return '<div class="mitem '+(m.id===curModel?'sel':'')+'" onclick="pickModel(\''+m.id.replace(/'/g,"\\'")+'\')">'
-      +'<div><div class="nm">'+esc(m.name||m.id)+'</div><div class="pv">'+(m.auto?'توزيع ذكي على كل المزودين':'المزود: '+esc(c.p||'-'))+'</div></div>'
-      +'<div class="tags">'+(m.auto?'<span class="tag txt">موصى به</span>':tagsFor(m))+'</div></div>';
+    return '<div class="mitem '+(m.id===curModel?'sel':'')+'" onclick="pickModel(\''+m.id.replace(/'/g,"\\'")+'\')">'+'<div><div class="nm">'+esc(m.name||m.id)+'</div><div class="pv">'+(m.auto?'توزيع ذكي على كل المزودين':'المزود: '+esc(c.p||'-'))+'</div></div>'+'<div class="tags">'+(m.auto?'<span class="tag txt">موصى به</span>':tagsFor(m))+'</div></div>';
   }).join('')||'<div style="color:var(--dim);text-align:center;padding:20px">لا نتائج</div>';
 }
 function pickModel(id){
@@ -614,10 +421,7 @@ function delChat(ev,id){
 }
 function renderSide(){
   $('#chats').innerHTML=chats.map(c=>
-    '<div class="citem '+(c.id===curId?'sel':'')+'" onclick="pickChat(\''+c.id+'\')">'
-    +'<span class="t">'+esc(c.title)+'</span>'
-    +'<button class="d" onclick="delChat(event,\''+c.id+'\')" title="امسح"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>'
-  ).join('');
+    '<div class="citem '+(c.id===curId?'sel':'')+'" onclick="pickChat(\''+c.id+'\')">'+'<span class="t">'+esc(c.title)+'</span>'+'<button class="d" onclick="delChat(event,\''+c.id+'\')" title="امسح"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>').join('');
 }
 function renderChat(){
   const c=curChat();
@@ -648,7 +452,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   const d=document.createElement('div');d.className='mrow a';
   if(reasoning){
     const det=document.createElement('details');det.className='thinkbox';
-    const sum=document.createElement('summary');sum.innerHTML=IC.brain+' خطوات التفكير والتخطيط';
+    const sum=document.createElement('summary');sum.innerHTML=IC.brain+'خطوات التفكير والتخطيط';
     const tb=document.createElement('div');tb.className='tb';tb.textContent=reasoning;
     det.appendChild(sum);det.appendChild(tb);d.appendChild(det);
   }
@@ -657,7 +461,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   const meta=document.createElement('div');meta.className='ameta';
   const mi=MSG_T.push(content||'')-1;
   let h='<span>'+esc(model||'')+'</span>';
-  if(tok)h+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  if(tok)h+='<span class="tk">'+arNum(tok)+'توكن</span>';
   h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
   meta.innerHTML=h;d.appendChild(meta);
@@ -668,14 +472,14 @@ function addBotDom(content,reasoning,model,tok,silent){
 function addGenDom(prompt,url,silent){
   $('#empty').style.display='none';
   const d=document.createElement('div');d.className='mrow a genbox';
-  const p=document.createElement('div');p.className='gprompt';p.textContent='🎨 '+prompt;
+  const p=document.createElement('div');p.className='gprompt';p.textContent=''+prompt;
   const st=document.createElement('div');st.className='genload';st.textContent='برسم الصورة...';
   const im=document.createElement('img');im.style.display='none';
   const acts=document.createElement('div');acts.className='ameta';
   acts.innerHTML='<span>Pollinations مجاني</span><a class="mact" href="'+url+'" target="_blank" title="افتح بحجم كامل" style="text-decoration:none">'+IC.dl+'</a>';
   acts.style.display='none';
   im.onload=()=>{st.remove();im.style.display='block';acts.style.display='flex';scrollDown();};
-  im.onerror=()=>{st.textContent='⚠️ خدمة الرسم مشغولة دلوقتي، جرب تاني بعد شوية.';};
+  im.onerror=()=>{st.textContent='خدمة الرسم مشغولة دلوقتي، جرب تاني بعد شوية.';};
   d.appendChild(p);d.appendChild(st);d.appendChild(im);d.appendChild(acts);
   $('#chat').appendChild(d);
   im.src=url;
@@ -732,15 +536,15 @@ $('#micBtn').onclick=()=>{
   if(recOn){rec.stop();return;}
   rec=new SR();rec.lang='ar-EG';rec.interimResults=true;rec.continuous=true;
   const base=$('#inp').value;
-  rec.onresult=e=>{let s='';for(const r of e.results)s+=r[0].transcript;$('#inp').value=base+(base?' ':'')+s;autoGrow();};
+  rec.onresult=e=>{let s='';for(const r of e.results)s+=r[0].transcript;$('#inp').value=base+(base?'':'')+s;autoGrow();};
   rec.onend=()=>{recOn=false;$('#micBtn').classList.remove('rec');};
   rec.onerror=e=>{recOn=false;$('#micBtn').classList.remove('rec');if(e.error==='not-allowed')toast('لازم تسمح بالمايك للموقع من إعدادات المتصفح');};
-  try{rec.start();recOn=true;$('#micBtn').classList.add('rec');toast('🎤 اتكلم... دوس تاني لما تخلص');}catch(e){}
+  try{rec.start();recOn=true;$('#micBtn').classList.add('rec');toast('اتكلم... دوس تاني لما تخلص');}catch(e){}
 };
 function speakText(i){
-  const t=MSG_T[i];if(!t||!('speechSynthesis' in window))return;
+  const t=MSG_T[i];if(!t||!('speechSynthesis'in window))return;
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t.replace(/```[\s\S]*?```/g,' كود ').replace(/[*#`_>]/g,'').slice(0,800));
+  const u=new SpeechSynthesisUtterance(t.replace(/```[\s\S]*?```/g,'كود ').replace(/[*#`_>]/g,'').slice(0,800));
   u.lang='ar-EG';u.rate=1;
   const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.indexOf('ar')===0);
   if(v)u.voice=v;
@@ -762,9 +566,9 @@ function syncToggles(){
   artBtn.classList.toggle('on',artMode);
   $('#inp').placeholder=artMode?'اوصف الصورة اللي عايزها...':(searchMode?'اكتب اللي عايز تبحث عنه...':'اكتب رسالتك هنا...');
 }
-thinkBtn.onclick=()=>{setMode('think',!thinkMode);toast(thinkMode?'🧠 وضع التفكير شغال: هتشوف خطوات تفكير النموذج':'وضع التفكير اتقفل');};
-searchBtn.onclick=()=>{setMode('search',!searchMode);toast(searchMode?'🔍 بحث الويب شغال: السؤال الجاي هيدور على النت الأول':'بحث الويب اتقفل');};
-artBtn.onclick=()=>{setMode('art',!artMode);toast(artMode?'🎨 وضع الرسم شغال: اكتب وصف الصورة ودوس ابعت':'وضع الرسم اتقفل');};
+thinkBtn.onclick=()=>{setMode('think',!thinkMode);toast(thinkMode?'وضع التفكير شغال: هتشوف خطوات تفكير النموذج':'وضع التفكير اتقفل');};
+searchBtn.onclick=()=>{setMode('search',!searchMode);toast(searchMode?'بحث الويب شغال: السؤال الجاي هيدور على النت الأول':'بحث الويب اتقفل');};
+artBtn.onclick=()=>{setMode('art',!artMode);toast(artMode?'وضع الرسم شغال: اكتب وصف الصورة ودوس ابعت':'وضع الرسم اتقفل');};
 syncToggles();
 const voiceSw=$('#voiceSw');
 voiceSw.classList.toggle('on',autoVoice);
@@ -800,7 +604,7 @@ function genDomShell(prompt){
   $('#empty').style.display='none';
   const d=document.createElement('div');d.className='mrow a genbox';
   d.innerHTML='<div class="gprompt"></div><div class="genload">برسم الصورة...</div>';
-  d.querySelector('.gprompt').textContent='🎨 '+prompt;
+  d.querySelector('.gprompt').textContent=''+prompt;
   $('#chat').appendChild(d);scrollDown();return d;
 }
 function genDomStatus(d,txt){const l=d.querySelector('.genload');if(l)l.textContent=txt;}
@@ -834,7 +638,7 @@ async function genImage(prompt){
           const m=/Retry after (\d+)s/.exec((j.error&&j.error.message)||'');
           if(m)wait=Math.min(90,(+m[1])+3);
         }catch(e){}
-        genDomStatus(d,'خدمة الرسم المجانية بتاخد صورة كل ٤٥ ثانية - بهنّي '+arNum(wait)+' ثانية وبكمل لوحدي...');
+        genDomStatus(d,'خدمة الرسم المجانية بتاخد صورة كل ٤٥ ثانية - بهنّي '+arNum(wait)+'ثانية وبكمل لوحدي...');
         await new Promise(res=>setTimeout(res,wait*1000));
         continue;
       }
@@ -844,7 +648,7 @@ async function genImage(prompt){
     }
     await new Promise(res=>setTimeout(res,6000));
   }
-  genDomStatus(d,'⚠️ خدمة الرسم المجانية مشغولة دلوقتي. استنى دقيقة وجرب تاني.');
+  genDomStatus(d,'خدمة الرسم المجانية مشغولة دلوقتي. استنى دقيقة وجرب تاني.');
   return url;
 }
 async function doSearch(q){
@@ -866,20 +670,20 @@ async function send(){
 
   if(artMode){
     if(!text){toast('اكتب وصف الصورة الأول');return;}
-    addUserDom('🎨 ارسم: '+text);
-    c.msgs.push({r:'u',c:'🎨 ارسم: '+text,art:true});
+    addUserDom('ارسم: '+text);
+    c.msgs.push({r:'u',c:'ارسم: '+text,art:true});
     const url=genImage(text);
     c.msgs.push({r:'a',gen:{prompt:text,url:url}});
-    if(c.title==='محادثة جديدة')c.title='🎨 '+text.slice(0,40);
+    if(c.title==='محادثة جديدة')c.title=''+text.slice(0,40);
     saveChats();renderSide();
     return;
   }
 
   if(searchMode){
-    addUserDom('🔍 '+text);
-    c.msgs.push({r:'u',c:'🔍 '+text});
+    addUserDom(''+text);
+    c.msgs.push({r:'u',c:''+text});
     const ans=await doSearch(text);
-    if(ans===null){addBotDom('⚠️ البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','بحث الويب',0);return;}
+    if(ans===null){addBotDom('البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','بحث الويب',0);return;}
     addBotDom(ans,'','بحث الويب (مجاني)',0);
     c.msgs.push({r:'a',c:ans,model:'بحث الويب',tok:0});
     if(c.title==='محادثة جديدة')c.title=text.slice(0,40);
@@ -890,17 +694,17 @@ async function send(){
   const hadImg=attach&&attach.kind==='image';
   const hadFile=attach&&(attach.kind==='text'||attach.kind==='project');
   addUserDom(text,hadImg?attach.dataUrl:null);
-  c.msgs.push({r:'u',c:text+(hadImg?' [صورة]':'')+(hadFile?(attach.kind==='project'?' [مشروع: '+attach.files.length+' ملفات]':' [ملف: '+attach.name+']'):'')});
+  c.msgs.push({r:'u',c:text+(hadImg?'[صورة]':'')+(hadFile?(attach.kind==='project'?'[مشروع: '+attach.files.length+'ملفات]':'[ملف: '+attach.name+']'):'')});
   if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
 
   let model=curModel, note='';
   if(hadImg){
     const m=MODELS.find(x=>x.id===curModel);
-    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note=' • حوّلت على نموذج بيفهم الصور';}
+    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note='• حوّلت على نموذج بيفهم الصور';}
   }
   let sysAdd='';
   if(thinkMode){
-    if(model==='auto'){model=THINK_MODEL;note+=' • وضع التفكير';}
+    if(model==='auto'){model=THINK_MODEL;note+='• وضع التفكير';}
     sysAdd='فكّر خطوة بخطوة: اكتب خطة قصيرة أولاً، ثم نفّذها وأعطِ الإجابة النهائية بوضوح.';
   }
 
@@ -908,7 +712,7 @@ async function send(){
   if(hadFile){
     if(attach.kind==='project'){
       c.project=attach.files;
-      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+' ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
+      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+'ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+'---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
     }else fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
   }
   const userContent=hadImg
@@ -947,12 +751,12 @@ async function send(){
     clearTimeout(slow);netbar(null);
     tp.remove();
     if(!d||d.error){
-      let msg='⚠️ المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
-      if(d&&/rate.?limit|cooldown|429/i.test((d.error&&d.error.message)||''))msg='⚠️ المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
+      let msg='المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
+      if(d&&/rate.?limit|cooldown|429/i.test((d.error&&d.error.message)||''))msg='المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
       addBotDom(msg,'','',0);
       $('#send').disabled=false;return;
     }
-    if(switched)note+=' • اتحوّل لنموذج شغال تلقائياً';
+    if(switched)note+='• اتحوّل لنموذج شغال تلقائياً';
     const msg0=(d.choices&&d.choices[0]&&d.choices[0].message)||{};
     let reply=msg0.content||'(رد فاضي)';
     let reasoning=msg0.reasoning||'';
@@ -966,7 +770,7 @@ async function send(){
     saveChats();renderSide();bumpStats(d.model||model);
   }catch(e){
     tp.remove();
-    addBotDom('⚠️ مشكلة اتصال. السيرفر ممكن يكون بيصحى (بينام بعد ربع ساعة سكون) - جرب تاني بعد أقل من دقيقة.','','',0);
+    addBotDom('مشكلة اتصال. السيرفر ممكن يكون بيصحى (بينام بعد ربع ساعة سكون) - جرب تاني بعد أقل من دقيقة.','','',0);
   }
   $('#send').disabled=false;
 }
@@ -1011,7 +815,7 @@ $('#impFile').addEventListener('change',e=>{
       chats=d.chats;stats=d.stats||stats;curId=chats[0]?chats[0].id:'';
       try{LS.setItem('flk_cur',curId);}catch(e2){}
       saveChats();bumpStats(null);stats.msgs--;renderSide();renderChat();
-      toast('اتحملت المحادثات ✅');
+      toast('اتحملت المحادثات ');
     }catch(e2){toast('الملف ده مش نسخة محادثات صح');}
   };
   rd.readAsText(f);e.target.value='';
@@ -1019,7 +823,7 @@ $('#impFile').addEventListener('change',e=>{
 function renderSources(d,sources){
   if(!sources||!sources.length)return;
   const dv=document.createElement('div');dv.className='srcs';
-  dv.innerHTML='<b>المصادر:</b> '+sources.map((r,i)=>'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">['+(i+1)+'] '+esc(r.title||r.url)+'</a>').join(' ');
+  dv.innerHTML='<b>المصادر:</b> '+sources.map((r,i)=>'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">['+(i+1)+'] '+esc(r.title||r.url)+'</a>').join('');
   d.appendChild(dv);
 }
 /* override: user message with optional file card */
@@ -1057,7 +861,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   const d=document.createElement('div');d.className='mrow a';
   if(reasoning){
     const det=document.createElement('details');det.className='thinkbox';
-    const sum=document.createElement('summary');sum.innerHTML=IC.brain+' خطوات التفكير والتخطيط';
+    const sum=document.createElement('summary');sum.innerHTML=IC.brain+'خطوات التفكير والتخطيط';
     const tb=document.createElement('div');tb.className='tb';tb.textContent=reasoning;
     det.appendChild(sum);det.appendChild(tb);d.appendChild(det);
   }
@@ -1066,7 +870,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   const meta=document.createElement('div');meta.className='ameta';
   const mi=MSG_T.push(content||'')-1;
   let h='<span>'+esc(model||'')+'</span>';
-  if(tok)h+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  if(tok)h+='<span class="tk">'+arNum(tok)+'توكن</span>';
   h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
   meta.innerHTML=h;d.appendChild(meta);addPvBtn(d,content);
@@ -1078,7 +882,7 @@ function createStreamBubble(){
   $('#empty').style.display='none';
   const d=document.createElement('div');d.className='mrow a';
   const det=document.createElement('details');det.className='thinkbox';det.style.display='none';
-  det.innerHTML='<summary>'+IC.brain+' خطوات التفكير والتخطيط</summary><div class="tb"></div>';
+  det.innerHTML='<summary>'+IC.brain+'خطوات التفكير والتخطيط</summary><div class="tb"></div>';
   const body=document.createElement('div');body.className='ab';
   body.innerHTML='<span style="color:var(--dim)">…</span>';
   const meta=document.createElement('div');meta.className='ameta';meta.style.display='none';
@@ -1148,30 +952,30 @@ async function send(){
 
   if(artMode){
     if(!text){toast('اكتب وصف الصورة الأول');return;}
-    addUserDom('🎨 ارسم: '+text);
-    c.msgs.push({r:'u',c:'🎨 ارسم: '+text,art:true});
+    addUserDom('ارسم: '+text);
+    c.msgs.push({r:'u',c:'ارسم: '+text,art:true});
     const url=genImage(text);
     c.msgs.push({r:'a',gen:{prompt:text,url:url}});
-    if(c.title==='محادثة جديدة')c.title='🎨 '+text.slice(0,40);
+    if(c.title==='محادثة جديدة')c.title=''+text.slice(0,40);
     saveChats();renderSide();
     return;
   }
 
   const hadImg=attach&&attach.kind==='image';
   const hadFile=attach&&(attach.kind==='text'||attach.kind==='project');
-  const fileSnap=hadFile?(attach.kind==='project'?{name:'مشروع ('+attach.files.length+' ملفات)',text:attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')}:{name:attach.name,text:attach.text}):null;
-  addUserDom(searchMode?('🔍 '+text):text,hadImg?attach.dataUrl:null,fileSnap);
-  c.msgs.push({r:'u',c:(searchMode?'🔍 ':'')+text+(hadImg?' [صورة]':'')+(hadFile?(attach.kind==='project'?' [مشروع: '+attach.files.length+' ملفات]':' [ملف: '+attach.name+']'):''),f:fileSnap});
+  const fileSnap=hadFile?(attach.kind==='project'?{name:'مشروع ('+attach.files.length+'ملفات)',text:attach.files.map(f=>'--- '+f.name+'---\n'+f.text).join('\n\n')}:{name:attach.name,text:attach.text}):null;
+  addUserDom(searchMode?(''+text):text,hadImg?attach.dataUrl:null,fileSnap);
+  c.msgs.push({r:'u',c:(searchMode?'':'')+text+(hadImg?'[صورة]':'')+(hadFile?(attach.kind==='project'?'[مشروع: '+attach.files.length+'ملفات]':'[ملف: '+attach.name+']'):''),f:fileSnap});
   if(c.title==='محادثة جديدة')c.title=(text||'صورة').slice(0,40);
 
   let model=curModel, note='';
   if(hadImg){
     const m=MODELS.find(x=>x.id===curModel);
-    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note=' • حوّلت على نموذج بيفهم الصور';}
+    if(curModel==='auto'||!(m&&capOf(m).v)){model=VISION_FB;note='• حوّلت على نموذج بيفهم الصور';}
   }
   let sysAdd='';
   if(thinkMode){
-    if(model==='auto'){model=THINK_MODEL;note+=' • وضع التفكير';}
+    if(model==='auto'){model=THINK_MODEL;note+='• وضع التفكير';}
     sysAdd='فكّر خطوة بخطوة: اكتب خطة قصيرة أولاً، ثم نفّذها وأعطِ الإجابة النهائية بوضوح.';
   }
 
@@ -1183,10 +987,10 @@ async function send(){
     try{sources=await doSearch(text);}catch(e){sources=null;}
     tpS.remove();
     if(!sources){
-      addBotDom('⚠️ البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','',0);
+      addBotDom('البحث مش شغال دلوقتي، جرب تاني بعد شوية.','','',0);
       setBusy(false);return;
     }
-    const ctx=sources.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+(r.url||'')+'\n'+String(r.content||'').slice(0,900)).join('\n\n');
+    const ctx=sources.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+'- '+(r.url||'')+'\n'+String(r.content||'').slice(0,900)).join('\n\n');
     fullText='دي نتائج بحث حية من الإنترنت عن سؤال المستخدم.\n\n'+ctx+'\n\nسؤال المستخدم: '+text+'\n\nأجب بالعربي إجابة منظمة ومفيدة اعتماداً على النتائج دي، واذكر أرقام المصادر اللي اعتمدت عليها.';
   }
   const urlM=text.match(/https?:\/\/[^\s<>"']+/g);
@@ -1202,12 +1006,12 @@ async function send(){
     }
     tpF.remove();
     if(got.length)fullText='المستخدم بعت رابط وعايز بيانات منه. دي البيانات المسحوبة حية من الرابط:\n\n'+got.join('\n\n')+'\n\nطلب المستخدم: '+text+'\n\nأجب بالعربي اعتماداً على البيانات دي، ولو المطلوب سعر أو رقم اذكره بوضوح مع المصدر والوقت.';
-    else addSysNote('⚠️ معرفتش أسحب بيانات من الرابط ده - الموقع رافض أو بطيء');
+    else addSysNote('معرفتش أسحب بيانات من الرابط ده - الموقع رافض أو بطيء');
   }
   if(hadFile){
     if(attach.kind==='project'){
       c.project=attach.files;
-      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+' ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+' ---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
+      fullText='المستخدم رفع مشروع كامل فيه '+attach.files.length+'ملفات. محتوى الملفات:\n\n'+attach.files.map(f=>'--- '+f.name+'---\n'+f.text).join('\n\n')+'\n\nطلب المستخدم: '+(text||'اقرا المشروع واشرحه')+'\n\nلما تعدّل أي ملف: اكتب الملف المعدّل كامل في مربع كود لوحده، وأول سطر جواه تعليق باسم الملف بالظبط زي // filename: path/file.js (أو <!-- filename: --> للـ HTML). عدّل أقل عدد ملفات ممكن ومتكتبش ملفات ما اتعدلتش.';
     }else fullText='ده محتوى ملف "'+attach.name+'":\n\n'+attach.text+'\n\n'+(text||'لخصلي الملف ده واشرحه');
   }
   const userContent=hadImg
@@ -1245,16 +1049,16 @@ async function send(){
   abortCtl=null;setBusy(false);
 
   if(aborted){
-    addBotDom('⏹️ وقّفت الرد. ابعت تاني لما تكون جاهز.','','',0);
+    addBotDom('⏹ وقّفت الرد. ابعت تاني لما تكون جاهز.','','',0);
     return;
   }
   if(!res||(!res.content&&!res.reasoning)){
-    let msg='⚠️ المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
-    if(lastErr&&/rate.?limit|cooldown|429/i.test(lastErr.message||''))msg='⚠️ المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
+    let msg='المحاولة دي ما نجحتش: المزود مشغول أو النموذج اتوقف مؤقتاً. دوس ابعت تاني، أو غيّر النموذج من فوق.';
+    if(lastErr&&/rate.?limit|cooldown|429/i.test(lastErr.message||''))msg='المزود ده وصل لحد الاستخدام المجاني دلوقتي. جرب نموذج تاني من القايمة، أو استنى شوية.';
     addBotDom(msg,'','',0);
     return;
   }
-  if(switched)note+=' • اتحوّل لنموذج شغال تلقائياً';
+  if(switched)note+='• اتحوّل لنموذج شغال تلقائياً';
   let reply=res.content||'(رد فاضي)';
   let reasoning=res.reasoning||'';
   const th=reply.match(/<think>([\s\S]*?)<\/think>/i);
@@ -1268,7 +1072,7 @@ async function send(){
   bubble.body.innerHTML=mdRender(reply);
   const mi=MSG_T.push(reply)-1;
   let mh='<span>'+esc(mdl)+'</span>';
-  if(tok)mh+='<span class="tk">'+arNum(tok)+' توكن</span>';
+  if(tok)mh+='<span class="tk">'+arNum(tok)+'توكن</span>';
   mh+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   mh+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
   bubble.meta.innerHTML=mh;bubble.meta.style.display='flex';addPvBtn(bubble.d,reply);
@@ -1336,15 +1140,13 @@ function renderTeamEdit(){
   box.innerHTML=TEAM.map((a,i)=>{
     const opts=['<option value="'+esc(a.model)+'">'+esc(a.model)+'</option>']
       .concat(MODELS.filter(m=>m.id!==a.model).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name||m.id)+'</option>')).join('');
-    return '<div class="trow"><div class="tr1"><input value="'+esc(a.name)+'" placeholder="اسم العضو (دوره)" onchange="TEAM['+i+'].name=this.value;saveTeam()"><select onchange="TEAM['+i+'].model=this.value;saveTeam()">'+opts+'</select></div>'
-      +'<textarea rows="2" placeholder="تعليمات العضو: يعمل إيه بالظبط" onchange="TEAM['+i+'].sys=this.value;saveTeam()">'+esc(a.sys)+'</textarea>'
-      +'<button class="sbtn" style="align-self:flex-start" onclick="TEAM.splice('+i+',1);saveTeam();renderTeamEdit()">احذف العضو</button></div>';
+    return '<div class="trow"><div class="tr1"><input value="'+esc(a.name)+'" placeholder="اسم العضو (دوره)" onchange="TEAM['+i+'].name=this.value;saveTeam()"><select onchange="TEAM['+i+'].model=this.value;saveTeam()">'+opts+'</select></div>'+'<textarea rows="2" placeholder="تعليمات العضو: يعمل إيه بالظبط" onchange="TEAM['+i+'].sys=this.value;saveTeam()">'+esc(a.sys)+'</textarea>'+'<button class="sbtn" style="align-self:flex-start" onclick="TEAM.splice('+i+',1);saveTeam();renderTeamEdit()">احذف العضو</button></div>';
   }).join('')||'<div class="hint" style="padding:4px 0">مفيش أعضاء - ضيف واحد تحت.</div>';
 }
 function addTeamMember(){TEAM.push({name:'عضو جديد',model:'gemini-3.1-flash-lite-preview',sys:''});saveTeam();renderTeamEdit();}
 openSheet=(function(orig){return function(id){orig(id);if(id==='setSheet')renderTeamEdit();};})(openSheet);
 const teamBtn=$('#teamBtn');
-teamBtn.onclick=()=>{teamMode=!teamMode;if(teamMode){searchMode=false;artMode=false;thinkMode=false;}syncToggles();toast(teamMode?'👥 وضع الفريق شغال: المدير هيقسم طلبك على الفريق':'وضع الفريق اتقفل');};
+teamBtn.onclick=()=>{teamMode=!teamMode;if(teamMode){searchMode=false;artMode=false;thinkMode=false;}syncToggles();toast(teamMode?'وضع الفريق شغال: المدير هيقسم طلبك على الفريق':'وضع الفريق اتقفل');};
 syncToggles=(function(orig){return function(){orig();teamBtn.classList.toggle('on',teamMode);if(teamMode)$('#inp').placeholder='اطلب من الفريق أي مهمة...';};})(syncToggles);
 setMode=(function(orig){return function(w,on){orig(w,on);if(on)teamMode=false;syncToggles();};})(setMode);
 
@@ -1363,9 +1165,9 @@ function teamStep(box,txt,state){
 }
 async function runTeam(text){
   const c=curChat();
-  addUserDom('👥 '+text);
-  c.msgs.push({r:'u',c:'👥 '+text});
-  if(c.title==='محادثة جديدة')c.title='👥 '+text.slice(0,40);
+  addUserDom(''+text);
+  c.msgs.push({r:'u',c:''+text});
+  if(c.title==='محادثة جديدة')c.title=''+text.slice(0,40);
   saveChats();renderSide();
   const sc=$('#scroll');
   const wrap=document.createElement('div');wrap.className='msg bot';
@@ -1379,7 +1181,7 @@ async function runTeam(text){
   let totalTok=0;
   try{
     PROG.txt='المدير بيقسم المهام على الفريق...';
-    const s0=teamStep(box,'👔 المدير بيقسم المهام على الفريق...','act');
+    const s0=teamStep(box,'المدير بيقسم المهام على الفريق...','act');
     let fullText=text;
     if(attach&&attach.kind==='image'){
       try{
@@ -1393,19 +1195,19 @@ async function runTeam(text){
     const planRes=await chatOnce(TEAM_LEAD_MODEL,[{role:'system',content:planSys},{role:'user',content:fullText}],0.3,900,sig);
     totalTok+=planRes.tok;
     let plan=null;
-    try{const askM=planRes.content.match(/\{"ask"\s*:\s*"[^"]+"\s*\}/);if(askM){const a=JSON.parse(askM[0]);s0.className='tstep done';s0.textContent='👔 المدير محتاج توضيح منك الأول';box.remove();abortCtl=null;setBusy(false);addBotDom(a.ask,'','المدير • '+planRes.model,planRes.tok);c.msgs.push({r:'a',c:a.ask,model:'المدير • '+planRes.model,tok:planRes.tok});saveChats();renderSide();return;}}catch(e){}
+    try{const askM=planRes.content.match(/\{"ask"\s*:\s*"[^"]+"\s*\}/);if(askM){const a=JSON.parse(askM[0]);s0.className='tstep done';s0.textContent='المدير محتاج توضيح منك الأول';box.remove();abortCtl=null;setBusy(false);addBotDom(a.ask,'','المدير • '+planRes.model,planRes.tok);c.msgs.push({r:'a',c:a.ask,model:'المدير • '+planRes.model,tok:planRes.tok});saveChats();renderSide();return;}}catch(e){}
     try{const mm=planRes.content.match(/\[[\s\S]*\]/);plan=JSON.parse(mm[0]);}catch(e){plan=null;}
     if(!Array.isArray(plan)||!plan.length)plan=TEAM.map(a=>({name:a.name,task:fullText}));
     plan=plan.filter(st=>TEAM.some(a=>a.name===st.name));
     if(!plan.length)plan=TEAM.map(a=>({name:a.name,task:fullText}));
-    s0.className='tstep done';s0.textContent='👔 المدير قسّم الشغل على '+arNum(plan.length)+' مهمة';
+    s0.className='tstep done';s0.textContent='المدير قسّم الشغل على '+arNum(plan.length)+'مهمة';
     plan.forEach(st=>teamStep(box,'⏳ '+st.name+': '+String(st.task).slice(0,60)));
     scrollDown();
     const results=await Promise.allSettled(plan.map(async(st,idx)=>{
       const a=TEAM.find(x=>x.name===st.name)||TEAM[0];
       let searchCtx='';
       if(/بحث|باحث|معلومات|أخبار|اسعار|أسعار/.test(a.name+(a.sys||'')+st.task)){
-        try{const sr=await doSearch(st.task);if(sr)searchCtx='\nنتائج بحث حية من الإنترنت:\n'+sr.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+' - '+String(r.content||'').slice(0,400)).join('\n');}catch(e){}
+        try{const sr=await doSearch(st.task);if(sr)searchCtx='\nنتائج بحث حية من الإنترنت:\n'+sr.map((r,i)=>'['+(i+1)+'] '+(r.title||'')+'- '+String(r.content||'').slice(0,400)).join('\n');}catch(e){}
       }
       const sys=(a.sys||'')+searchCtx+'\nأنت عضو في فريق بيشتغل على طلب واحد. الطلب الأصلي: '+fullText+'\nمهمتك أنت بالتحديد: '+st.task+'\nنفّذ مهمتك بس بإتقان. لو حد سألك عن اسمك: أنت "'+a.name+'" وشغال بالنموذج '+a.model+'.';
       let r;
@@ -1424,33 +1226,33 @@ async function runTeam(text){
         const card=document.createElement('div');card.className='msg bot';
         card.innerHTML='<div class="agentcard c'+(i%4)+'"><div class="ah"><span>'+esc(st.name)+'</span><span class="am">'+esc(rr.value.res.model)+'</span></div><div class="ab">'+mdRender(rr.value.res.content)+'</div></div>';
         sc.appendChild(card);addPvBtn(card.querySelector('.agentcard'),rr.value.res.content);
-        box.children[1+i].className='tstep done';box.children[1+i].textContent='✅ '+st.name+' خلص';
+        box.children[1+i].className='tstep done';box.children[1+i].textContent=''+st.name+'خلص';
       }else{
         const e=rr.reason;
         if(e&&e.name==='AbortError')throw e;
         failed.push(st.name);
-        box.children[1+i].className='tstep done';box.children[1+i].textContent='⚠️ '+st.name+' معرفش يرد - المدير هيغطي مكانه';
+        box.children[1+i].className='tstep done';box.children[1+i].textContent=''+st.name+'معرفش يرد - المدير هيغطي مكانه';
       }
     });
     scrollDown();
-    if(!contribs.length){teamStep(box,'⚠️ الفريق كله مشغول دلوقتي - جرب تاني بعد شوية','done');return;}
+    if(!contribs.length){teamStep(box,'الفريق كله مشغول دلوقتي - جرب تاني بعد شوية','done');return;}
     PROG.txt='المدير بيجمع شغل الفريق في الرد النهائي...';
-    const sF=teamStep(box,'👔 المدير بيجمع شغل الفريق في رد نهائي...','act');
+    const sF=teamStep(box,'المدير بيجمع شغل الفريق في رد نهائي...','act');
     const finRes=await chatOnce(TEAM_LEAD_MODEL,[
       {role:'system',content:'أنت مدير الفريق. اجمع شغل أعضاء فريقك في رد نهائي واحد منظم ومتكامل بالعربي للمستخدم. متكررش نفس الكلام، رتّب بعناوين واضحة، ولو في تعارض بين الأعضاء وضّحه. لو سُئلت عن اسمك قول إنك مدير الفريق وشغال بالنموذج '+TEAM_LEAD_MODEL+'.'},
-      {role:'user',content:'طلب المستخدم: '+fullText+'\n\nشغل الفريق:\n'+contribs.join('\n\n---\n\n')+(failed.length?'\n\nملحوظة: '+(failed.join('، '))+' معرفوش يردوا - غطّي أجزاءهم بنفسك واذكر ده باختصار في الآخر.':'')+'\n\nاكتب الرد النهائي للمستخدم.'}
+      {role:'user',content:'طلب المستخدم: '+fullText+'\n\nشغل الفريق:\n'+contribs.join('\n\n---\n\n')+(failed.length?'\n\nملحوظة: '+(failed.join('، '))+'معرفوش يردوا - غطّي أجزاءهم بنفسك واذكر ده باختصار في الآخر.':'')+'\n\nاكتب الرد النهائي للمستخدم.'}
     ],0.5,isNaN(mt)?2000:mt,sig);
     totalTok+=finRes.tok;
-    sF.className='tstep done';sF.textContent='✅ الفريق خلّص ('+arNum(done)+'/'+arNum(plan.length)+' مهام نجحت)';
+    sF.className='tstep done';sF.textContent='الفريق خلّص ('+arNum(done)+'/'+arNum(plan.length)+'مهام نجحت)';
     const reply=finRes.content||'(رد فاضي)';
     if(totalTok){dayTok.n+=totalTok;saveTok();}
-    const mdl='فريق ('+arNum(done)+' أعضاء) • '+finRes.model;
+    const mdl='فريق ('+arNum(done)+'أعضاء) • '+finRes.model;
     addBotDom(reply,'',mdl,totalTok);
     c.msgs.push({r:'a',c:reply,model:mdl,tok:totalTok});
     saveChats();renderSide();bumpStats(finRes.model);
   }catch(e){
-    if(e&&e.name==='AbortError'){teamStep(box,'⏹️ وقّفت شغل الفريق','done');}
-    else teamStep(box,'⚠️ حصلت مشكلة في شغل الفريق - جرب تاني','done');
+    if(e&&e.name==='AbortError'){teamStep(box,'⏹ وقّفت شغل الفريق','done');}
+    else teamStep(box,'حصلت مشكلة في شغل الفريق - جرب تاني','done');
   }finally{
     PROG.txt='';
     abortCtl=null;setBusy(false);scrollDown();
@@ -1462,7 +1264,7 @@ send=(function(orig){return async function(){
     const text=inp.value.trim();
     if(!text&&!attach)return;
     if(abortCtl){
-      if(/وصلت|فين|خلص|تقدم|استنى|status/i.test(text)){inp.value='';autoGrow();addUserDom(text);addBotDom('📊 '+(PROG.txt||'شغال على طلبك دلوقتي...'),'','حالة الشغل',0);}
+      if(/وصلت|فين|خلص|تقدم|استنى|status/i.test(text)){inp.value='';autoGrow();addUserDom(text);addBotDom(''+(PROG.txt||'شغال على طلبك دلوقتي...'),'','حالة الشغل',0);}
       return;
     }
     inp.value='';autoGrow();
@@ -1515,7 +1317,7 @@ function addPvBtn(d,content){
   const code=extractHtml(content);
   if(!code)return;
   const b=document.createElement('button');b.className='pvbtn';
-  b.innerHTML='👁 معاينة الصفحة';
+  b.innerHTML='معاينة الصفحة';
   b.onclick=()=>openHtmlPv(code);
   d.appendChild(b);
 }
@@ -1535,16 +1337,16 @@ window.addEventListener('message',e=>{
   if(e.data&&e.data.__pv&&pvErrs.length<10)pvErrs.push(String(e.data.msg));
 });
 $('#pvCodeBtn').onclick=()=>{const ov=$('#htmlPv');ov.classList.toggle('showcode');$('#pvCodeBtn').textContent=ov.classList.contains('showcode')?'معاينة':'الكود';};
-$('#pvCopyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(pvCode);toast('اتنسخ الكود ✅');}catch(e){toast('النسخ مش متاح هنا');}};
+$('#pvCopyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(pvCode);toast('اتنسخ الكود ');}catch(e){toast('النسخ مش متاح هنا');}};
 $('#pvFixBtn').onclick=async()=>{
   const dg=$('#pvDiag');
-  dg.style.display='block';dg.textContent='🔍 بيفحص الصفحة...';
+  dg.style.display='block';dg.textContent='بيفحص الصفحة...';
   pvErrs=[];
   $('#pvFrame').srcdoc=pvInject(pvCode);
   await new Promise(r=>setTimeout(r,2500));
   try{
     const errTxt=pvErrs.length?('أخطاء JavaScript ظهرت أثناء التشغيل:\n'+pvErrs.join('\n')):'مفيش أخطاء تشغيل ظاهرة.';
-    dg.textContent='🔍 بيراجع الكود وبيصلح...';
+    dg.textContent='بيراجع الكود وبيصلح...';
     const r=await chatOnce('gemini-3-flash-preview',[
       {role:'system',content:'أنت مراجع كود HTML/CSS/JS. افحص الصفحة، صلّح أي أخطاء، وحسّن ما يمكن بسرعة. رد بالصفحة الكاملة المصلحة في مربع ```html فقط، وبعدها سطر واحد بالعربي: "التقرير: ..." فيه ملخص اللي اتصلح أو اقتراحات.'},
       {role:'user',content:errTxt+'\n\nالكود:\n'+pvCode.slice(0,24000)}
@@ -1554,17 +1356,17 @@ $('#pvFixBtn').onclick=async()=>{
     if(fixed&&fixed.length>50){
       pvCode=fixed;$('#pvCode').textContent=fixed;
       $('#pvFrame').srcdoc=pvInject(fixed);
-      dg.textContent='✅ '+(rep?rep.replace('التقرير:',''):'اتصلحت الأخطاء واتحدثت المعاينة');
+      dg.textContent=''+(rep?rep.replace('التقرير:',''):'اتصلحت الأخطاء واتحدثت المعاينة');
     }else{
-      dg.textContent='✅ '+(rep?rep.replace('التقرير:',''):'الكود سليم، مفيش تعديل مطلوب');
+      dg.textContent=''+(rep?rep.replace('التقرير:',''):'الكود سليم، مفيش تعديل مطلوب');
     }
   }catch(e){
-    dg.textContent='⚠️ الفحص متعطل دلوقتي (مزود مشغول) - '+(pvErrs.length?('أخطاء ظاهرة: '+pvErrs[0]):'جرب تاني');
+    dg.textContent='الفحص متعطل دلوقتي (مزود مشغول) - '+(pvErrs.length?('أخطاء ظاهرة: '+pvErrs[0]):'جرب تاني');
   }
 };
 /* ===== saved notes ===== */
 async function notesPull(){try{const r=await fetch(API+'/v1/client/notes',{headers:{'Authorization':'Bearer '+KEY}});if(r.ok){const d=await r.json();const nb=$('#notesBox');if(nb)nb.value=d.notes||'';}}catch(e){}}
-async function saveNotes(){try{const r=await fetch(API+'/v1/client/notes',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({notes:$('#notesBox').value})});toast(r.ok?'اتحفظت الملاحظات ✅':'المزامنة متعطلة دلوقتي');}catch(e){toast('المزامنة متعطلة دلوقتي');}}
+async function saveNotes(){try{const r=await fetch(API+'/v1/client/notes',{method:'PUT',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({notes:$('#notesBox').value})});toast(r.ok?'اتحفظت الملاحظات ':'المزامنة متعطلة دلوقتي');}catch(e){toast('المزامنة متعطلة دلوقتي');}}
 notesPull();
 
 /* github push from preview */
@@ -1578,17 +1380,17 @@ $('#pvGhBtn').onclick=()=>{
     desc:'الأداة عايزة تعمل (أو تحدّث) مستودع "'+repo+'" على حسابك modyzix2-boop وترفع فيه الصفحة المعروضة (index.html). مفيش حاجة تانية هتتلمس.',
     run:async()=>{
       const dg=$('#pvDiag');
-      dg.style.display='block';dg.textContent='⬆️ بيرفع على جيت هب...';
+      dg.style.display='block';dg.textContent='بيرفع على جيت هب...';
       try{
         const r=await fetch(API+'/v1/client/github/push',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo,files:[{path:'index.html',content:pvCode}],message:'صفحة اتبنت بأداة مساعدي'})});
         const d=await r.json();
         if(r.ok&&d.url){
-          dg.innerHTML='✅ اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';
-          addSysNote('🔔 حصل تغيير: اترفع "'+esc(repo)+'" على جيت هب ✅ <a href="'+esc(d.url)+'" target="_blank">افتح الريبو</a>');
+          dg.innerHTML='اترفع! <a href="'+esc(d.url)+'" target="_blank" style="color:var(--accD);font-weight:800">'+esc(d.url)+'</a>';
+          addSysNote('حصل تغيير: اترفع "'+esc(repo)+'" على جيت هب  <a href="'+esc(d.url)+'" target="_blank">افتح الريبو</a>');
           galAdd({type:'repo',title:repo,url:d.url});
         }
-        else dg.textContent='⚠️ '+(d.error||'الرفع ما نجحش');
-      }catch(e){dg.textContent='⚠️ الرفع متعطل دلوقتي - جرب تاني';}
+        else dg.textContent=''+(d.error||'الرفع ما نجحش');
+      }catch(e){dg.textContent='الرفع متعطل دلوقتي - جرب تاني';}
     }
   });
 };
@@ -1608,14 +1410,13 @@ openSheet=(function(orig){return function(id){orig(id);if(id==='setSheet')render
 function requestApproval(o){
   if(GRANTS[o.key]){o.run();return;}
   const wrap=document.createElement('div');wrap.className='overlay open';wrap.style.zIndex='1200';
-  wrap.innerHTML='<div class="sheet" style="max-width:440px"><div class="approvalcard" style="border:none;background:transparent;padding:4px 2px;max-width:100%"><div class="at">🔐 طلب صلاحية: '+esc(o.title)+'</div><div class="ad">'+esc(o.desc)+'</div><div class="abtns">'
-    +'<button class="ok">موافقة</button><button class="always">موافقة دايماً</button><button class="no">رفض</button></div></div></div>';
+  wrap.innerHTML='<div class="sheet" style="max-width:440px"><div class="approvalcard" style="border:none;background:transparent;padding:4px 2px;max-width:100%"><div class="at"> طلب صلاحية: '+esc(o.title)+'</div><div class="ad">'+esc(o.desc)+'</div><div class="abtns">'+'<button class="ok">موافقة</button><button class="always">موافقة دايماً</button><button class="no">رفض</button></div></div></div>';
   document.body.appendChild(wrap);
   const btns=wrap.querySelectorAll('button');
   const done=(html,runIt)=>{wrap.querySelector('.approvalcard').innerHTML='<div class="decided">'+html+'</div>';setTimeout(()=>{wrap.remove();if(runIt)runIt();},runIt?700:1200);};
-  btns[0].onclick=()=>{done('✅ وافقت مرة واحدة - بينفذ دلوقتي...',()=>o.run());};
-  btns[1].onclick=()=>{GRANTS[o.key]=true;saveGrants();renderPermEdit();done('✅ اتفعلت الموافقة الدائمة - مش هسألك عن كده تاني',()=>o.run());};
-  btns[2].onclick=()=>{done('🚫 اترفض - مفيش أي حاجة حصلت');toast('اترفض الطلب');};
+  btns[0].onclick=()=>{done('وافقت مرة واحدة - بينفذ دلوقتي...',()=>o.run());};
+  btns[1].onclick=()=>{GRANTS[o.key]=true;saveGrants();renderPermEdit();done('اتفعلت الموافقة الدائمة - مش هسألك عن كده تاني',()=>o.run());};
+  btns[2].onclick=()=>{done('اترفض - مفيش أي حاجة حصلت');toast('اترفض الطلب');};
 }
 function addSysNote(html){
   const n=document.createElement('div');n.className='sysnote';n.innerHTML=html;
@@ -1628,7 +1429,7 @@ $('#pvDlBtn').onclick=()=>{
     const b=new Blob([pvCode],{type:'text/html'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='index.html';a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-    toast('اتحملت الصفحة ✅');
+    toast('اتحملت الصفحة ');
   }catch(e){toast('التحميل مش متاح هنا');}
 };
 $('#pvDevBtn').onclick=()=>{
@@ -1647,7 +1448,7 @@ function galTitle(code){const m=code.match(/<title[^>]*>([^<]{1,60})<\/title>/i)
 function openGal(){
   const g=$('#galGrid');
   g.innerHTML=GAL.length?GAL.map((it,i)=>{
-    const ic=it.type==='image'?'<img loading="lazy" src="'+esc(it.src)+'" alt="">':(it.type==='repo'?'<div class="gph">🐙</div>':'<div class="gph">📄</div>');
+    const ic=it.type==='image'?'<img loading="lazy" src="'+esc(it.src)+'" alt="">':(it.type==='repo'?'<div class="gph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M6 8.5v7M18 8.5c0 4-5 3.5-9.5 6"/></svg></div>':'<div class="gph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>');
     return '<div class="galcard" onclick="galOpen('+i+')">'+ic+'<div class="gt">'+esc(it.title)+'</div><div class="gd">'+new Date(it.ts).toLocaleDateString('ar-EG')+'</div></div>';
   }).join(''):'<div class="hint" style="grid-column:1/-1;padding:10px">لسه مفيش حاجة. أول ما تبني صفحة أو تولّد صورة هتظهر هنا.</div>';
   openSheet('galSheet');
@@ -1668,7 +1469,7 @@ openHtmlPv=(function(orig){return function(code){
 let apkPollT=null;
 async function apkPoll(repo,version,fixedOnce){
   clearTimeout(apkPollT);
-  PROG.txt='بناء النسخة v'+version+' شغال على GitHub Actions...';
+  PROG.txt='بناء النسخة v'+version+'شغال على GitHub Actions...';
   apkPollT=setTimeout(async()=>{
     try{
       const r=await fetch(API+'/v1/client/apk/status?repo='+encodeURIComponent(repo),{headers:{Authorization:'Bearer '+KEY}});
@@ -1676,23 +1477,23 @@ async function apkPoll(repo,version,fixedOnce){
       if(d.state==='completed'&&d.conclusion==='success'){
         PROG.txt='';
         const link='https://github.com/modyzix2-boop/'+repo+'/releases/latest/download/app-debug.apk';
-        addSysNote('🎉 النسخة v'+version+' جاهزة! <a href="'+link+'" target="_blank">حمّل الـ APK</a> • <a href="https://github.com/modyzix2-boop/'+repo+'" target="_blank">الريبو</a>');
-        galAdd({type:'repo',title:repo+' v'+version+' (APK)',url:'https://github.com/modyzix2-boop/'+repo+'/releases'});
-        toast('🎉 التطبيق جاهز للتحميل');
+        addSysNote('النسخة v'+version+'جاهزة! <a href="'+link+'" target="_blank">حمّل الـ APK</a> • <a href="https://github.com/modyzix2-boop/'+repo+'" target="_blank">الريبو</a>');
+        galAdd({type:'repo',title:repo+'v'+version+'(APK)',url:'https://github.com/modyzix2-boop/'+repo+'/releases'});
+        toast('التطبيق جاهز للتحميل');
         return;
       }
       if(d.state==='completed'&&d.conclusion==='failure'&&!fixedOnce){
         PROG.txt='البناء فشل - براجع اللوج وبصلح الخطأ...';
-        addSysNote('⚠️ بناء v'+version+' فشل - الفريق بيراجع الخطأ وبيصلحه دلوقتي...');
+        addSysNote('بناء v'+version+'فشل - الفريق بيراجع الخطأ وبيصلحه دلوقتي...');
         try{
           const fr=await fetch(API+'/v1/client/apk/fix',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify({repo})});
           const fd=await fr.json();
-          if(fr.ok&&fd.ok){addSysNote('🔧 اتصلح: '+esc(fd.note||'')+' - وبيتبني تاني...');apkPoll(repo,version,true);return;}
-          addSysNote('🛑 المدير معرفش يصلحه لوحده: '+esc(fd.error||'خطأ غير واضح'));
-        }catch(e){addSysNote('🛑 مراجعة الخطأ متعطلة دلوقتي');}
+          if(fr.ok&&fd.ok){addSysNote('اتصلح: '+esc(fd.note||'')+'- وبيتبني تاني...');apkPoll(repo,version,true);return;}
+          addSysNote('المدير معرفش يصلحه لوحده: '+esc(fd.error||'خطأ غير واضح'));
+        }catch(e){addSysNote('مراجعة الخطأ متعطلة دلوقتي');}
         PROG.txt='';return;
       }
-      if(d.state==='completed'&&d.conclusion==='failure'&&fixedOnce){PROG.txt='';addSysNote('🛑 البناء فشل تاني بعد الإصلاح - محتاج تدخل يدوي. راجع الريبو.');return;}
+      if(d.state==='completed'&&d.conclusion==='failure'&&fixedOnce){PROG.txt='';addSysNote('البناء فشل تاني بعد الإصلاح - محتاج تدخل يدوي. راجع الريبو.');return;}
       apkPoll(repo,version,fixedOnce);
     }catch(e){apkPoll(repo,version,fixedOnce);}
   },20000);
@@ -1706,7 +1507,7 @@ $('#pvApkBtn').onclick=()=>{
     title:'بناء تطبيق أندرويد',
     desc:'الأداة هتعمل مشروع أندرويد كامل في ريبو "'+repo+'" على حسابك (لو في كود فلاتر في آخر رد هيتبنى نيتيف، غير كده هيتبنى كغلاف للصفحة)، وGitHub Actions هيبني الـ APK (بياخد دقايق، فلاتر أطول شوية). كل بناء ليه رقم نسخة، ولو البناء فشل الفريق هيراجع اللوج ويصلحه ويعيد المحاولة مرة واحدة.',
     run:async()=>{
-      addSysNote('📦 بدأ تجهيز مشروع الأندرويد ورفعه...');
+      addSysNote('بدأ تجهيز مشروع الأندرويد ورفعه...');
       try{
         let payload={repo,html:pvCode,appName:galTitle(pvCode)};
         try{
@@ -1717,10 +1518,10 @@ $('#pvApkBtn').onclick=()=>{
         const r=await fetch(API+'/v1/client/apk/build',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+KEY},body:JSON.stringify(payload)});
         const d=await r.json();
         if(r.ok&&d.ok){
-          addSysNote('🔔 اترفع المشروع v'+esc(d.version)+' وبدأ البناء على GitHub Actions - هقولك أول ما يخلص ⏳');
+          addSysNote('اترفع المشروع v'+esc(d.version)+'وبدأ البناء على GitHub Actions - هقولك أول ما يخلص ⏳');
           apkPoll(repo,d.version,false);
-        }else addSysNote('⚠️ '+(d.error||'تجهيز البناء ما نجحش'));
-      }catch(e){addSysNote('⚠️ تجهيز البناء متعطل دلوقتي');}
+        }else addSysNote(''+(d.error||'تجهيز البناء ما نجحش'));
+      }catch(e){addSysNote('تجهيز البناء متعطل دلوقتي');}
     }
   });
 };
@@ -1755,10 +1556,10 @@ async function intakeProject(list){
     }
   }catch(e){toast('قراءة الملفات فشلت: '+(e.message||''));return;}
   const total=files.reduce((a,f)=>a+f.text.length,0);
-  if(total>45000){let acc=0;files=files.filter(f=>{acc+=f.text.length;return acc<=45000;});toast('المشروع كبير، خدت أول '+files.length+' ملف بس');}
+  if(total>45000){let acc=0;files=files.filter(f=>{acc+=f.text.length;return acc<=45000;});toast('المشروع كبير، خدت أول '+files.length+'ملف بس');}
   attach={kind:'project',files};
   $('#attachThumb').style.display='none';
-  $('#attachName').textContent='مشروع: '+files.length+' ملفات جاهزة';
+  $('#attachName').textContent='مشروع: '+files.length+'ملفات جاهزة';
   $('#attachChip').classList.add('show');
 }
 document.getElementById('fileProj').onchange=function(){if(this.files&&this.files.length)intakeProject(this.files);this.value='';};
@@ -1783,9 +1584,9 @@ send=(function(orig){return async function(){
           if(!fn)continue;
           const body=b[2].replace(/^\s*(?:\/\/|#|<!--|\/\*)\s*filename:[^\n]*\n?(?:-->\s*\n?|\*\/\s*\n?)?/,'');
           const ex=c.project.find(f=>f.name===fn||f.name.endsWith('/'+fn)||fn.endsWith(f.name));
-          if(ex){ex.text=body;updated.push(fn);}else{c.project.push({name:fn,text:body});updated.push(fn+' (جديد)');}
+          if(ex){ex.text=body;updated.push(fn);}else{c.project.push({name:fn,text:body});updated.push(fn+'(جديد)');}
         }
-        if(updated.length){saveChats();addSysNote('📁 اتعدّلت الملفات في المشروع: '+updated.join('، ')+' - افتح المعاينة تشوف النتيجة');}
+        if(updated.length){saveChats();addSysNote('اتعدّلت الملفات في المشروع: '+updated.join('، ')+'- افتح المعاينة تشوف النتيجة');}
       }
     }
   }catch(e){}
@@ -1860,7 +1661,7 @@ async function runPy(btn){
     const r=await py.runPythonAsync(code);
     if(r!==undefined)out.textContent+=String(r)+'\n';
     if(!out.textContent.trim())out.textContent='(اتنفذ من غير ما يطبع حاجة)';
-    out.textContent+='— خلص في '+((Date.now()-t0)/1000).toFixed(1)+' ثانية';
+    out.textContent+='— خلص في '+((Date.now()-t0)/1000).toFixed(1)+'ثانية';
   }catch(e){
     out.textContent='خطأ:\n'+String(e.message||e).slice(0,800);
   }
@@ -1916,7 +1717,7 @@ function renderThemeGrid(){
   g.innerHTML=Object.keys(THEMES).map(id=>{
     const t=THEMES[id];
     const bg=t.vars['--bg']||'#FAF9F5',acc=t.vars['--acc']||'#0D9488';
-    return '<button class="thsw'+(id===cur?' sel':'')+'" onclick="applyTheme(\''+id+'\')"><span class="dot" style="background:'+bg+';border-color:'+acc+'"></span>'+t.name+'</button>';
+    return '<button class="thsw'+(id===cur?'sel':'')+'" onclick="applyTheme(\''+id+'\')"><span class="dot" style="background:'+bg+';border-color:'+acc+'"></span>'+t.name+'</button>';
   }).join('');
 }
 renderThemeGrid();
@@ -1924,6 +1725,4 @@ try{const sv=LS.getItem('flk_theme');if(sv&&THEMES[sv]&&sv!=='default')applyThem
 
 
 window.__BOOT_OK=true;window.__BUILD='21-11-c';
-</script>
-</body>
-</html>
+</script></body></html>
