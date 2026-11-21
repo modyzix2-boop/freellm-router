@@ -9,7 +9,7 @@
 <style>
 :root{
   --bg:#FAF9F5; --side:#F0EEE6; --card:#FFFFFF; --line:#E6E3D9; --line2:#D9D5C8;
-  --txt:#1F1E1B; --dim:#73706A; --acc:#D97757; --accD:#C05B3B; --chip:#EFEDE6;
+  --txt:#1F1E1B; --dim:#73706A; --acc:#0D9488; --accD:#0B7A70; --chip:#EFEDE6;
   --dark:#1F1E1B; --darktxt:#EDECE6;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -140,6 +140,8 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .srow .hint{font-size:11.5px;color:var(--dim);font-weight:400;margin-top:2px}
 .srow input[type=number]{width:100px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:7px 10px;font-family:inherit;outline:none}
 .srow textarea{width:100%;min-height:76px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13.5px;resize:vertical;outline:none}
+.ssec{display:flex;align-items:center;gap:8px;padding:18px 20px 4px;font-size:13px;font-weight:900;color:var(--accD)}
+.ssec svg{flex-shrink:0}
 .sbtn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--txt)}
 .sbtn:hover{background:var(--chip)}
 .sw{position:relative;width:44px;height:24px;background:#D8D4C7;border-radius:999px;cursor:pointer;transition:.2s;flex-shrink:0}
@@ -242,7 +244,7 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .thsw.sel{border-color:var(--acc);font-weight:800}
 .thsw .dot{width:16px;height:16px;border-radius:50%;border:2px solid}
 </style>
-<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%230D9488"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
 <body>
 <div id="app">
@@ -326,29 +328,46 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
   <div class="sheet">
     <h3>الإعدادات <button class="closex" onclick="closeSheet('setSheet')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h3>
     <div style="overflow-y:auto">
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H14a2.5 2.5 0 0 0-2 4z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="11.5" r="1"/></svg>المظهر</div>
+      <div class="srow"><label>الثيم <div class="hint">غيّر ألوان الأداة كلها على مزاجك - بتتحفظ على جهازك</div></label></div>
+      <div class="srow" style="border:none;padding-top:0"><div class="thgrid" id="thGrid"></div></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>شخصية المساعد</div>
       <div class="srow"><label>وضع المطور: شخصية المساعد <div class="hint">اكتب هنا هو يعمل إيه بالظبط: شخصيته، طريقة رده، دوره. بتتبعت مع كل رسالة.</div></label></div>
       <div class="srow" style="border:none;padding-top:0"><textarea id="sysPrompt" placeholder="مثال: رد باللهجة المصرية، كن صديقي وخبير برمجة، واشرح بأمثلة"></textarea></div>
-      <div class="srow"><label>الثيم <div class="hint">غيّر ألوان الأداة على مزاجك</div></label></div>
-      <div class="srow" style="border:none;padding-top:0"><div class="thgrid" id="thGrid"></div></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>الصوت والردود</div>
       <div class="srow"><label>اقرأ الردود بصوت <div class="hint">كل رد جديد يتقال بصوت عربي</div></label><div class="sw" id="voiceSw"></div></div>
       <div class="srow"><label>الإبداع (0 - 2) <div class="hint">أقل = أدق، أعلى = أكثر تنوع</div></label><input type="number" id="temp" min="0" max="2" step="0.1" placeholder="افتراضي"></div>
       <div class="srow"><label>أقصى طول للرد <div class="hint">بالتوكنز، سيبه فاضي للافتراضي</div></label><input type="number" id="maxtok" min="1" max="32000" placeholder="افتراضي"></div>
-      <div class="srow"><label>إحصائياتك <div class="hint">من جهازك - التفاصيل الكاملة في لوحة التحكم</div></label></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>فريق النماذج</div>
+      <div class="srow"><label>تشكيل الفريق <div class="hint">كل عضو ليه دوره وتعليماته الخاصة. المدير بيقسم طلبك عليهم ويجمع شغلهم في رد واحد.</div></label></div>
+      <div id="teamEdit" style="padding:0 16px 10px"></div>
+      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="addTeamMember()">+ أضف عضو للفريق</button></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>الذاكرة والملاحظات</div>
+      <div class="srow"><label>ذاكرة المساعد <div class="hint">بيفتكر اللي بتقوله عن نفسك بين المحادثات وعلى كل أجهزتك. محفوظ دلوقتي: <b id="memCount">0</b> معلومة</div></label><button class="sbtn" onclick="clearMem()">امسح الذاكرة</button></div>
+      <div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div>
+      <div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
+      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>المحادثات</div>
+      <div class="srow"><label>نقل المحادثات لجهاز تاني <div class="hint">المحادثات بتتحفظ على السيرفر تلقائياً دلوقتي - دي نسخة احتياطية زيادة</div></label><div style="display:flex;gap:6px"><button class="sbtn" onclick="exportChats()">تصدير</button><button class="sbtn" onclick="document.getElementById('impFile').click()">استيراد</button></div></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>الصلاحيات المعتمدة</div>
+      <div class="srow"><label>حاجات وافقت عليها قبل كده <div class="hint">الأداة بتنفذها من غير ما تسألك تاني</div></label></div>
+      <div id="permEdit" style="padding:0 16px 10px"></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>إحصائياتك</div>
+      <div class="srow"><label>أرقامك <div class="hint">من جهازك مباشرة</div></label></div>
       <div class="stgrid">
         <div class="stbox"><div class="v" id="stTok">0</div><div class="k">توكنز النهارده</div></div>
         <div class="stbox"><div class="v" id="stMsg">0</div><div class="k">رسالة اتبعتت</div></div>
       </div>
       <table id="mtable"></table>
-      <div class="srow"><label>نقل المحادثات لجهاز تاني <div class="hint">المحادثات بتتحفظ على السيرفر تلقائياً دلوقتي - دي نسخة احتياطية زيادة</div></label><div style="display:flex;gap:6px"><button class="sbtn" onclick="exportChats()">تصدير</button><button class="sbtn" onclick="document.getElementById('impFile').click()">استيراد</button></div></div>
-      <div class="srow"><label>فريق النماذج <div class="hint">كل عضو ليه دوره وتعليماته الخاصة. المدير بيقسم طلبك عليهم ويجمع شغلهم في رد واحد.</div></label></div>
-      <div id="teamEdit" style="padding:0 16px 10px"></div>
-      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="addTeamMember()">+ أضف عضو للفريق</button></div>
-      <div class="srow"><label>ذاكرة المساعد <div class="hint">بيفتكر اللي بتقوله عن نفسك بين المحادثات وعلى كل أجهزتك. محفوظ دلوقتي: <b id="memCount">0</b> معلومة</div></label><button class="sbtn" onclick="clearMem()">امسح الذاكرة</button></div>
-      <div class="srow"><label>ملاحظات مهمة <div class="hint">حاجات عايز تحتفظ بيها جنبك على كل أجهزتك (مش للباسوردات أبداً)</div></label></div>
-      <div class="srow" style="border:none;padding-top:0"><textarea id="notesBox" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea></div>
-      <div class="srow" style="border:none;padding-top:0"><button class="sbtn" onclick="saveNotes()">احفظ الملاحظات</button></div>
-      <div class="srow"><label>الصلاحيات المعتمدة <div class="hint">الحاجات اللي وافقت عليها قبل كده - الأداة بتنفذها من غير ما تسألك تاني</div></label></div>
-      <div id="permEdit" style="padding:0 16px 10px"></div>
+
+      <div class="ssec"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.8 12.2 21 2m-4 4 3 3"/></svg>الحساب</div>
       <div class="srow"><label>مفتاح الـ API <div class="hint">متخزن على جهازك بس</div></label><button class="sbtn" onclick="resetKey()">تغيير المفتاح</button></div>
     </div>
   </div>
@@ -1854,9 +1873,11 @@ function dlFile(btn){
 /* themes */
 const THEMES={
   default:{name:'فاتح',vars:{}},
-  dark:{name:'داكن',vars:{'--bg':'#141412','--side':'#1C1B19','--card':'#242320','--line':'#35322E','--line2':'#423F3A','--txt':'#EDECE6','--dim':'#9B968C','--acc':'#D97757','--accD':'#E08A6C','--chip':'#2C2A27','--dark':'#0D0D0C','--darktxt':'#EDECE6'}},
+  dark:{name:'داكن',vars:{'--bg':'#141412','--side':'#1C1B19','--card':'#242320','--line':'#35322E','--line2':'#423F3A','--txt':'#EDECE6','--dim':'#9B968C','--acc':'#14B8A6','--accD':'#2DD4BF','--chip':'#2C2A27','--dark':'#0D0D0C','--darktxt':'#EDECE6'}},
   night:{name:'ليلي أزرق',vars:{'--bg':'#0F1420','--side':'#141B2B','--card':'#1B2436','--line':'#29334C','--line2':'#35425E','--txt':'#E5EAF5','--dim':'#8B97B3','--acc':'#5B8DEF','--accD':'#7AA5F5','--chip':'#202B42','--dark':'#0A0E18','--darktxt':'#E5EAF5'}},
-  mint:{name:'نعناعي',vars:{'--bg':'#F2F7F4','--side':'#E7F0EA','--card':'#FFFFFF','--line':'#D4E2D8','--line2':'#C3D6C9','--txt':'#1E2B23','--dim':'#6B7B70','--acc':'#2E9E6B','--accD':'#24855A','--chip':'#E4EFE8','--dark':'#1E2B23','--darktxt':'#EDF5EF'}}
+  mint:{name:'نعناعي',vars:{'--bg':'#F2F7F4','--side':'#E7F0EA','--card':'#FFFFFF','--line':'#D4E2D8','--line2':'#C3D6C9','--txt':'#1E2B23','--dim':'#6B7B70','--acc':'#2E9E6B','--accD':'#24855A','--chip':'#E4EFE8','--dark':'#1E2B23','--darktxt':'#EDF5EF'}},
+  wine:{name:'عنابي',vars:{'--bg':'#1F1316','--side':'#281920','--card':'#2F1E26','--line':'#43303A','--line2':'#523C48','--txt':'#F3E8EC','--dim':'#A98F9A','--acc':'#E15A7A','--accD':'#EC7A94','--chip':'#382530','--dark':'#170D11','--darktxt':'#F3E8EC'}},
+  sand:{name:'رملي',vars:{'--bg':'#F7F2E9','--side':'#EFE7D6','--card':'#FFFFFF','--line':'#E3D8C2','--line2':'#D5C7AC','--txt':'#2B241A','--dim':'#7E7260','--acc':'#B97E2C','--accD':'#A66E22','--chip':'#F0E7D3','--dark':'#2B241A','--darktxt':'#F5EEDF'}}
 };
 const THEME_VARS=['--bg','--side','--card','--line','--line2','--txt','--dim','--acc','--accD','--chip','--dark','--darktxt'];
 function applyTheme(id){
@@ -1873,7 +1894,7 @@ function renderThemeGrid(){
   let cur='default';try{cur=localStorage.getItem('flk_theme')||'default';}catch(e){}
   g.innerHTML=Object.keys(THEMES).map(id=>{
     const t=THEMES[id];
-    const bg=t.vars['--bg']||'#FAF9F5',acc=t.vars['--acc']||'#D97757';
+    const bg=t.vars['--bg']||'#FAF9F5',acc=t.vars['--acc']||'#0D9488';
     return '<button class="thsw'+(id===cur?' sel':'')+'" onclick="applyTheme(\''+id+'\')"><span class="dot" style="background:'+bg+';border-color:'+acc+'"></span>'+t.name+'</button>';
   }).join('');
 }
