@@ -967,7 +967,7 @@ function addBotDom(content,reasoning,model,tok,silent){
   if(tok)h+='<span class="tk">'+arNum(tok)+' توكن</span>';
   h+='<button class="mact" onclick="copyMsg(this,'+mi+')" title="انسخ">'+IC.copy+'</button>';
   h+='<button class="mact" onclick="speakText('+mi+')" title="اسمع">'+IC.spk+'</button>';
-  meta.innerHTML=h;d.appendChild(meta);
+  meta.innerHTML=h;d.appendChild(meta);addPvBtn(d,content);
   $('#chat').appendChild(d);
   if(!silent){scrollDown();if(autoVoice)speakText(mi);}
   return d;
