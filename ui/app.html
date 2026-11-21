@@ -687,7 +687,7 @@ async function send(){
   if(artMode){
     if(!text){toast('اكتب وصف الصورة الأول');return;}
     addUserDom('🎨 ارسم: '+text);
-    c.msgs.push({r:'u',c:'🎨 ارسم: '+text});
+    c.msgs.push({r:'u',c:'🎨 ارسم: '+text,art:true});
     const url=genImage(text);
     c.msgs.push({r:'a',gen:{prompt:text,url:url}});
     if(c.title==='محادثة جديدة')c.title='🎨 '+text.slice(0,40);
@@ -731,7 +731,7 @@ async function send(){
     :fullText;
   clearAttach();
 
-  const hist=c.msgs.filter(m=>!m.gen).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
+  const hist=c.msgs.filter(m=>!m.gen&&!m.art).slice(-19).map(m=>({role:m.r==='u'?'user':'assistant',content:typeof m.c==='string'?m.c:''}));
   hist.push({role:'user',content:userContent});
 
   const tp=addTyping(thinkMode?'بيفكر ويخطط':'بيكتب');
