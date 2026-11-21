@@ -227,6 +227,8 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
 .galcard .gd{padding:0 10px 8px;font-size:10.5px;color:var(--dim)}
 .ic{width:14px;height:14px;vertical-align:-2px;margin:0 4px;filter:invert(1)}
 .mact.on{color:var(--acc)}
+.pyout{margin-top:8px;padding:10px 12px;background:#0d1117;color:#7ee787;border-radius:10px;font-family:monospace;font-size:12px;white-space:pre-wrap;direction:ltr;text-align:left;max-height:260px;overflow:auto}
+.rbtn{color:#7ee787}
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23D97757"/><g stroke="white" stroke-width="2.6" stroke-linecap="round"><path d="M12 3.5v17M4.6 7.7l14.8 8.6M4.6 16.3l14.8-8.6M7.7 4.6l8.6 14.8M16.3 4.6l-8.6 14.8"/></g></svg>'>
 </head>
@@ -273,6 +275,7 @@ button,.sbtn,.slink,.citem{touch-action:manipulation;-webkit-tap-highlight-color
         <button class="modechip" id="searchBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>بحث</button>
         <button class="modechip" id="artBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r=".9" fill="currentColor"/><circle cx="12" cy="7.5" r=".9" fill="currentColor"/><circle cx="15.5" cy="10" r=".9" fill="currentColor"/><path d="M12 21c-1.2 0-1.7-1.1-1-2 .9-1.1 0-2.5-1.5-2.5H6.5"/></svg>رسم</button>
         <button class="modechip" id="teamBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M15.5 15.2c2.2.3 3.9 1.6 4.4 3.8"/></svg>فريق</button>
+        <button class="modechip" id="devBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg>مطوّر</button>
       </div>
       <div id="attachChip"><img id="attachThumb"><span class="an" id="attachName"></span><button class="x" onclick="clearAttach()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div id="box">
@@ -454,8 +457,11 @@ function mdRender(t){
   let out='';
   for(let i=0;i<parts.length;i++){
     if(i%2===1){
+      const lm=parts[i].match(/^([a-zA-Z0-9+#.-]*)\n/);
+      const lang=lm?lm[1].toLowerCase():'';
       const code=parts[i].replace(/^[a-zA-Z0-9+#. -]*\n/,'');
-      out+='<pre class="cb"><button class="cbtn" onclick="copyCode(this)">نسخ</button><code>'+code+'</code></pre>';
+      const runBtn=(lang==='python'||lang==='py')?'<button class="cbtn rbtn" onclick="runPy(this)">تشغيل</button>':'';
+      out+='<pre class="cb" data-lang="'+lang+'"><button class="cbtn" onclick="copyCode(this)">نسخ</button>'+runBtn+'<code>'+code+'</code></pre>';
     } else out+=inlineMd(parts[i]);
   }
   return out;
@@ -1753,6 +1759,54 @@ addBotDom=(function(orig){return function(content,reasoning,model,tok,silent){
   }catch(e){}
   return d;};})(addBotDom);
 try{renderChat();}catch(e){}
+
+/* python sandbox (Pyodide, in-browser) */
+let pyodideP=null;
+async function getPy(){
+  if(!pyodideP){
+    pyodideP=(async()=>{
+      await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';sc.onload=ok;sc.onerror=()=>no(new Error('تحميل بيئة بيثون فشل - شيك على النت'));document.head.appendChild(sc);});
+      return await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'});
+    })();
+    pyodideP.catch(()=>{pyodideP=null;});
+  }
+  return pyodideP;
+}
+async function runPy(btn){
+  const pre=btn.parentElement;
+  let out=pre.querySelector('.pyout');
+  if(!out){out=document.createElement('div');out.className='pyout';pre.appendChild(out);}
+  const code=pre.querySelector('code').textContent;
+  btn.disabled=true;
+  out.textContent='أول مرة بتحمّل بيئة بيثون جوه المتصفح (~10 ميجا)، استنى...';
+  try{
+    const py=await getPy();
+    out.textContent='بيشتغل...\n';
+    py.setStdout({batched:s=>{out.textContent+=s+'\n';}});
+    py.setStderr({batched:s=>{out.textContent+=s+'\n';}});
+    out.textContent='';
+    const t0=Date.now();
+    const r=await py.runPythonAsync(code);
+    if(r!==undefined)out.textContent+=String(r)+'\n';
+    if(!out.textContent.trim())out.textContent='(اتنفذ من غير ما يطبع حاجة)';
+    out.textContent+='— خلص في '+((Date.now()-t0)/1000).toFixed(1)+' ثانية';
+  }catch(e){
+    out.textContent='خطأ:\n'+String(e.message||e).slice(0,800);
+  }
+  btn.disabled=false;
+}
+/* dev mode: thorough code reading */
+let devMode=false;
+$('#devBtn').onclick=()=>{devMode=!devMode;$('#devBtn').classList.toggle('on',devMode);toast(devMode?'وضع المطوّر شغال: قراءة دقيقة للكود سطر بسطر قبل الرد':'وضع المطوّر اتقفل');};
+send=(function(orig){return async function(){
+  if(devMode){
+    const sp=$('#sysPrompt');
+    const add='\nوضع المطوّر: اقرا أي كود أو ملفات المستخدم بعتها بعناية كاملة حرف بحرف وسطر بسطر قبل ما ترد. حلّل كل التفاصيل، اكشف الأخطاء حتى الصغيرة، واشرح استنتاجك بعمق. متستعجلش ومتختصرش في فهم الكود.';
+    const old=sp.value;sp.value=old+add;
+    try{return await orig();}finally{sp.value=old;}
+  }
+  return orig();
+};})(send);
 
 </script>
 </body>
