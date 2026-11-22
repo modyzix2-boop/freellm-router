@@ -287,6 +287,17 @@ http.createServer((req,res)=>{
     }
     return J(res,405,{error:'method'});
   }
+  if(u.pathname==='/v1/client/provider-keys'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    if(req.method!=='GET')return J(res,405,{error:'method'});
+    // The account owner's own provider keys, seeded from FREEAPI_CONFIG_JSON.
+    // Returned only to the unified-key holder (the owner); the app masks by default.
+    try{
+      const cfg=JSON.parse(process.env.FREEAPI_CONFIG_JSON||'{}');
+      const keys=Array.isArray(cfg.keys)?cfg.keys:[];
+      return J(res,200,{providers:keys.map(k=>({platform:String(k.platform||''),label:String(k.label||''),key:String(k.key||'')}))});
+    }catch(e){return J(res,200,{providers:[]});}
+  }
   if(u.pathname==='/v1/client/chats'||u.pathname.startsWith('/v1/client/chats/')){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     const f=fileFor(KEY);
