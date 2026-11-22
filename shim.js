@@ -367,7 +367,7 @@ http.createServer((req,res)=>{
     if(req.method==='GET'&&id){const c=readStore(f).chats[id];return c?J(res,200,c):J(res,404,{error:'not found'});}
     if((req.method==='PUT'||req.method==='POST')&&id){
       let b='';req.on('data',d=>{b+=d;if(b.length>4*1024*1024)req.destroy();});
-      req.on('end',()=>{try{const c=JSON.parse(b);if(!Array.isArray(c.msgs))return J(res,400,{error:'msgs must be array'});const s=readStore(f);s.chats[id]={id,title:String(c.title||'محادثة').slice(0,200),msgs:c.msgs,updated:Date.now()};writeStore(f,s);J(res,200,{ok:true});}catch(e){J(res,400,{error:'bad json'});}});
+      req.on('end',()=>{try{const c=JSON.parse(b);if(!Array.isArray(c.msgs))return J(res,400,{error:'msgs must be array'});const s=readStore(f);s.chats[id]={id,title:String(c.title||'محادثة').slice(0,200),msgs:c.msgs,skill:String(c.skill||'').slice(0,60),updated:Date.now()};writeStore(f,s);J(res,200,{ok:true});}catch(e){J(res,400,{error:'bad json'});}});
       return;
     }
     if(req.method==='DELETE'&&id){const s=readStore(f);delete s.chats[id];writeStore(f,s);return J(res,200,{ok:true});}
