@@ -32,6 +32,50 @@ async function ghWrite(name,content){
     if(r.ok&&j.content&&j.content.sha)ghShaCache[name]=j.content.sha;else delete ghShaCache[name];
   }catch(e){}
 }
+// All-time usage accumulation: upstream /v1/usage lives in the container's
+// SQLite DB and resets on every free-tier restart, so the shim samples it and
+// persists positive deltas through the same GitHub sync store as chats.
+const usageFileFor=k=>path.join(DIR,crypto.createHash('sha256').update(k).digest('hex')+'.usage.json');
+let usageAll={requests:0,tokens:0,byPlatform:{},last:{requests:0,tokens:0,byPlatform:{}},since:null};
+function usageInit(){try{
+  const f=usageFileFor(KEY);
+  const d=readStore(f);
+  if(typeof d.requests==='number')usageAll=d;
+  usageAll.byPlatform=usageAll.byPlatform||{};
+  usageAll.last=usageAll.last||{requests:0,tokens:0,byPlatform:{}};
+  usageAll.last.byPlatform=usageAll.last.byPlatform||{};
+}catch(e){}}
+async function usageSample(){
+  if(!KEY)return;
+  try{
+    const r=await fetch('http://127.0.0.1:'+UP+'/v1/usage',{headers:{Authorization:'Bearer '+KEY}});
+    if(!r.ok)return;
+    const d=await r.json();
+    const cur=typeof d.requests==='number'?d.requests:0;
+    const tok=typeof d.tokens==='number'?d.tokens:0;
+    const last=usageAll.last;
+    let changed=false;
+    if(cur>last.requests){usageAll.requests+=cur-last.requests;changed=true;}
+    if(tok>last.tokens){usageAll.tokens+=tok-last.tokens;changed=true;}
+    const curP={},lastP=last.byPlatform;
+    for(const p of (Array.isArray(d.byPlatform)?d.byPlatform:[])){
+      const pl=String(p.platform||'?');
+      curP[pl]={requests:Number(p.requests)||0,tokens:Number(p.tokens)||0};
+    }
+    for(const pl of Object.keys(curP)){
+      const lp=lastP[pl]||{requests:0,tokens:0};
+      const agg=usageAll.byPlatform[pl]||{requests:0,tokens:0};
+      if(curP[pl].requests>lp.requests){agg.requests+=curP[pl].requests-lp.requests;changed=true;}
+      if(curP[pl].tokens>lp.tokens){agg.tokens+=curP[pl].tokens-lp.tokens;changed=true;}
+      usageAll.byPlatform[pl]=agg;
+    }
+    usageAll.last={requests:cur,tokens:tok,byPlatform:curP};
+    if(!usageAll.since)usageAll.since=new Date().toISOString();
+    if(changed)writeStore(usageFileFor(KEY),usageAll);
+  }catch(e){}
+}
+let usageSampleTimer=null;
+function usageSampleSoon(){clearTimeout(usageSampleTimer);usageSampleTimer=setTimeout(usageSample,12000);}
 function ghSchedule(f){
   if(!GH_T||!GH_O)return;
   const name=path.basename(f);
@@ -42,6 +86,14 @@ function ghSchedule(f){
 (async()=>{try{
   if(KEY){
     const f=fileFor(KEY);
+    const uf=usageFileFor(KEY);
+    if(!fs.existsSync(uf)){
+      const ru=await ghRead(path.basename(uf));
+      if(ru){fs.writeFileSync(uf,ru.content);ghShaCache[path.basename(uf)]=ru.sha;}
+    }
+    usageInit();
+    setInterval(usageSample,5*60*1000);
+    setTimeout(usageSample,25000);
     if(!fs.existsSync(f)){
       const r=await ghRead(path.basename(f));
       if(r){fs.writeFileSync(f,r.content);ghShaCache[path.basename(f)]=r.sha;console.log('[shim] chat store restored from GitHub');}
@@ -287,6 +339,12 @@ http.createServer((req,res)=>{
     }
     return J(res,405,{error:'method'});
   }
+  if(u.pathname==='/v1/client/usage-alltime'){
+    if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
+    if(req.method!=='GET')return J(res,405,{error:'method'});
+    const d=Object.assign({},usageAll);delete d.last;
+    return J(res,200,d);
+  }
   if(u.pathname==='/v1/client/provider-keys'){
     if(!KEY||(req.headers.authorization||'')!=='Bearer '+KEY)return J(res,401,{error:'unauthorized'});
     if(req.method!=='GET')return J(res,405,{error:'method'});
@@ -341,6 +399,7 @@ http.createServer((req,res)=>{
       let n=0;r.on('data',c=>{n+=c.length;});
       res.writeHead(r.statusCode,r.headers);r.pipe(res);
       res.on('finish',()=>logHttp({kind:'http-res',err:'status='+r.statusCode+' bytes='+n}));
+      res.on('finish',()=>{if(req.method==='POST'&&u.pathname==='/v1/chat/completions')usageSampleSoon();});
     }
   });
   p.on('error',()=>J(res,502,{error:'upstream starting'}));
